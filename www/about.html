@@ -1,0 +1,958 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#87B9D4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ARUVA">
+  <link rel="apple-touch-icon" href="/image.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — ARUVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#87B9D4;--gold-l:#ACD1E5;--gold-d:#5A97BC;
+  --dark:#0B1622;--d1:#111E2C;--d2:#172638;--d3:#1D2F44;
+  --text:#EDF2F8;--muted:#4A6B82;--muted-l:#7295AF;
+  --r:14px;--r-lg:20px;--nav-h:68px
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:rgba(135,185,212,.2);border-radius:2px}
+
+/* ─── NAV ─────────────────────────────────────────── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 56px;height:var(--nav-h);
+  background:rgba(11,22,34,.9);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{font-size:22px;font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--muted-l);font-size:13px;font-weight:500;
+  letter-spacing:.5px;transition:color .2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;
+  height:1px;background:var(--gold);transition:width .25s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-links a.active{color:var(--gold)}
+.nav-links a.active::after{width:100%}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-signin{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted-l);
+  padding:8px 20px;border-radius:50px;font-size:12px;font-weight:500;
+  transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.nav-signin:hover{border-color:rgba(135,185,212,.5);color:var(--gold)}
+.nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;border:none;
+  padding:9px 22px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:.5px;
+  cursor:pointer;transition:all .2s;display:inline-flex;font-family:inherit}
+.nav-cta:hover{box-shadow:0 6px 24px rgba(135,185,212,.4);transform:translateY(-1px)}
+@media(max-width:768px){.nav{padding:0 20px}.nav-links{display:none}}
+
+/* ─── PAGE ───────────────────────────────────────── */
+.page-wrap{padding-top:var(--nav-h)}
+
+/* ─── REVEAL ─────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── HERO ───────────────────────────────────────── */
+.about-hero{min-height:88vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;position:relative;overflow:hidden;
+  padding:80px 40px}
+.about-hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(135,185,212,.07) 0%,transparent 65%)}
+.about-hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(135,185,212,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(135,185,212,.03) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black,transparent)}
+.about-hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);
+  color:var(--gold);font-size:11px;font-weight:600;letter-spacing:3px;
+  text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:32px}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);
+  animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.about-hero h1{font-family:'Playfair Display',serif;
+  font-size:clamp(42px,6vw,88px);font-weight:800;line-height:1.06;
+  letter-spacing:-1px;margin-bottom:28px}
+.about-hero h1 em{font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l),var(--gold-d));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.about-hero p{font-size:18px;color:var(--muted-l);line-height:1.75;
+  max-width:600px;margin:0 auto 44px;font-weight:400}
+.hero-actions{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;
+  padding:15px 34px;border-radius:50px;font-size:14px;font-weight:700;
+  letter-spacing:.5px;transition:all .3s;border:none;cursor:pointer;font-family:inherit}
+.btn-gold:hover{box-shadow:0 12px 40px rgba(135,185,212,.45);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;
+  color:var(--muted-l);font-size:14px;font-weight:500;
+  transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit}
+.btn-ghost:hover{color:var(--gold)}
+
+/* ─── MARQUEE ────────────────────────────────────── */
+.marquee-strip{background:var(--gold);padding:10px 0;overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-flex;animation:marquee 30s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:#000;padding:0 36px}
+.marquee-sep{opacity:.4;font-size:16px}
+
+/* ─── SECTION BASE ───────────────────────────────── */
+.sec-kicker{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px;display:block}
+.sec-h{font-family:'Playfair Display',serif;
+  font-size:clamp(26px,3vw,42px);font-weight:800;line-height:1.18;margin-bottom:16px}
+.sec-p{font-size:15px;color:var(--muted-l);line-height:1.75;max-width:520px}
+
+/* ─── ABOUT SCROLL VIDEO ─────────────────────────── */
+.av-section{position:relative;height:300vh}
+.av-sticky{
+  position:sticky;top:0;height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:80px;
+  padding:0 80px;overflow:hidden;
+  background:var(--dark);
+}
+.av-left{position:relative;z-index:2;padding-top:var(--nav-h)}
+.av-heading{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,3.5vw,48px);font-weight:800;line-height:1.12;
+  letter-spacing:-.5px;margin-bottom:24px}
+.av-heading em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.av-left p{font-size:15px;color:var(--muted-l);line-height:1.85;margin-bottom:14px}
+.av-stats{display:flex;gap:32px;margin-top:32px;padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.06)}
+.av-stat-val{
+  font-size:24px;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px}
+.av-stat-val small{font-size:13px;font-weight:700}
+.av-stat-lbl{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.story-divider{width:48px;height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-l));
+  border-radius:2px;margin:24px 0}
+
+/* Right glass frame */
+.av-right{position:relative;height:calc(100vh - var(--nav-h) - 48px)}
+.av-glass-frame{
+  width:100%;height:100%;border-radius:22px;
+  border:1px solid rgba(135,185,212,.22);
+  background:rgba(11,22,34,.25);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,
+    0 1px 0 rgba(135,185,212,.12) inset,
+    0 48px 100px rgba(0,0,0,.55)}
+.av-frame-bar{
+  position:absolute;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;gap:10px;padding:11px 14px;
+  background:rgba(11,22,34,.75);border-bottom:1px solid rgba(135,185,212,.1);
+  backdrop-filter:blur(8px)}
+.av-frame-label{flex:1;font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted-l);text-align:center}
+.av-frame-live{display:flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.av-live-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;
+  box-shadow:0 0 8px #4CAF50;animation:av-ping 1.4s ease-in-out infinite}
+@keyframes av-ping{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.av-video{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  will-change:contents;
+  filter:brightness(.9) saturate(.85) contrast(.95)}
+
+/* Info overlay panels */
+.av-info-wrap{
+  position:absolute;bottom:0;left:0;right:0;z-index:8;
+  padding:40px 20px 20px;
+  background:linear-gradient(transparent,rgba(11,22,34,.92))}
+.av-info-panel{display:none;animation:av-fi .4s ease}
+.av-info-panel.sp-active{display:block}
+@keyframes av-fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.av-info-kicker{
+  font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);display:block;margin-bottom:6px}
+.av-info-title{font-size:17px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.av-info-tags{display:flex;gap:7px;flex-wrap:wrap}
+.av-info-tags span{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);padding:4px 12px;
+  background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);border-radius:50px}
+
+/* Progress + hint */
+.av-prog-wrap{
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:rgba(255,255,255,.06);z-index:12;transition:opacity .5s}
+.av-prog-bar{height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.av-scroll-hint{
+  position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;
+  transition:opacity .4s;white-space:nowrap}
+/* macOS dots */
+.hcw-dots{display:flex;gap:5px}
+.hcw-dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hcw-dots span:first-child{background:rgba(239,68,68,.5)}
+.hcw-dots span:nth-child(2){background:rgba(255,152,0,.4)}
+.hcw-dots span:nth-child(3){background:rgba(76,175,80,.4)}
+@media(max-width:900px){
+  .av-sticky{grid-template-columns:1fr;gap:32px;padding:var(--nav-h) 20px 20px}
+  .av-right{height:50vh}
+  .av-section{height:400vh}}
+
+/* ─── VALUES ─────────────────────────────────────── */
+.values{padding:90px 80px;
+  background:var(--d1);border-top:1px solid rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.05)}
+@media(max-width:768px){.values{padding:60px 20px}}
+.values-inner{max-width:1200px;margin:0 auto}
+.values-head{text-align:center;margin-bottom:60px}
+.values-head .sec-p{margin:0 auto;text-align:center}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:768px){.values-grid{grid-template-columns:1fr}}
+.val-card{background:var(--d2);border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;padding:36px 28px;transition:all .3s;position:relative;overflow:hidden}
+.val-card::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(135,185,212,.06) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s}
+.val-card:hover{border-color:rgba(135,185,212,.25);transform:translateY(-6px)}
+.val-card:hover::before{opacity:1}
+.val-icon{font-size:36px;margin-bottom:20px;display:block;
+  filter:drop-shadow(0 4px 12px rgba(135,185,212,.2))}
+.val-num{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.val-num::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.val-title{font-size:19px;font-weight:700;margin-bottom:12px}
+.val-desc{font-size:13px;color:var(--muted-l);line-height:1.8}
+
+/* ─── TEAM ───────────────────────────────────────── */
+.team{padding:90px 80px;max-width:1280px;margin:0 auto}
+@media(max-width:768px){.team{padding:60px 20px}}
+.team-head{text-align:center;margin-bottom:56px}
+.team-head .sec-p{margin:0 auto;text-align:center}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.team-grid{grid-template-columns:1fr}}
+.team-card{background:var(--d1);border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;overflow:hidden;transition:all .3s}
+.team-card:hover{border-color:rgba(135,185,212,.2);transform:translateY(-4px)}
+.team-avatar{aspect-ratio:1;background:var(--d2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:52px;position:relative;overflow:hidden}
+.team-avatar::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(11,22,34,.6))}
+.team-info{padding:16px 18px 20px}
+.team-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.team-role{font-size:11px;color:var(--gold);font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.team-bio{font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ─── STATS BAR ──────────────────────────────────── */
+.stats-bar{padding:0 80px;margin-bottom:0}
+@media(max-width:768px){.stats-bar{padding:0 20px}}
+.stats-bar-inner{max-width:1200px;margin:0 auto;
+  background:linear-gradient(135deg,rgba(135,185,212,.1) 0%,rgba(135,185,212,.04) 50%,rgba(135,185,212,.08) 100%);
+  border:1px solid rgba(135,185,212,.2);border-radius:24px;
+  padding:52px;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;overflow:hidden;position:relative}
+.stats-bar-inner::before{content:'';position:absolute;top:-60px;left:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(135,185,212,.12) 0%,transparent 70%)}
+.stat-col{text-align:center;border-right:1px solid rgba(255,255,255,.08);
+  padding:0 24px;position:relative;z-index:1}
+.stat-col:last-child{border-right:none}
+.stat-val{font-size:40px;font-weight:900;color:var(--gold);line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted-l);letter-spacing:1.5px;
+  text-transform:uppercase;margin-top:8px}
+@media(max-width:768px){
+  .stats-bar-inner{grid-template-columns:repeat(2,1fr);padding:32px}
+  .stat-col{border-right:none;border-bottom:1px solid rgba(255,255,255,.06);padding:16px 0}
+  .stat-col:nth-child(2n){border-right:none}
+  .stat-col:last-child,.stat-col:nth-last-child(2){border-bottom:none}
+}
+
+/* ════════════════════════════════════════════════
+   BRAND FOOTER SECTION  (the big one from the screenshot)
+   ════════════════════════════════════════════════ */
+.brand-footer{margin-top:100px;position:relative;overflow:hidden}
+
+/* Info grid above the big text */
+.brand-info-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:0;
+  background:var(--d1);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06)}
+@media(max-width:900px){.brand-info-grid{grid-template-columns:1fr}}
+
+.bfg-col{padding:56px 48px;border-right:1px solid rgba(255,255,255,.06)}
+.bfg-col:last-child{border-right:none}
+@media(max-width:900px){.bfg-col{border-right:none;border-bottom:1px solid rgba(255,255,255,.06);padding:36px 24px}}
+
+/* Left: Connect */
+.bfg-connect-tag{display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);
+  padding:6px 14px;border-radius:50px;margin-bottom:20px}
+.bfg-title{font-family:'Playfair Display',serif;
+  font-size:clamp(22px,2.5vw,32px);font-weight:800;line-height:1.2;margin-bottom:8px}
+.bfg-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+.bfg-phone{display:flex;align-items:center;gap:8px;
+  font-size:18px;font-weight:700;color:var(--text);margin-bottom:28px}
+.bfg-phone svg{color:var(--gold)}
+
+/* Newsletter form */
+.newsletter-form{display:flex;flex-direction:column;gap:10px}
+.nl-input-wrap{position:relative}
+.nl-input{width:100%;background:var(--d2);border:1px solid rgba(255,255,255,.1);
+  color:var(--text);padding:13px 18px;border-radius:12px;
+  font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
+.nl-input:focus{border-color:rgba(135,185,212,.4)}
+.nl-input::placeholder{color:var(--muted)}
+.nl-checkbox{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.nl-checkbox input{margin-top:2px;accent-color:var(--gold);flex-shrink:0}
+.nl-checkbox span{font-size:12px;color:var(--muted);line-height:1.5}
+.nl-checkbox span a{color:var(--gold);border-bottom:1px solid rgba(135,185,212,.3)}
+.nl-btn{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;
+  border:none;padding:13px 28px;border-radius:12px;font-size:13px;font-weight:700;
+  letter-spacing:.5px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.nl-btn:hover{box-shadow:0 8px 28px rgba(135,185,212,.4);transform:translateY(-1px)}
+
+/* Middle: Links */
+.bfg-links-title{font-size:10px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.bfg-links{list-style:none;display:flex;flex-direction:column;gap:2px}
+.bfg-links a{display:block;font-size:14px;color:var(--muted-l);
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  transition:all .2s;position:relative;padding-left:0}
+.bfg-links a::before{content:'';position:absolute;left:0;top:50%;
+  width:0;height:1px;background:var(--gold);
+  transition:width .2s;transform:translateY(-50%)}
+.bfg-links a:hover{color:var(--gold);padding-left:16px}
+.bfg-links a:hover::before{width:10px}
+
+/* Right: Address + Social + Contact */
+.bfg-address{font-size:13px;color:var(--muted-l);line-height:1.85;margin-bottom:32px}
+.bfg-address strong{display:block;font-size:10px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+
+.bfg-social{display:flex;gap:10px;margin-bottom:28px}
+.bfg-soc-btn{width:38px;height:38px;border-radius:10px;
+  background:var(--d2);border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);transition:all .2s;font-size:14px}
+.bfg-soc-btn:hover{border-color:rgba(135,185,212,.4);color:var(--gold);background:rgba(135,185,212,.06)}
+
+.bfg-contact{display:flex;flex-direction:column;gap:10px}
+.bfg-contact-item{display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--muted-l)}
+.bfg-contact-item svg{color:var(--gold);flex-shrink:0}
+.bfg-contact-item a{transition:color .2s}
+.bfg-contact-item a:hover{color:var(--gold)}
+
+/* ── Bottom row ── */
+.brand-footer-bottom{
+  background:var(--d1);
+  border-top:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 48px;flex-wrap:wrap;gap:12px}
+.bfb-copy{font-size:12px;color:var(--muted)}
+.bfb-pays{display:flex;gap:6px}
+.pay-chip{background:var(--d2);border:1px solid rgba(255,255,255,.07);
+  color:var(--muted);font-size:9px;font-weight:700;
+  padding:4px 8px;border-radius:5px;letter-spacing:.5px}
+@media(max-width:768px){.brand-footer-bottom{padding:16px 20px}}
+
+/* ── THE BIG ARUVA TEXT ── */
+.big-brand{
+  background:var(--dark);
+  padding:0 0 0;
+  overflow:hidden;
+  position:relative}
+.big-brand::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(135,185,212,.06) 0%,transparent 60%);
+  pointer-events:none}
+.big-brand-text{
+  display:block;
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:clamp(100px,18vw,260px);
+  font-weight:900;
+  letter-spacing:-4px;
+  line-height:.9;
+  text-align:center;
+  text-transform:uppercase;
+  /* Gold texture clip */
+  background:linear-gradient(
+    135deg,
+    #3a2a00 0%,
+    #8a6520 10%,
+    var(--gold-d) 20%,
+    var(--gold) 30%,
+    var(--gold-l) 40%,
+    #fff8e7 48%,
+    var(--gold-l) 55%,
+    var(--gold) 62%,
+    var(--gold-d) 72%,
+    #6a4a10 80%,
+    #3a2a00 88%,
+    var(--gold) 95%,
+    var(--gold-l) 100%
+  );
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  /* Shimmer animation */
+  background-size:200% 100%;
+  animation:textShimmer 6s ease-in-out infinite alternate;
+  padding:20px 0 10px;
+  position:relative;z-index:1}
+@keyframes textShimmer{
+  0%{background-position:0% 50%}
+  100%{background-position:100% 50%}
+}
+.big-brand-sub{
+  text-align:center;
+  font-size:12px;font-weight:600;letter-spacing:8px;text-transform:uppercase;
+  color:var(--muted);padding-bottom:32px;position:relative;z-index:1}
+</style>
+</head>
+<body data-mobile="true">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="home.html" class="nav-logo">ARUVA</a>
+  <ul class="nav-links">
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="aruva.html">3D Studio</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="home.html#testimonials">Stories</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="nav-signin" id="nav-auth-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="nav-auth-label">Sign In</span>
+    </a>
+    <a href="aruva.html" class="nav-cta">Design Now →</a>
+  </div>
+</nav>
+<script>
+(function(){
+  try {
+    const u = JSON.parse(localStorage.getItem('aruva_user'));
+    const t = localStorage.getItem('aruva_token');
+    if (t && u) {
+      const b = document.getElementById('nav-auth-btn');
+      const l = document.getElementById('nav-auth-label');
+      b.href = 'account.html';
+      l.textContent = u.first_name || u.email.split('@')[0];
+    }
+  } catch(e){}
+})();
+</script>
+
+<div class="page-wrap">
+
+  <!-- ─── HERO ─────────────────────────────────── -->
+  <section class="about-hero">
+    <div class="about-hero-grid"></div>
+    <div class="about-hero-inner">
+      <div class="hero-pill reveal"><span class="pill-dot"></span>Our Story</div>
+      <h1 class="reveal" style="transition-delay:.1s">
+        Fashion Born From<br><em>Rebellion</em>
+      </h1>
+      <p class="reveal" style="transition-delay:.2s">
+        We refused to accept that fashion meant choosing from someone else's wardrobe.
+        ARUVA exists for people who believe clothing should be as individual as the person wearing it.
+      </p>
+      <div class="hero-actions reveal" style="transition-delay:.3s">
+        <a href="aruva.html" class="btn-gold">
+          Enter the Studio
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="shop.html" class="btn-ghost">
+          Browse Collection
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE ─────────────────────────────── -->
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <span class="marquee-item">Wear Your Vision <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Real-Time 3D Design <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Premium Fabrics <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Made in India <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Fashion Meets Technology <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Your Story, Your Clothes <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Wear Your Vision <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Real-Time 3D Design <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Premium Fabrics <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Made in India <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Fashion Meets Technology <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Your Story, Your Clothes <span class="marquee-sep">✦</span></span>
+    </div>
+  </div>
+
+  <!-- ─── STORY / SCROLL VIDEO ────────────────── -->
+  <section class="av-section" id="av-section">
+    <div class="av-sticky">
+
+      <!-- Left: story text (stays as background while scrolling) -->
+      <div class="av-left">
+        <span class="sec-kicker">OUR STORY</span>
+        <h2 class="av-heading">Fashion should be<br>yours to <em>define.</em></h2>
+        <div class="story-divider"></div>
+        <p>ARUVA was born from a single question — why do millions of people wear the exact same thing? We built a platform where your imagination becomes the design brief, and real-time 3D technology makes it reality before you spend a rupee.</p>
+        <p>Every piece is made-to-order. Every stitch is intentional. Every garment tells your story — not a brand's story.</p>
+        <div class="av-stats">
+          <div class="av-stat">
+            <div class="av-stat-val">50K+</div>
+            <div class="av-stat-lbl">Designs Created</div>
+          </div>
+          <div class="av-stat">
+            <div class="av-stat-val">12K+</div>
+            <div class="av-stat-lbl">Happy Customers</div>
+          </div>
+          <div class="av-stat">
+            <div class="av-stat-val">380<small>GSM</small></div>
+            <div class="av-stat-lbl">Premium Weight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: glass frame with scroll-driven video -->
+      <div class="av-right">
+        <div class="av-glass-frame">
+          <!-- macOS-style bar -->
+          <div class="av-frame-bar">
+            <div class="hcw-dots"><span></span><span></span><span></span></div>
+            <div class="av-frame-label">ARUVA — Collection Preview</div>
+            <div class="av-frame-live"><span class="av-live-dot"></span>LIVE</div>
+          </div>
+
+          <video class="av-video" id="av-video" src="/0523 (2).mp4"
+            muted playsinline preload="auto" disablepictureinpicture></video>
+
+          <!-- Info overlaid at bottom — changes with scroll progress -->
+          <div class="av-info-wrap">
+            <div class="av-info-panel" id="av-p1">
+              <span class="av-info-kicker">THE CRAFT</span>
+              <div class="av-info-title">380 GSM · Heavyweight Fleece</div>
+              <div class="av-info-tags"><span>Premium Cotton</span><span>Ring-Spun</span></div>
+            </div>
+            <div class="av-info-panel" id="av-p2">
+              <span class="av-info-kicker">THE DESIGN</span>
+              <div class="av-info-title">Real-Time 3D Customization</div>
+              <div class="av-info-tags"><span>3D Studio</span><span>Instant Preview</span></div>
+            </div>
+            <div class="av-info-panel" id="av-p3">
+              <span class="av-info-kicker">THE VISION</span>
+              <div class="av-info-title">Made in India · Zero Waste</div>
+              <div class="av-info-tags"><span>Est. 2024</span><span>On Demand</span></div>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="av-prog-wrap" id="av-prog-wrap">
+            <div class="av-prog-bar" id="av-prog-bar"></div>
+          </div>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="av-scroll-hint" id="av-hint">
+          <svg width="14" height="22" viewBox="0 0 14 22" fill="none">
+            <rect x="1" y="1" width="12" height="20" rx="6" stroke="rgba(135,185,212,.5)" stroke-width="1.5"/>
+            <circle cx="7" cy="6" r="2" fill="rgba(135,185,212,.8)">
+              <animate attributeName="cy" values="6;14;6" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <span>Scroll to explore</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── VALUES ───────────────────────────────── -->
+  <section class="values">
+    <div class="values-inner">
+      <div class="values-head reveal">
+        <span class="sec-kicker">What We Stand For</span>
+        <h2 class="sec-h">The Three Pillars of ARUVA</h2>
+        <p class="sec-p">Everything we build, every decision we make, comes back to these three things.</p>
+      </div>
+      <div class="values-grid">
+        <div class="val-card reveal" style="transition-delay:.06s">
+          <div class="val-num">01</div>
+          <span class="val-icon">🎨</span>
+          <div class="val-title">Radical Individuality</div>
+          <p class="val-desc">Mass production created a world where everyone looks the same. We reject that. Every garment on ARUVA is unique — because you designed it.</p>
+        </div>
+        <div class="val-card reveal" style="transition-delay:.14s">
+          <div class="val-num">02</div>
+          <span class="val-icon">🌿</span>
+          <div class="val-title">Sustainable by Design</div>
+          <p class="val-desc">Made on demand means zero overstock, zero waste. We use GOTS-certified cotton and low-impact inks. Fashion's future must be responsible.</p>
+        </div>
+        <div class="val-card reveal" style="transition-delay:.22s">
+          <div class="val-num">03</div>
+          <span class="val-icon">⚡</span>
+          <div class="val-title">Technology First</div>
+          <p class="val-desc">Our 3D studio isn't a gimmick — it's the product. Real-time rendering, drag-to-rotate previews, and pixel-accurate production. What you see is what you get.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS ────────────────────────────────── -->
+  <div class="stats-bar" style="padding-top:90px;padding-bottom:90px">
+    <div class="stats-bar-inner counter-section reveal">
+      <div class="stat-col">
+        <div class="stat-val counter-num" data-target="50000" data-suffix="+">0</div>
+        <div class="stat-lbl">Designs Created</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val counter-num" data-target="12000" data-suffix="+">0</div>
+        <div class="stat-lbl">Happy Customers</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val counter-num" data-target="48" data-suffix="h">0</div>
+        <div class="stat-lbl">Avg Turnaround</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val counter-num" data-target="98" data-suffix="%">0</div>
+        <div class="stat-lbl">Satisfaction Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TEAM ─────────────────────────────────── -->
+  <section class="team">
+    <div class="team-head reveal">
+      <span class="sec-kicker">The People</span>
+      <h2 class="sec-h">Built by a Small Team<br>with a Big Vision</h2>
+      <p class="sec-p">We're designers, engineers, and fashion obsessives who got tired of the status quo.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal" style="transition-delay:.06s">
+        <div class="team-avatar">👨‍💻</div>
+        <div class="team-info">
+          <div class="team-name">Aryan Kadam</div>
+          <div class="team-role">Founder & CEO</div>
+          <div class="team-bio">Visionary behind ARUVA. Combines a love for fashion with deep tech to redefine how people dress.</div>
+        </div>
+      </div>
+      <div class="team-card reveal" style="transition-delay:.12s">
+        <div class="team-avatar">👩‍🎨</div>
+        <div class="team-info">
+          <div class="team-name">Priya Sharma</div>
+          <div class="team-role">Creative Director</div>
+          <div class="team-bio">10 years in luxury fashion. Ensures every ARUVA piece meets the highest standards of design.</div>
+        </div>
+      </div>
+      <div class="team-card reveal" style="transition-delay:.18s">
+        <div class="team-avatar">👨‍🔬</div>
+        <div class="team-info">
+          <div class="team-name">Rohan Mehta</div>
+          <div class="team-role">Head of 3D Tech</div>
+          <div class="team-bio">Built the real-time 3D rendering engine from scratch. Obsessed with pixel-perfect accuracy.</div>
+        </div>
+      </div>
+      <div class="team-card reveal" style="transition-delay:.24s">
+        <div class="team-avatar">👩‍🏭</div>
+        <div class="team-info">
+          <div class="team-name">Ananya Rao</div>
+          <div class="team-role">Head of Production</div>
+          <div class="team-bio">Manages our supply chain and manufacturing partners. Every order ships on time because of her.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       BRAND FOOTER SECTION
+       ══════════════════════════════════════════ -->
+  <div class="brand-footer">
+
+    <!-- Info Grid -->
+    <div class="brand-info-grid">
+
+      <!-- LEFT: Connect + Newsletter -->
+      <div class="bfg-col reveal">
+        <div class="bfg-connect-tag">
+          <span class="pill-dot"></span>Stay Connected
+        </div>
+        <h3 class="bfg-title">Your Fashion Journey<br>Begins Here</h3>
+        <p class="bfg-sub">Get early access, exclusive drops, and design tips — straight to your inbox.</p>
+
+        <div class="bfg-phone">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          +91 86930 92228
+        </div>
+
+        <div class="newsletter-form" id="nl-form">
+          <div class="nl-input-wrap">
+            <input type="email" class="nl-input" id="nl-email" placeholder="Your email address">
+          </div>
+          <label class="nl-checkbox">
+            <input type="checkbox" id="nl-consent">
+            <span>Yes, I agree to receive ARUVA's newsletter and marketing emails. I can unsubscribe at any time. See our <a href="#">Privacy Policy</a>.</span>
+          </label>
+          <button class="nl-btn" onclick="subscribeNewsletter()">
+            Subscribe
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- MIDDLE: Policy Links -->
+      <div class="bfg-col reveal" style="transition-delay:.1s">
+        <div class="bfg-links-title">Legal & Policies</div>
+        <ul class="bfg-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Accessibility Statement</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+
+        <div class="bfg-links-title" style="margin-top:32px">Company</div>
+        <ul class="bfg-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Kit</a></li>
+        </ul>
+      </div>
+
+      <!-- RIGHT: Address + Social + Contact -->
+      <div class="bfg-col reveal" style="transition-delay:.2s">
+        <div class="bfg-address">
+          <strong>Find Us</strong>
+          ARUVA Fashion Pvt. Ltd.<br>
+          4th Floor, Kohinoor Square,<br>
+          Dadar West, Mumbai — 400 028<br>
+          Maharashtra, India
+        </div>
+
+        <div class="bfg-social">
+          <a href="#" class="bfg-soc-btn" title="Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="#" class="bfg-soc-btn" title="Instagram">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" class="bfg-soc-btn" title="X / Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" class="bfg-soc-btn" title="TikTok">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/></svg>
+          </a>
+          <a href="#" class="bfg-soc-btn" title="YouTube">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon fill="#000" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+          </a>
+        </div>
+
+        <div class="bfg-contact">
+          <div class="bfg-contact-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:hello@aruva.in">hello@aruva.in</a>
+          </div>
+          <div class="bfg-contact-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <a href="tel:+918693092228">+91 86930 92228</a>
+          </div>
+          <div class="bfg-contact-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Mon–Sat, 10am–7pm IST
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="brand-footer-bottom">
+      <p class="bfb-copy">© 2026 ARUVA Fashion Pvt. Ltd. All rights reserved.</p>
+      <div class="bfb-pays">
+        <span class="pay-chip">VISA</span>
+        <span class="pay-chip">MC</span>
+        <span class="pay-chip">UPI</span>
+        <span class="pay-chip">COD</span>
+        <span class="pay-chip">EMI</span>
+      </div>
+    </div>
+
+    <!-- THE BIG BRAND TEXT -->
+    <div class="big-brand">
+      <span class="big-brand-text">ARUVA</span>
+      <div class="big-brand-sub">Where Fashion Meets Technology</div>
+    </div>
+
+  </div><!-- /brand-footer -->
+
+</div><!-- /page-wrap -->
+
+<script>
+/* ── SCROLL VIDEO (about page) ── */
+(function initAboutVideo() {
+  const section = document.getElementById('av-section');
+  const video   = document.getElementById('av-video');
+  const hint    = document.getElementById('av-hint');
+  const progBar = document.getElementById('av-prog-bar');
+  const panels  = [
+    document.getElementById('av-p1'),
+    document.getElementById('av-p2'),
+    document.getElementById('av-p3')
+  ];
+  if (!section || !video) return;
+  video.load(); video.pause();
+
+  function seek(t) {
+    if (video.fastSeek) video.fastSeek(t);
+    else video.currentTime = t;
+  }
+
+  let targetTime  = 0;
+  let currentLerp = 0;
+  let rafId       = null;
+  let lastSeg     = -1;
+  let lastSeeked  = -1;
+  let videoDone   = false;
+
+  function getProgress() {
+    const rect  = section.getBoundingClientRect();
+    const total = section.offsetHeight - window.innerHeight;
+    return Math.min(1, Math.max(0, -rect.top / total));
+  }
+
+  function tick() {
+    rafId = null;
+    if (!video.duration || !isFinite(video.duration)) return;
+    const diff = targetTime - currentLerp;
+    if (Math.abs(diff) > 0.001) {
+      currentLerp += diff * 0.12;
+      rafId = requestAnimationFrame(tick);
+    } else {
+      currentLerp = targetTime;
+    }
+    if (Math.abs(currentLerp - lastSeeked) > 0.08 && video.readyState >= 2) {
+      seek(currentLerp); lastSeeked = currentLerp;
+    }
+    const p  = video.duration ? targetTime / video.duration : 0;
+    const lp = video.duration ? currentLerp / video.duration : 0;
+    if (progBar) progBar.style.width = (lp * 100) + '%';
+    if (lp >= 0.97 && !videoDone) {
+      videoDone = true;
+      if (progBar) progBar.parentElement.style.opacity = '0';
+    }
+    const seg = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
+    if (seg !== lastSeg) {
+      lastSeg = seg;
+      panels.forEach((el, i) => { if (el) el.classList.toggle('sp-active', i === seg); });
+    }
+    if (hint) hint.style.opacity = p > 0.03 ? '0' : '1';
+  }
+
+  window.addEventListener('scroll', () => {
+    const p = getProgress();
+    if (video.duration && isFinite(video.duration)) targetTime = p * video.duration;
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }, { passive: true });
+
+  if (panels[0]) panels[0].classList.add('sp-active');
+})()
+
+/* ── COUNTERS ── */
+function animateNum(el, target, suffix, dur) {
+  const start = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now()-start)/dur, 1);
+    const e = 1 - Math.pow(1-p, 3);
+    const v = Math.round(e * target);
+    el.textContent = v >= 1000 ? (v/1000).toFixed(v >= 10000 ? 0 : 1)+'K'+suffix : v+suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+/* ── NEWSLETTER ── */
+function subscribeNewsletter() {
+  const email = document.getElementById('nl-email').value.trim();
+  const consent = document.getElementById('nl-consent').checked;
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { showToast('Please enter a valid email'); return; }
+  if (!consent) { showToast('Please agree to receive our newsletter'); return; }
+  document.getElementById('nl-form').innerHTML = `
+    <div style="padding:20px 0;text-align:center">
+      <div style="font-size:28px;margin-bottom:10px">✦</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">You're in!</div>
+      <div style="font-size:13px;color:var(--muted)">Welcome to ARUVA. Expect something beautiful in your inbox.</div>
+    </div>`;
+}
+
+/* ── TOAST ── */
+let toastT;
+function showToast(msg) {
+  let t = document.getElementById('page-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'page-toast';
+    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--d1);border:1px solid rgba(135,185,212,.3);color:var(--text);padding:12px 26px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
+}
+
+/* ── INIT ── */
+window.addEventListener('load', () => {
+
+  // Scroll reveal + counter
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        const sec = e.target.closest('.counter-section');
+        if (sec && !sec._counted) {
+          sec._counted = true;
+          sec.querySelectorAll('.counter-num[data-target]').forEach(n => {
+            animateNum(n, parseInt(n.dataset.target), n.dataset.suffix || '', 2000);
+          });
+        }
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+});
+</script>
+<script src="js/animations.js" defer></script>
+</body>
+</html>
+
+

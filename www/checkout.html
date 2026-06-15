@@ -1,0 +1,625 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#87B9D4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ARUVA">
+  <link rel="apple-touch-icon" href="/image.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — ARUVA</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .checkout-page { padding: 100px 0 60px; min-height: 100vh; background: var(--dark); }
+    .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 32px; align-items: start; }
+    @media(max-width:900px){ .checkout-layout { grid-template-columns: 1fr; } }
+
+    /* Steps */
+    .steps-bar { display: flex; align-items: center; margin-bottom: 32px; }
+    .step-item { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .step-num { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .82rem; font-weight: 700; flex-shrink: 0; transition: all .3s; border: 2px solid var(--border); color: var(--muted); background: var(--dark2); }
+    .step-num.active { border-color: var(--gold); color: var(--gold); background: rgba(135,185,212,.12); }
+    .step-num.done { border-color: #2ecc71; color: #000; background: #2ecc71; }
+    .step-label { font-size: .82rem; color: var(--muted); transition: color .3s; }
+    .step-label.active { color: var(--gold); font-weight: 600; }
+    .step-label.done { color: #2ecc71; }
+    .step-connector { flex: 1; height: 2px; background: var(--border); margin: 0 8px; transition: background .3s; max-width: 60px; }
+    .step-connector.done { background: #2ecc71; }
+
+    /* Panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .checkout-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+    .checkout-card h3 { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .checkout-card h3 svg { width: 18px; height: 18px; color: var(--gold); }
+
+    /* Address */
+    .saved-addr-list { display: grid; gap: 12px; margin-bottom: 20px; }
+    .addr-card { border: 2px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; position: relative; }
+    .addr-card.selected { border-color: var(--gold); background: rgba(135,185,212,.06); }
+    .addr-card:hover:not(.selected) { border-color: rgba(135,185,212,.4); }
+    .addr-card-radio { position: absolute; top: 14px; right: 14px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); transition: all .2s; }
+    .addr-card.selected .addr-card-radio { border-color: var(--gold); background: var(--gold); }
+    .addr-name { font-size: .9rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .addr-line { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+    .addr-tag { display: inline-block; font-size: .68rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .addr-tag.home { background: rgba(135,185,212,.15); color: var(--gold); }
+    .addr-tag.work { background: rgba(46,204,113,.12); color: #2ecc71; }
+    .addr-tag.other { background: rgba(255,255,255,.08); color: var(--muted); }
+    .add-addr-btn { border: 2px dashed var(--border); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; color: var(--muted); font-size: .85rem; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .add-addr-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .addr-form { display: none; }
+    .addr-form.open { display: block; }
+    .form-row { display: grid; gap: 14px; margin-bottom: 14px; }
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media(max-width:600px){ .form-row.cols-2, .form-row.cols-3 { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea {
+      background: var(--dark3); border: 1px solid var(--border); color: var(--white);
+      border-radius: 8px; padding: 10px 12px; font-size: .88rem; outline: none;
+      transition: border-color .2s; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-group select option { background: var(--dark2); }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .addr-type-btns { display: flex; gap: 8px; }
+    .addr-type-btn { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--dark3); color: var(--muted); font-size: .8rem; cursor: pointer; transition: all .2s; text-align: center; }
+    .addr-type-btn.sel { border-color: var(--gold); color: var(--gold); background: rgba(135,185,212,.08); }
+
+    /* Payment */
+    .payment-methods { display: grid; gap: 10px; margin-bottom: 20px; }
+    .pay-method { border: 2px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 14px; }
+    .pay-method.selected { border-color: var(--gold); background: rgba(135,185,212,.06); }
+    .pay-method:hover:not(.selected) { border-color: rgba(135,185,212,.4); }
+    .pay-icon { width: 40px; height: 28px; background: var(--dark3); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--gold); flex-shrink: 0; border: 1px solid var(--border); }
+    .pay-info h4 { font-size: .88rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+    .pay-info p { font-size: .75rem; color: var(--muted); }
+    .pay-radio { margin-left: auto; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all .2s; }
+    .pay-method.selected .pay-radio { border-color: var(--gold); background: var(--gold); }
+    .card-fields { display: none; margin-top: 16px; }
+    .card-fields.open { display: block; }
+    .card-num-row { position: relative; }
+    .card-num-row .card-brand { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: .7rem; font-weight: 700; color: var(--gold); opacity: .7; }
+
+    /* Review */
+    .review-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center; }
+    .review-item:last-child { border-bottom: none; }
+    .review-canvas { width: 60px; height: 60px; border-radius: 8px; background: var(--dark3); flex-shrink: 0; }
+    .review-name { font-size: .88rem; font-weight: 500; color: var(--white); }
+    .review-meta { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+    .review-price { margin-left: auto; font-size: .9rem; font-weight: 600; color: var(--gold); white-space: nowrap; }
+
+    /* Summary sidebar */
+    .co-summary { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 24px; position: sticky; top: 90px; }
+    .co-summary h3 { font-size: .95rem; font-weight: 600; color: var(--white); margin-bottom: 16px; }
+    .co-sum-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: .85rem; border-bottom: 1px solid var(--border); }
+    .co-sum-row:last-of-type { border-bottom: none; }
+    .co-sum-row .lbl { color: var(--muted); }
+    .co-sum-row .val { color: var(--white); font-weight: 500; }
+    .co-sum-total { display: flex; justify-content: space-between; padding: 14px 0 0; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
+    .co-sum-items { max-height: 200px; overflow-y: auto; margin-bottom: 16px; }
+    .co-sum-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .8rem; }
+    .co-sum-item:last-child { border-bottom: none; }
+    .co-sum-cv { width: 36px; height: 36px; border-radius: 6px; background: var(--dark3); flex-shrink: 0; }
+    .co-sum-iname { color: var(--white); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+    .co-sum-imeta { color: var(--muted); }
+    .co-sum-iprice { margin-left: auto; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+
+    .place-order-btn { width: 100%; padding: 14px; font-size: 1rem; font-weight: 600; letter-spacing: .04em; margin-top: 16px; }
+    .back-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-size: .85rem; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all .2s; margin-right: 10px; }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .next-btn { padding: 11px 28px; font-size: .9rem; }
+
+    /* Success */
+    .success-page { text-align: center; padding: 60px 40px; }
+    .success-icon { width: 80px; height: 80px; background: rgba(46,204,113,.15); border: 2px solid #2ecc71; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .success-icon svg { width: 40px; height: 40px; color: #2ecc71; }
+    .success-page h2 { font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .success-page p { color: var(--muted); margin-bottom: 4px; font-size: .9rem; }
+    .order-num-badge { background: rgba(135,185,212,.1); border: 1px solid rgba(135,185,212,.3); border-radius: 8px; padding: 12px 24px; display: inline-block; margin: 20px 0; }
+    .order-num-badge span { font-size: .75rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    .order-num-badge strong { font-size: 1.1rem; color: var(--gold); letter-spacing: .08em; }
+    .success-actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+
+    @keyframes checkIn { from { transform: scale(0) rotate(-45deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+    .success-icon svg { animation: checkIn .5s cubic-bezier(.34,1.56,.64,1) .2s both; }
+  </style>
+</head>
+<body data-mobile="true">
+<div id="nav-root"></div>
+
+<div class="checkout-page">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="home.html">Home</a>
+      <span class="sep">›</span>
+      <a href="cart.html">Cart</a>
+      <span class="sep">›</span>
+      <span>Checkout</span>
+    </div>
+
+    <div id="checkout-root"></div>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+
+<script src="js/app.js"></script>
+<script>
+  injectNav();
+  injectFooter();
+
+  const FREE_SHIP_THRESHOLD = 1000;
+  const SHIP_FEE = 99;
+  const TAX_RATE = 0.18;
+
+  let step = 1; // 1=Address, 2=Payment, 3=Review, 4=Success
+  let cartItems = [];
+  let addresses = [];
+  let selectedAddressId = null;
+  let payMethod = 'cod';
+  let checkoutState = {};
+  let placedOrder = null;
+  let addrFormOpen = false;
+  let addrType = 'home';
+
+  async function init() {
+    if (!Auth.isLoggedIn()) { location.href = 'login.html'; return; }
+    try {
+      checkoutState = JSON.parse(sessionStorage.getItem('checkout_state') || '{}');
+    } catch(e) { checkoutState = {}; }
+
+    const [cartData, addrData] = await Promise.all([
+      api('/cart').catch(() => ({ items: [] })),
+      api('/users/me/addresses').catch(() => ({ addresses: [] }))
+    ]);
+    cartItems = cartData.items || [];
+    addresses = addrData.addresses || [];
+    if (cartItems.length === 0) { location.href = 'cart.html'; return; }
+    if (addresses.length > 0) selectedAddressId = addresses[0].id;
+    renderAll();
+  }
+
+  function calcTotals() {
+    const subtotal = cartItems.reduce((s, i) => s + (i.effective_price * i.quantity), 0);
+    const discountAmt = checkoutState.discount || 0;
+    const afterDiscount = subtotal - discountAmt;
+    const shipping = afterDiscount >= FREE_SHIP_THRESHOLD ? 0 : SHIP_FEE;
+    const taxable = afterDiscount + shipping;
+    const tax = Math.round(taxable * TAX_RATE);
+    const total = taxable + tax;
+    return { subtotal, discountAmt, shipping, tax, total };
+  }
+
+  function renderAll() {
+    const el = document.getElementById('checkout-root');
+    if (step === 4) { renderSuccess(); return; }
+    const t = calcTotals();
+
+    el.innerHTML = `
+      <div class="steps-bar">
+        ${['Address','Payment','Review'].map((s, i) => {
+          const n = i + 1;
+          const cls = n < step ? 'done' : n === step ? 'active' : '';
+          return `
+            ${i > 0 ? `<div class="step-connector ${n-1 < step ? 'done' : ''}"></div>` : ''}
+            <div class="step-item">
+              <div class="step-num ${cls}">${n < step ? '✓' : n}</div>
+              <span class="step-label ${cls}">${s}</span>
+            </div>`;
+        }).join('')}
+      </div>
+
+      <div class="checkout-layout">
+        <div id="step-panels">
+          ${step === 1 ? renderAddressPanel() : ''}
+          ${step === 2 ? renderPaymentPanel() : ''}
+          ${step === 3 ? renderReviewPanel() : ''}
+        </div>
+
+        <div class="co-summary">
+          <h3>Order Summary</h3>
+          <div class="co-sum-items" id="co-sum-items"></div>
+          <div class="co-sum-row"><span class="lbl">Subtotal</span><span class="val">${fmt(t.subtotal)}</span></div>
+          ${t.discountAmt > 0 ? `<div class="co-sum-row"><span class="lbl">Discount</span><span class="val" style="color:#2ecc71">− ${fmt(t.discountAmt)}</span></div>` : ''}
+          <div class="co-sum-row"><span class="lbl">Shipping</span><span class="val" ${t.shipping===0?'style="color:#2ecc71"':''}>${t.shipping===0?'FREE':fmt(t.shipping)}</span></div>
+          <div class="co-sum-row"><span class="lbl">GST (18%)</span><span class="val">${fmt(t.tax)}</span></div>
+          <div class="co-sum-total"><span>Total</span><span>${fmt(t.total)}</span></div>
+          ${checkoutState.coupon ? `<div style="font-size:.72rem;color:#2ecc71;margin-top:8px;text-align:center">Coupon ${checkoutState.coupon} applied</div>` : ''}
+        </div>
+      </div>`;
+
+    renderSummaryItems();
+    attachPanelEvents();
+  }
+
+  function renderSummaryItems() {
+    const c = document.getElementById('co-sum-items');
+    if (!c) return;
+    c.innerHTML = cartItems.map(i => `
+      <div class="co-sum-item">
+        <canvas class="co-sum-cv" id="sscv-${i.id}" width="72" height="72"></canvas>
+        <div style="flex:1;min-width:0">
+          <div class="co-sum-iname">${i.name}</div>
+          <div class="co-sum-imeta">${i.size} · Qty ${i.quantity}</div>
+        </div>
+        <div class="co-sum-iprice">${fmt(i.effective_price * i.quantity)}</div>
+      </div>`).join('');
+    cartItems.forEach(i => {
+      const cv = document.getElementById(`sscv-${i.id}`);
+      if (cv) renderProductCanvas(cv, { color: i.color, is_customizable: i.is_customizable, name: i.name });
+    });
+  }
+
+  function renderAddressPanel() {
+    return `
+      <div class="checkout-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          Delivery Address
+        </h3>
+        <div class="saved-addr-list" id="addr-list">
+          ${addresses.map(a => `
+            <div class="addr-card ${a.id === selectedAddressId ? 'selected' : ''}" onclick="selectAddr(${a.id})" data-id="${a.id}">
+              <div class="addr-tag ${a.type}">${a.type}</div>
+              <div class="addr-name">${a.name} · ${a.phone}</div>
+              <div class="addr-line">${a.line1}${a.line2 ? ', ' + a.line2 : ''}, ${a.city}, ${a.state} — ${a.pincode}</div>
+              <div class="addr-card-radio"></div>
+            </div>`).join('')}
+        </div>
+        <div class="add-addr-btn" onclick="toggleAddrForm()" id="add-addr-toggle">
+          <span style="font-size:1.2rem;color:var(--gold)">+</span>
+          Add new address
+        </div>
+        <div class="addr-form ${addrFormOpen ? 'open' : ''}" id="addr-form">
+          <hr style="border-color:var(--border);margin:16px 0">
+          <h4 style="font-size:.9rem;color:var(--white);margin-bottom:14px">New Address</h4>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Full Name*</label><input id="af-name" placeholder="Aryan Kadam"></div>
+            <div class="form-group"><label>Phone*</label><input id="af-phone" type="tel" placeholder="9876543210" maxlength="10"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Address Line 1*</label><input id="af-line1" placeholder="Flat / House no., Street, Area"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Address Line 2</label><input id="af-line2" placeholder="Landmark (optional)"></div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="form-group"><label>City*</label><input id="af-city" placeholder="Mumbai"></div>
+            <div class="form-group"><label>State*</label><input id="af-state" placeholder="Maharashtra"></div>
+            <div class="form-group"><label>Pincode*</label><input id="af-pin" type="text" placeholder="400001" maxlength="6"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Address Type</label>
+            <div class="addr-type-btns">
+              <button class="addr-type-btn ${addrType==='home'?'sel':''}" onclick="setAddrType('home')">🏠 Home</button>
+              <button class="addr-type-btn ${addrType==='work'?'sel':''}" onclick="setAddrType('work')">💼 Work</button>
+              <button class="addr-type-btn ${addrType==='other'?'sel':''}" onclick="setAddrType('other')">📍 Other</button>
+            </div>
+          </div>
+          <button class="btn-primary" style="padding:10px 24px;font-size:.88rem" onclick="saveAddr()">Save Address</button>
+          <button class="back-btn" style="margin-top:0" onclick="toggleAddrForm()">Cancel</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn-primary next-btn" onclick="goStep(2)">Continue to Payment →</button>
+      </div>`;
+  }
+
+  function renderPaymentPanel() {
+    const methods = [
+      { id: 'cod', icon: '₹', label: 'Cash on Delivery', desc: 'Pay when your order arrives' },
+      { id: 'upi', icon: 'UPI', label: 'UPI / QR', desc: 'GPay, PhonePe, Paytm & more' },
+      { id: 'card', icon: '💳', label: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay' },
+      { id: 'emi', icon: 'EMI', label: 'EMI', desc: 'No-cost EMI on eligible cards' },
+    ];
+    return `
+      <div class="checkout-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          Payment Method
+        </h3>
+        <div class="payment-methods">
+          ${methods.map(m => `
+            <div class="pay-method ${payMethod===m.id?'selected':''}" onclick="selectPay('${m.id}')">
+              <div class="pay-icon">${m.icon}</div>
+              <div class="pay-info"><h4>${m.label}</h4><p>${m.desc}</p></div>
+              <div class="pay-radio"></div>
+            </div>`).join('')}
+        </div>
+        <div class="card-fields ${payMethod==='card'?'open':''}" id="card-fields">
+          <div class="form-group card-num-row" style="margin-bottom:14px">
+            <label>Card Number</label>
+            <input id="cf-num" placeholder="4242 4242 4242 4242" maxlength="19"
+              oninput="fmtCard(this)" style="padding-right:60px">
+            <span class="card-brand" id="card-brand">VISA</span>
+          </div>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Expiry</label><input id="cf-exp" placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)"></div>
+            <div class="form-group"><label>CVV</label><input id="cf-cvv" placeholder="•••" maxlength="3" type="password"></div>
+          </div>
+          <div class="form-group"><label>Cardholder Name</label><input id="cf-name" placeholder="Aryan Kadam"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="back-btn" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary next-btn" onclick="goStep(3)">Review Order →</button>
+      </div>`;
+  }
+
+  function renderReviewPanel() {
+    const t = calcTotals();
+    const addr = addresses.find(a => a.id === selectedAddressId);
+    const payLabels = { cod:'Cash on Delivery', upi:'UPI / QR', card:'Credit / Debit Card', emi:'EMI' };
+
+    return `
+      <div class="checkout-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          Review & Place Order
+        </h3>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Delivering to</div>
+            ${addr ? `
+              <div style="font-size:.88rem;font-weight:600;color:var(--white)">${addr.name}</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px;line-height:1.5">${addr.line1}${addr.line2?', '+addr.line2:''}, ${addr.city}, ${addr.state} — ${addr.pincode}<br>${addr.phone}</div>
+            ` : '<div style="font-size:.82rem;color:#e74c3c">No address selected</div>'}
+          </div>
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Payment</div>
+            <div style="font-size:.88rem;font-weight:600;color:var(--white)">${payLabels[payMethod]}</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px">
+              ${payMethod==='cod' ? 'Pay ₹'+t.total.toLocaleString('en-IN')+' on delivery' : 'Online payment'}
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:.8rem;font-weight:600;color:var(--white)">
+            ${cartItems.reduce((s,i)=>s+i.quantity,0)} Items
+          </div>
+          ${cartItems.map(i => `
+            <div class="review-item" style="padding:12px 16px">
+              <canvas class="review-canvas" id="rvcv-${i.id}" width="120" height="120"></canvas>
+              <div style="flex:1">
+                <div class="review-name">${i.name}</div>
+                <div class="review-meta">Size: ${i.size} · Qty: ${i.quantity}${i.color_name?` · ${i.color_name}`:''}</div>
+              </div>
+              <div class="review-price">${fmt(i.effective_price * i.quantity)}</div>
+            </div>`).join('')}
+        </div>
+
+        <div style="font-size:.78rem;color:var(--muted);line-height:1.6">
+          By placing this order you agree to ARUVA's <a href="#" style="color:var(--gold)">Terms & Conditions</a> and
+          <a href="#" style="color:var(--gold)">Privacy Policy</a>.
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="back-btn" onclick="goStep(2)">← Back</button>
+        <button class="btn-primary next-btn" id="place-order-btn" onclick="placeOrder()" style="padding:13px 32px;font-size:.95rem">
+          Place Order · ${fmt(t.total)}
+        </button>
+      </div>`;
+  }
+
+  function renderSuccess() {
+    document.getElementById('checkout-root').innerHTML = `
+      <div class="checkout-card">
+        <div class="success-page">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h2>Order Placed Successfully!</h2>
+          <p>Thank you for shopping with ARUVA</p>
+          <p style="font-size:.8rem;margin-top:4px">A confirmation will be sent to your registered email</p>
+          <div class="order-num-badge">
+            <span>Order Number</span>
+            <strong>${placedOrder?.order_number || 'ARV-XXXXXXX'}</strong>
+          </div>
+          <p style="font-size:.82rem;color:var(--muted)">Estimated delivery: 3–7 business days</p>
+          <div class="success-actions">
+            <a href="account.html?tab=orders" class="btn-primary" style="display:inline-block;padding:12px 28px;text-decoration:none">Track Order</a>
+            <a href="shop.html" class="btn-outline-gold" style="display:inline-block;padding:12px 28px;text-decoration:none;border:1px solid var(--gold);color:var(--gold);border-radius:8px">Continue Shopping</a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function attachPanelEvents() {
+    if (step === 3) {
+      cartItems.forEach(i => {
+        const cv = document.getElementById(`rvcv-${i.id}`);
+        if (cv) renderProductCanvas(cv, { color: i.color, is_customizable: i.is_customizable, name: i.name });
+      });
+    }
+  }
+
+  function selectAddr(id) {
+    selectedAddressId = id;
+    document.querySelectorAll('.addr-card').forEach(c => {
+      c.classList.toggle('selected', parseInt(c.dataset.id) === id);
+    });
+  }
+
+  function selectPay(method) {
+    payMethod = method;
+    document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+    const sel = document.querySelector(`.pay-method[onclick*="${method}"]`);
+    if (sel) sel.classList.add('selected');
+    document.querySelectorAll('.pay-radio').forEach((r, i) => {
+      r.style.background = document.querySelectorAll('.pay-method')[i].classList.contains('selected') ? 'var(--gold)' : '';
+      r.style.borderColor = document.querySelectorAll('.pay-method')[i].classList.contains('selected') ? 'var(--gold)' : '';
+    });
+    const cardF = document.getElementById('card-fields');
+    if (cardF) cardF.classList.toggle('open', method === 'card');
+  }
+
+  function toggleAddrForm() {
+    addrFormOpen = !addrFormOpen;
+    const f = document.getElementById('addr-form');
+    if (f) f.classList.toggle('open', addrFormOpen);
+  }
+
+  function setAddrType(t) {
+    addrType = t;
+    document.querySelectorAll('.addr-type-btn').forEach(b => {
+      b.classList.toggle('sel', b.textContent.toLowerCase().includes(t));
+    });
+  }
+
+  async function saveAddr() {
+    const name = document.getElementById('af-name')?.value.trim();
+    const phone = document.getElementById('af-phone')?.value.trim();
+    const line1 = document.getElementById('af-line1')?.value.trim();
+    const line2 = document.getElementById('af-line2')?.value.trim();
+    const city = document.getElementById('af-city')?.value.trim();
+    const state = document.getElementById('af-state')?.value.trim();
+    const pincode = document.getElementById('af-pin')?.value.trim();
+    if (!name || !phone || !line1 || !city || !state || !pincode) {
+      toast('Please fill all required fields', 'error'); return;
+    }
+    if (!/^\d{10}$/.test(phone)) { toast('Enter a valid 10-digit phone number', 'error'); return; }
+    if (!/^\d{6}$/.test(pincode)) { toast('Enter a valid 6-digit pincode', 'error'); return; }
+    try {
+      const data = await api('/users/me/addresses', 'POST', { name, phone, line1, line2, city, state, pincode, type: addrType });
+      addresses.push(data.address);
+      selectedAddressId = data.address.id;
+      addrFormOpen = false;
+      renderAll();
+      toast('Address saved');
+    } catch(e) { toast('Could not save address', 'error'); }
+  }
+
+  function goStep(n) {
+    if (n === 2 && !selectedAddressId && addresses.length === 0) {
+      toast('Please add a delivery address', 'error'); return;
+    }
+    if (n === 2 && !selectedAddressId) {
+      toast('Please select a delivery address', 'error'); return;
+    }
+    step = n;
+    renderAll();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function placeOrder() {
+    if (!selectedAddressId) { toast('Please select a delivery address', 'error'); return; }
+    const btn = document.getElementById('place-order-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+    const t = calcTotals();
+
+    if (payMethod === 'cod') {
+      try {
+        const data = await api('/orders', 'POST', {
+          address_id: selectedAddressId, payment_method: 'cod',
+          coupon_code: checkoutState.coupon || null,
+          subtotal: t.subtotal, discount: t.discountAmt,
+          shipping: t.shipping, tax: t.tax, total: t.total
+        });
+        placedOrder = data.order || data;
+        sessionStorage.removeItem('checkout_state');
+        step = 4; renderAll(); updateBadges();
+      } catch(e) {
+        toast('Could not place order. Please try again.', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+      }
+      return;
+    }
+
+    try {
+      const rzpOrder = await api('/payment/create-order', 'POST', { amount: t.total });
+      const user = Auth.getUser();
+      const addr = addresses.find(a => a.id === selectedAddressId);
+      const options = {
+        key: rzpOrder.key_id,
+        amount: rzpOrder.amount,
+        currency: rzpOrder.currency || 'INR',
+        name: 'ARUVA',
+        description: `Order · ${cartItems.reduce((s,i)=>s+i.quantity,0)} item(s)`,
+        order_id: rzpOrder.razorpay_order_id,
+        prefill: {
+          name: (user?.first_name || '') + ' ' + (user?.last_name || ''),
+          email: user?.email || '',
+          contact: addr?.phone || ''
+        },
+        theme: { color: '#87B9D4' },
+        modal: { ondismiss: () => {
+          if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+        }},
+        handler: async (response) => {
+          try {
+            if (btn) btn.textContent = 'Verifying...';
+            const orderData = {
+              items: cartItems.map(i => ({
+                product_id: i.product_id, product_name: i.name,
+                quantity: i.quantity, size: i.size, color: i.color,
+                price: i.effective_price, custom_design: i.custom_design || null
+              })),
+              address_id: selectedAddressId, payment_method: payMethod,
+              coupon_code: checkoutState.coupon || null,
+              subtotal: t.subtotal, discount: t.discountAmt,
+              shipping: t.shipping, tax: t.tax, total: t.total
+            };
+            const verifyData = await api('/payment/verify', 'POST', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              order_data: orderData
+            });
+            placedOrder = verifyData.order;
+            sessionStorage.removeItem('checkout_state');
+            step = 4; renderAll(); updateBadges();
+          } catch(e) {
+            toast('Payment done but order save failed. Contact support.', 'error');
+            if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+          }
+        }
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', (res) => {
+        toast('Payment failed: ' + (res.error?.description || 'Try again'), 'error');
+        if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+      });
+      rzp.open();
+    } catch(e) {
+      toast('Could not initiate payment. Please try again.', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+    }
+  }
+
+  function fmtCard(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 16);
+    input.value = v.replace(/(.{4})/g, '$1 ').trim();
+    const brand = document.getElementById('card-brand');
+    if (brand) brand.textContent = v[0] === '4' ? 'VISA' : v[0] === '5' ? 'MC' : v.slice(0,2) === '60' ? 'RuPay' : 'CARD';
+  }
+
+  function fmtExpiry(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 4);
+    if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
+    input.value = v;
+  }
+
+  init();
+</script>
+<script src="js/animations.js" defer></script>
+</body>
+</html>
+
+
