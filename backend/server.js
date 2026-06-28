@@ -14,8 +14,8 @@ const crypto = require('crypto');
 const Razorpay = require('razorpay');
 
 const app = express();
-const PORT = 3000;
-const JWT_SECRET = 'aruva_jwt_secret_2026_fashion';
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'aruva_jwt_secret_2026_fashion';
 const DB_PATH = path.join(__dirname, 'aruva.db');
 
 // ── RAZORPAY CONFIG ─────────────────────────────────────────────

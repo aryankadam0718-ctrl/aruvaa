@@ -4,6 +4,7 @@
   "description": "ARUVA Fashion Platform",
   "main": "dev-server.js",
   "scripts": {
+    "start": "node backend/server.js",
     "build": "node build-app.js",
     "cap:sync": "npm run build && npx cap sync android",
     "cap:open": "npx cap open android"
@@ -14,6 +15,11 @@
   "dependencies": {
     "@capacitor/android": "^8.4.0",
     "@capacitor/cli": "^8.4.0",
-    "@capacitor/core": "^8.4.0"
+    "@capacitor/core": "^8.4.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "razorpay": "^2.9.6"
   }
 }
