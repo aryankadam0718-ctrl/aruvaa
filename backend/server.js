@@ -28,8 +28,13 @@ const razorpay = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KE
 const ROOT_DIR = path.join(__dirname, '..');
 const WWW_DIR  = path.join(__dirname, '..', 'www');
 
-function isMobile(ua = '') {
-  return /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+function isMobile(req) {
+  const cookies = req.headers.cookie || '';
+  // Cookie set by client based on actual screen width — takes priority
+  if (cookies.includes('aruva_view=mobile')) return true;
+  if (cookies.includes('aruva_view=desktop')) return false;
+  // Fallback: user-agent detection
+  return /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(req.headers['user-agent'] || '');
 }
 
 // ── MIDDLEWARE ──────────────────────────────────────────────────
@@ -37,10 +42,9 @@ app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Device routing — mobile users get www/ versions, desktop gets root
+// Device routing — screen size cookie → mobile gets www/, desktop gets root
 app.use((req, res, next) => {
-  if (!isMobile(req.headers['user-agent'] || '')) return next();
-  // Only intercept top-level HTML requests (not /api, not /www/*, not assets)
+  if (!isMobile(req)) return next();
   const isTopHtml = req.path === '/' || /^\/[^\/]+\.html$/.test(req.path);
   if (!isTopHtml) return next();
   const file = req.path === '/' ? 'login.html' : path.basename(req.path);

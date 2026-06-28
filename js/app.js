@@ -3,6 +3,20 @@
  * API client, Auth, Nav, Product Images, Utilities
  */
 
+// ── SCREEN SIZE DETECTION — sets cookie so server serves right version ──
+(function(){
+  var w = window.innerWidth || screen.width;
+  var isMob = w <= 768;
+  var current = document.cookie.match(/aruva_view=(\w+)/);
+  var currentVal = current ? current[1] : null;
+  var needed = isMob ? 'mobile' : 'desktop';
+  if (currentVal !== needed) {
+    document.cookie = 'aruva_view=' + needed + ';path=/;max-age=604800';
+    // If wrong version loaded, reload so server serves correct one
+    if (currentVal !== null) location.reload();
+  }
+})();
+
 const API = '/api';
 
 // ── AUTH ──────────────────────────────────────────────────────
