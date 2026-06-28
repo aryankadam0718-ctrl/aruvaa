@@ -3,7 +3,7 @@
  * API client, Auth, Nav, Product Images, Utilities
  */
 
-const API = 'http://localhost:3000/api';
+const API = '/api';
 
 // ── AUTH ──────────────────────────────────────────────────────
 const Auth = {

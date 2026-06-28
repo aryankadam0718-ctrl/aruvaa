@@ -472,12 +472,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .shop-more-btn:hover{background:rgba(135,185,212,.08);border-color:var(--gold)}
 
 /* ── STUDIO INTRO VIDEO ── */
-.svintro-wrap{position:relative;height:520vh;background:#0B1622}
-.svintro-sticky{position:sticky;top:0;left:0;width:100%;height:100vh;overflow:hidden}
-/* Blurred bg video — fills full screen, sits behind everything */
-.svintro-bg-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(22px) brightness(0.32);transform:scale(1.06);z-index:0;will-change:contents}
-/* Main clear video — contain, center, on top */
-.svintro-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;object-position:center;z-index:2;will-change:contents}
+.svintro-wrap{position:relative;height:100vh;background:#0B1622}
+.svintro-sticky{position:relative;top:0;left:0;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+/* Blurred bg video */
+.svintro-bg-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(28px) brightness(0.25);transform:scale(1.08);z-index:0;will-change:contents}
+/* Glass panel */
+.svintro-glass{
+  position:relative;z-index:3;
+  width:92%;height:70vh;
+  border-radius:20px;overflow:hidden;
+  background:rgba(135,185,212,.06);
+  border:1.5px solid rgba(135,185,212,.35);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08) inset,
+    0 2px 0 rgba(135,185,212,.2) inset,
+    0 40px 100px rgba(0,0,0,.8),
+    0 0 50px rgba(135,185,212,.06)}
+.svintro-glass::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.6),transparent);z-index:4;pointer-events:none}
+/* Main video inside glass */
+.svintro-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .svintro-overlay{position:absolute;inset:0;z-index:4;
   background:linear-gradient(to bottom,rgba(11,22,34,.3) 0%,transparent 16%,transparent 66%,rgba(11,22,34,.97) 100%);
   pointer-events:none}
@@ -649,47 +663,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   </div>
 </nav>
 
-<!-- STUDIO INTRO SCROLL VIDEO -->
+<!-- STUDIO INTRO VIDEO -->
 <div class="svintro-wrap" id="svintro-wrap">
   <div class="svintro-sticky">
 
-    <!-- z-index 0: blurred ambient bg video (cover = fills full screen incl. sides) -->
+    <!-- blurred ambient bg -->
     <video class="svintro-bg-video" id="svintro-bg-video" muted playsinline preload="metadata">
-      <source src="/new customize vedio add.mp4" type="video/mp4">
+      <source src="/edited web dessign.mp4" type="video/mp4">
     </video>
 
-    <!-- z-index 2: main clear video (contain = full frame visible in center) -->
-    <video class="svintro-video" id="svintro-video" muted playsinline preload="metadata">
-      <source src="/new customize vedio add.mp4" type="video/mp4">
-    </video>
-
-    <!-- z-index 3: glass frames sitting over the blurred bg -->
-    <div class="svintro-side svintro-side-l">
-      <div class="svintro-frame">
-        <div class="svintro-panel-info">
-          <div class="svintro-eyebrow">3D Design Studio</div>
-          <div class="svintro-title">Create What You <em>Can't Find.</em></div>
-          <p class="svintro-sub">Real-time 3D. Your fabric. Your design. Your rules.</p>
-        </div>
-      </div>
+    <!-- glass panel with video -->
+    <div class="svintro-glass">
+      <video class="svintro-video" id="svintro-video" muted playsinline preload="metadata">
+        <source src="/edited web dessign.mp4" type="video/mp4">
+      </video>
     </div>
 
-    <div class="svintro-side svintro-side-r">
-      <div class="svintro-frame">
-        <div class="svintro-divline"></div>
-        <div class="svintro-stats">
-          <div class="svintro-stat"><div class="svintro-stat-n">63+</div><div class="svintro-stat-l">Fabric Colours</div></div>
-          <div class="svintro-stat"><div class="svintro-stat-n">Live</div><div class="svintro-stat-l">3D Preview</div></div>
-          <div class="svintro-stat"><div class="svintro-stat-n">∞</div><div class="svintro-stat-l">Custom Prints</div></div>
-        </div>
-        <div class="svintro-divline"></div>
-        <div class="svintro-vert">Design Now</div>
-      </div>
-    </div>
-
-    <!-- z-index 4: dark gradient overlay -->
+    <!-- dark gradient overlay -->
     <div class="svintro-overlay"></div>
-
 
   </div>
 </div>
@@ -1444,6 +1435,7 @@ function genTex(){
   for(let i=0;i<3000;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
   for(let i=0;i<2000;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
   const tex=new THREE.CanvasTexture(c);
+  tex.encoding=THREE.sRGBEncoding;
   tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
   tex.generateMipmaps=false;
   tex.minFilter=THREE.LinearFilter;
@@ -1470,28 +1462,28 @@ function refreshTex(){
 const PRODUCTS = [
   {id:'hoodie',   name:'Hoodie',         sub:'The Signature Piece',
    desc:'380GSM heavyweight fleece. Premium comfort with limitless custom design potential.',
-   price:'1,999', emoji:'🧥', accent:'rgba(135,185,212,.55)',  glb:'/hoodie_uv_fixed.glb'},
+   price:'1,799', emoji:'🧥', accent:'rgba(135,185,212,.55)',  glb:'/hoodie_uv_fixed.glb'},
   {id:'tshirt',  name:'Classic T-Shirt', sub:'The Essential',
    desc:'180GSM ring-spun cotton. Versatile everyday wear — your design, your way.',
-   price:'1,499', emoji:'👕', accent:'rgba(79,195,247,.55)', glb:'/tshirt_uv_fixed.glb'},
+   price:'999', emoji:'👕', accent:'rgba(79,195,247,.55)', glb:'/tshirt_uv_fixed.glb'},
   {id:'croptop', name:'Crop Top',        sub:'The Statement',
    desc:'160GSM premium cotton blend. Trendy, bold, and completely unique to you.',
-   price:'999', emoji:'👚', accent:'rgba(255,105,180,.55)', glb:'/croptop.glb'},
+   price:'799', emoji:'👚', accent:'rgba(255,105,180,.55)', glb:'/croptop.glb'},
   {id:'oversized',  name:'Oversized Tshirt', sub:'The Drop-Shoulder Icon',
    desc:'220GSM heavyweight cotton. Boxy drop-shoulder silhouette — maximum street presence.',
-   price:'1,499', emoji:'👕', accent:'rgba(99,202,183,.55)', glb:'/oversized_tshirt_FINAL.glb'},
+   price:'1,199', emoji:'👕', accent:'rgba(99,202,183,.55)', glb:'/oversized_tshirt_FINAL.glb'},
   {id:'sweatshirt', name:'Sweatshirt',   sub:'The Everyday Icon',
    desc:'320GSM brushed fleece. Supremely soft, streetwear-ready, made entirely yours.',
-   price:'1,799', emoji:'🧥', accent:'rgba(167,139,250,.55)', glb:'/sweatshirt_uv_fixed.glb'},
+   price:'1,499', emoji:'🧥', accent:'rgba(167,139,250,.55)', glb:'/sweatshirt_uv_fixed.glb'},
   {id:'shorts',    name:'Shorts',        sub:'The Street Essential',
    desc:'200GSM premium cotton twill. Lightweight, bold, and built for your unique style.',
    price:'799', emoji:'🩳', accent:'rgba(80,220,160,.55)', glb:'/shorts_uv_fixed.glb'},
   {id:'trackpant', name:'Track Pant',    sub:'The Movement Piece',
    desc:'260GSM performance fleece. Built for the streets, designed entirely by you.',
-   price:'1,299', emoji:'👖', accent:'rgba(251,146,60,.55)', glb:'/trackpant_uv_fixed.glb'},
+   price:'999', emoji:'👖', accent:'rgba(251,146,60,.55)', glb:'/trackpant_uv_fixed.glb'},
   {id:'baggyjeans', name:'Baggy Jeans',  sub:'The Street Icon',
    desc:'Premium denim, relaxed fit. Bold silhouette built for your unique custom print.',
-   price:'1,899', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggy_trackpant.glb'},
+   price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggy_trackpant.glb'},
 ];
 let ppIdx = 0;
 let _loadedGLB = null;
@@ -1980,12 +1972,12 @@ function initThree(glbUrl, productName){
   const W=wrap.clientWidth,H=wrap.clientHeight;
   scene=new THREE.Scene();scene.background=null;
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,7.5);
-  renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:true,alpha:true});
+  renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:true,alpha:true,preserveDrawingBuffer:true});
   renderer.setClearColor(0x000000,0);
   renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.outputEncoding=THREE.sRGBEncoding;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=0.72;
+  renderer.toneMapping=THREE.LinearToneMapping;
+  renderer.toneMappingExposure=1.0;
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   scene.add(new THREE.HemisphereLight(0xddeeff,0x221133,.18));
@@ -2413,11 +2405,14 @@ async function addToCart(){
 }
 
 // ── PLACE 3D CUSTOM ORDER ────────────────────────────
+let _pendingOrderPayload=null;
+
 async function placeOrder(){
   const token=localStorage.getItem('aruva_token');
   if(!token){toast('Sign in to place an order');return;}
 
-  // Capture high-quality design image from Three.js canvas
+  toast('Preparing order…');
+
   let designImage='';
   const threeCanvas=document.getElementById('three-canvas');
   if(threeCanvas){try{designImage=threeCanvas.toDataURL('image/jpeg',0.92);}catch(e){}}
@@ -2431,32 +2426,57 @@ async function placeOrder(){
   )].filter(Boolean);
 
   const customDesign=JSON.stringify({
-    designImage,
-    color:S.color,
-    colorName:S.colorName||'',
+    designImage,color:S.color,colorName:S.colorName||'',
     text:layers.filter(l=>l.type==='text'&&l.text).map(l=>l.text).join(', ')||'',
-    textColor:'#ffffff',
-    font:S.fontFamily||'bold-sans',
-    productType:S.cat,
-    size:S.size,
-    qty:S.qty,
-    uploadedImage,
-    brushColors:brushColorsUsed
+    textColor:'#ffffff',font:S.fontFamily||'bold-sans',
+    productType:S.cat,size:S.size,qty:S.qty,uploadedImage,brushColors:brushColorsUsed
   });
 
   const pid=PRODUCT_IDS[S.cat]||5;
-  const payload={
+  const prod=PRODUCTS.find(p=>p.id===S.cat)||PRODUCTS[0];
+  const unitPrice=parseInt((prod.price||'1999').replace(/,/g,''));
+  const total=unitPrice*S.qty;
+
+  _pendingOrderPayload={
     items:[{product_id:pid,quantity:S.qty,size:S.size,color:S.color,custom_design:customDesign}],
-    notes:'3D Custom Order'
+    notes:'3D Custom Order',payment_method:'upi',total
   };
 
+  openStudioUpiModal(total);
+}
+
+function openStudioUpiModal(amount){
+  const ref='ARUVA'+Math.floor(100000+Math.random()*900000);
+  const upiLink=`upi://pay?pa=aryankadam0718@oksbi&pn=ARUVA&am=${amount}&cu=INR&tn=${ref}`;
+  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+  const modal=document.getElementById('studio-upi-modal');
+  modal.querySelector('#supi-amount').textContent='₹'+amount.toLocaleString('en-IN');
+  modal.querySelector('#supi-ref').textContent='Ref: '+ref;
+  modal.querySelector('#supi-qr').src=qrUrl;
+  modal.querySelector('#supi-app-link').href=upiLink;
+  modal.querySelector('#supi-utr').value='';
+  modal.dataset.ref=ref;
+  modal.style.display='flex';
+}
+
+async function confirmStudioPayment(){
+  const modal=document.getElementById('studio-upi-modal');
+  const utr=modal.querySelector('#supi-utr').value.trim();
+  if(!utr){toast('Enter your UPI Transaction ID / UTR');return;}
+  const btn=modal.querySelector('#supi-confirm-btn');
+  btn.disabled=true; btn.textContent='Confirming…';
+  const token=localStorage.getItem('aruva_token');
+  const payload={..._pendingOrderPayload,notes:'3D Custom Order | upi-utr:'+utr+' ref:'+modal.dataset.ref,payment_method:'upi'};
   try{
     const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload)});
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||'Order failed');
-    toast(`Order placed! #${data.order_number} ✓`);
+    modal.style.display='none';
+    _pendingOrderPayload=null;
+    toast(`Order confirmed! #${data.order_number} ✓`);
   }catch(e){
     toast(e.message||'Order failed — try again');
+    btn.disabled=false; btn.textContent='Confirm Payment';
   }
 }
 
@@ -2664,38 +2684,14 @@ function showUserMenu(){
 
 // ── STUDIO INTRO SCROLL VIDEO ─────────────────────────
 (function initStudioIntroVideo() {
-  const wrap  = document.getElementById('svintro-wrap');
   const video = document.getElementById('svintro-video');
   const bgVid = document.getElementById('svintro-bg-video');
-  if (!wrap || !video) return;
-  const isMobile = window.location.pathname.startsWith('/www/') || document.body.dataset.mobile === 'true' || typeof window.Capacitor !== 'undefined';
-  if (isMobile) {
-    [video, bgVid].forEach(v => { if(!v) return; v.loop=true; v.muted=true; v.play().catch(()=>{}); });
-    return;
-  }
-  video.load();
-  if (bgVid) bgVid.load();
-  let targetTime = 0, currentSmooth = 0, rafId = null;
-  function getProgress() {
-    const rect  = wrap.getBoundingClientRect();
-    const total = wrap.offsetHeight - window.innerHeight;
-    return Math.min(1, Math.max(0, -rect.top / total));
-  }
-  function tick() {
-    if (!video.duration || !isFinite(video.duration) || video.readyState < 2) { rafId = requestAnimationFrame(tick); return; }
-    currentSmooth += (targetTime - currentSmooth) * 0.25;
-    const diff = Math.abs(currentSmooth - video.currentTime);
-    if (diff > 0.004) {
-      video.currentTime = currentSmooth;
-      if (bgVid && bgVid.readyState >= 2) bgVid.currentTime = currentSmooth;
-    }
-    rafId = requestAnimationFrame(tick);
-  }
-  rafId = requestAnimationFrame(tick);
-  window.addEventListener('scroll', () => {
-    const p = getProgress();
-    if (video.duration && isFinite(video.duration)) targetTime = p * video.duration;
-  }, { passive: true });
+  [video, bgVid].forEach(v => {
+    if (!v) return;
+    v.muted = true; v.loop = true;
+    v.load();
+    v.play().catch(() => {});
+  });
 })();
 
 // ── INIT ──────────────────────────────────────────────
@@ -2780,6 +2776,55 @@ window.addEventListener('load',async()=>{
 });
 </script>
 <script src="js/animations.js" defer></script>
+<style>
+#studio-upi-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.9);align-items:center;justify-content:center;padding:16px}
+.supi-box{background:#0B1622;border:1px solid rgba(135,185,212,.2);border-radius:24px;width:min(440px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.9)}
+.supi-head{padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.supi-head span{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#87B9D4;font-weight:700}
+.supi-head button{background:none;border:none;color:rgba(255,255,255,.35);font-size:20px;cursor:pointer}
+.supi-body{padding:24px;text-align:center}
+.supi-amt{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:2px}
+.supi-ref-lbl{font-size:.72rem;color:rgba(255,255,255,.28);margin-bottom:20px}
+.supi-qr-box{background:#fff;border-radius:14px;padding:12px;display:inline-block;margin-bottom:16px}
+.supi-qr-box img{display:block;width:190px;height:190px}
+.supi-id-row{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.18);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+.supi-id-row span{font-size:.9rem;font-weight:600;color:#fff}
+.supi-copy{background:rgba(135,185,212,.15);border:1px solid rgba(135,185,212,.3);color:#87B9D4;font-size:.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:5px;cursor:pointer;text-transform:uppercase}
+.supi-app-btn{display:block;width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border:1px solid rgba(135,185,212,.25);color:#fff;font-size:.9rem;font-weight:700;border-radius:11px;cursor:pointer;margin-bottom:20px;text-decoration:none;letter-spacing:.4px}
+.supi-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:0 0 16px}
+.supi-utr-lbl{font-size:.68rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px}
+.supi-utr{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:9px;padding:11px 14px;font-size:.9rem;outline:none;text-align:center;letter-spacing:1px}
+.supi-utr:focus{border-color:#87B9D4}
+.supi-utr::placeholder{color:rgba(255,255,255,.18)}
+.supi-confirm{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,#5A97BC,#87B9D4);color:#0B1622;font-size:.95rem;font-weight:800;border:none;border-radius:11px;cursor:pointer;letter-spacing:.4px}
+.supi-confirm:disabled{opacity:.5;cursor:not-allowed}
+.supi-note{font-size:.68rem;color:rgba(255,255,255,.2);margin-top:10px;line-height:1.5}
+</style>
+<div id="studio-upi-modal">
+  <div class="supi-box">
+    <div class="supi-head">
+      <span>Complete Payment</span>
+      <button onclick="document.getElementById('studio-upi-modal').style.display='none'">✕</button>
+    </div>
+    <div class="supi-body">
+      <div class="supi-amt" id="supi-amount"></div>
+      <div class="supi-ref-lbl" id="supi-ref"></div>
+      <div class="supi-qr-box"><img id="supi-qr" src="" alt="UPI QR"></div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-bottom:12px">Scan with GPay / PhonePe / Paytm</div>
+      <div class="supi-id-row">
+        <span style="font-size:.68rem;color:rgba(255,255,255,.3)">UPI</span>
+        <span>aryankadam0718@oksbi</span>
+        <button class="supi-copy" onclick="navigator.clipboard.writeText('aryankadam0718@oksbi').then(()=>toast('UPI ID copied'))">Copy</button>
+      </div>
+      <a id="supi-app-link" href="#" class="supi-app-btn">Open UPI App to Pay</a>
+      <hr class="supi-divider">
+      <div class="supi-utr-lbl">Enter Transaction ID / UTR after paying</div>
+      <input id="supi-utr" class="supi-utr" placeholder="e.g. 425123456789" maxlength="22">
+      <button id="supi-confirm-btn" class="supi-confirm" onclick="confirmStudioPayment()">Confirm Payment</button>
+      <div class="supi-note">Order saved only after you confirm.<br>UTR found in your UPI app's payment history.</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 

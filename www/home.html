@@ -1447,9 +1447,9 @@ async function loadFeatured() {
   const grid = document.getElementById('featured-grid');
   if (!grid) return;
   try {
-    const res = await fetch('http://localhost:3000/api/products/featured');
+    const res = await fetch('/api/products/featured');
     const data = await res.json();
-    const products = (data.products || []).slice(0, 8);
+    const products = (Array.isArray(data) ? data : (data.products || [])).slice(0, 8);
     if (!products.length) { document.getElementById('featured').style.display='none'; return; }
     products.forEach(p => {
       const ep = p.on_sale && p.sale_price ? p.sale_price : p.price;
@@ -1704,5 +1704,6 @@ if(window.Capacitor) document.body.classList.add('is-app');
 </script>
 </body>
 </html>
+
 
 

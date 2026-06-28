@@ -644,10 +644,19 @@ async function load3DOrders() {
     }
     grid.innerHTML = custom.map(({order, item, design}) => {
       const imgSrc = design.designImage || '';
+      const views = design.designViews || {};
+      const oid = order.order_number.replace(/[^a-z0-9]/gi,'');
+      const viewList = [
+        {img: views.front || imgSrc, label: 'FRONT'},
+        {img: views.right || '',     label: 'RIGHT'},
+        {img: views.back  || '',     label: 'BACK'},
+        {img: views.left  || '',     label: 'LEFT'},
+      ].filter(v => v.img);
       const uploadedImg = design.uploadedImage || '';
       const brushColors = design.brushColors || [];
       const ideaText = design.ideaText || '';
-      const productLabel = (design.productType||item.product_name||'hoodie').replace(/^\w/,c=>c.toUpperCase());
+      const productType = design.productType || 'hoodie';
+      const productLabel = (productType||item.product_name||'hoodie').replace(/^\w/,c=>c.toUpperCase());
       const badgeClass = 'badge-'+(order.status||'').toLowerCase();
       const addr = order.address;
       const addrLine = addr
@@ -656,9 +665,18 @@ async function load3DOrders() {
       const phone = order.phone || (addr && addr.phone) || '—';
       const customerName = [order.first_name, order.last_name].filter(Boolean).join(' ') || 'Customer';
       return `<div style="background:var(--s1);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(135,185,212,.3)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.07)'">
-        <!-- 3D Render -->
-        ${imgSrc
-          ? `<div style="width:100%;aspect-ratio:4/3;background:#060e18;overflow:hidden;position:relative"><img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"><span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);color:var(--gold);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 10px;border-radius:20px">3D RENDER</span></div>`
+        <!-- 3D Render Gallery -->
+        ${viewList.length
+          ? `<div style="width:100%;aspect-ratio:4/3;background:#060e18;overflow:hidden;position:relative" id="gal-${oid}">
+              <img id="galimg-${oid}" src="${viewList[0].img}" style="width:100%;height:100%;object-fit:contain;transition:opacity .18s">
+              <span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);color:var(--gold);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 10px;border-radius:20px">3D RENDER</span>
+              <span id="gallabel-${oid}" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;padding:4px 10px;border-radius:20px">${viewList[0].label}</span>
+              ${viewList.length > 1 ? `
+              <button onclick="galPrev('${oid}')" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1">‹</button>
+              <button onclick="galNext('${oid}')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1">›</button>
+              <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px">${viewList.map((_,i)=>`<div id="galdot-${oid}-${i}" onclick="galGoto('${oid}',${i})" style="width:7px;height:7px;border-radius:50%;background:${i===0?'var(--gold)':'rgba(255,255,255,.3)'};cursor:pointer;transition:background .2s"></div>`).join('')}</div>
+              ` : ''}
+            </div>`
           : `<div style="width:100%;aspect-ratio:4/3;background:#111E2C;display:flex;align-items:center;justify-content:center;font-size:56px">🎨</div>`
         }
         <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
@@ -719,9 +737,14 @@ async function load3DOrders() {
           </div>` : ''}
 
           <!-- Footer + Actions -->
-          <div style="font-size:10px;color:var(--muted);padding-top:4px;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.05)">
-            <span>${fmtDate(order.created_at)}</span>
-            <span>${order.payment_method||'—'}</span>
+          <div style="font-size:10px;color:var(--muted);padding-top:4px;display:flex;flex-direction:column;gap:4px;border-top:1px solid rgba(255,255,255,.05)">
+            <div style="display:flex;justify-content:space-between">
+              <span>${fmtDate(order.created_at)}</span>
+              <span style="color:${order.payment_method==='upi'?'#2ecc71':'var(--muted)'}">
+                ${order.payment_method==='upi'?'UPI Paid':order.payment_method==='cod'?'Cash on Delivery':order.payment_method||'—'}
+              </span>
+            </div>
+            ${order.notes&&order.notes.startsWith('upi-utr:')?`<div style="background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:6px;padding:5px 10px;font-size:9px;color:#2ecc71;letter-spacing:.5px">UTR: ${order.notes.split(' ')[0].replace('upi-utr:','')}</div>`:''}
           </div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-gold btn-sm" style="flex:1" onclick="openOrderUpdate(${order.id},'${order.order_number}','${order.status}','${order.tracking_number||''}')">Update Status</button>
@@ -730,6 +753,19 @@ async function load3DOrders() {
         </div>
       </div>`;
     }).join('');
+
+    // Init gallery state for each order
+    custom.forEach(({order, design}) => {
+      const oid = order.order_number.replace(/[^a-z0-9]/gi,'');
+      const imgSrc = design.designImage || '';
+      const v = design.designViews || {};
+      const vl = [
+        {img:v.front||imgSrc,label:'FRONT'},{img:v.right||'',label:'RIGHT'},
+        {img:v.back||'',label:'BACK'},{img:v.left||'',label:'LEFT'},
+      ].filter(x=>x.img);
+      if (vl.length > 1) _galState[oid] = {views:vl, idx:0};
+    });
+
   } catch(e) {
     grid.innerHTML = '<p style="color:#ff7070;font-size:13px;padding:20px">Failed to load 3D orders.</p>';
     console.error(e);
@@ -738,10 +774,30 @@ async function load3DOrders() {
 
 // ── DESIGN IDEAS ──────────────────────────────────────
 
+// ── GALLERY ───────────────────────────────────────────
+const _galState = {};
+
+function galGoto(oid, idx) {
+  if (!_galState[oid]) return;
+  const views = _galState[oid].views;
+  idx = ((idx % views.length) + views.length) % views.length;
+  _galState[oid].idx = idx;
+  const img = document.getElementById('galimg-' + oid);
+  const lbl = document.getElementById('gallabel-' + oid);
+  if (img) { img.style.opacity='0'; setTimeout(()=>{img.src=views[idx].img;img.style.opacity='1';},120); }
+  if (lbl) lbl.textContent = views[idx].label;
+  document.querySelectorAll('[id^="galdot-' + oid + '-"]').forEach((d,i)=>{
+    d.style.background = i===idx ? 'var(--gold)' : 'rgba(255,255,255,.3)';
+  });
+}
+function galNext(oid) { if(_galState[oid]) galGoto(oid, _galState[oid].idx+1); }
+function galPrev(oid) { if(_galState[oid]) galGoto(oid, _galState[oid].idx-1); }
+
 // ── INIT ──────────────────────────────────────────────
 loadDashboard();
 </script>
 <script src="js/animations.js" defer></script>
+
 </body>
 </html>
 

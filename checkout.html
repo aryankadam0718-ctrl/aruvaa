@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — ARUVA</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <link rel="stylesheet" href="css/main.css">
   <style>
     .checkout-page { padding: 100px 0 60px; min-height: 100vh; background: var(--dark); }
@@ -122,6 +121,32 @@
 
     @keyframes checkIn { from { transform: scale(0) rotate(-45deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
     .success-icon svg { animation: checkIn .5s cubic-bezier(.34,1.56,.64,1) .2s both; }
+
+    /* UPI Payment Modal */
+    #upi-modal { display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:16px; }
+    #upi-modal.open { display:flex; }
+    .upi-box { background:#0B1622;border:1px solid rgba(135,185,212,.2);border-radius:24px;width:min(480px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8); }
+    .upi-header { padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center; }
+    .upi-header-title { font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700; }
+    .upi-header-close { background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;line-height:1;padding:0; }
+    .upi-body { padding:28px 28px 24px;text-align:center; }
+    .upi-amount { font-size:2.4rem;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:4px; }
+    .upi-amount span { font-size:1.4rem;color:var(--gold); }
+    .upi-ref { font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:24px;letter-spacing:.5px; }
+    .upi-qr-wrap { background:#fff;border-radius:16px;padding:14px;display:inline-block;margin-bottom:20px; }
+    .upi-qr-wrap img { display:block;width:200px;height:200px; }
+    .upi-id-row { display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.2);border-radius:10px;padding:12px 16px;margin-bottom:20px; }
+    .upi-id-text { font-size:.95rem;font-weight:600;color:#fff;letter-spacing:.3px; }
+    .upi-copy-btn { background:rgba(135,185,212,.15);border:1px solid rgba(135,185,212,.3);color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:6px;cursor:pointer;text-transform:uppercase; }
+    .upi-open-btn { display:block;width:100%;padding:13px;background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border:1px solid rgba(135,185,212,.3);color:#fff;font-size:.95rem;font-weight:700;border-radius:12px;cursor:pointer;margin-bottom:24px;letter-spacing:.5px; }
+    .upi-divider { border:none;border-top:1px solid rgba(255,255,255,.08);margin:0 0 20px; }
+    .upi-utr-label { font-size:.72rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px; }
+    .upi-utr-input { width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:12px 16px;font-size:.95rem;outline:none;text-align:center;letter-spacing:1px;transition:border-color .2s; }
+    .upi-utr-input:focus { border-color:var(--gold); }
+    .upi-utr-input::placeholder { color:rgba(255,255,255,.2); }
+    .upi-confirm-btn { width:100%;padding:14px;margin-top:12px;background:linear-gradient(135deg,var(--gold-d,#5A97BC),var(--gold,#87B9D4));color:#0B1622;font-size:1rem;font-weight:800;border:none;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:opacity .2s; }
+    .upi-confirm-btn:disabled { opacity:.5;cursor:not-allowed; }
+    .upi-note { font-size:.72rem;color:rgba(255,255,255,.25);margin-top:12px;line-height:1.5; }
   </style>
 </head>
 <body>
@@ -309,10 +334,8 @@
 
   function renderPaymentPanel() {
     const methods = [
+      { id: 'upi', icon: 'UPI', label: 'UPI / QR Code', desc: 'GPay, PhonePe, Paytm — scan & pay instantly' },
       { id: 'cod', icon: '₹', label: 'Cash on Delivery', desc: 'Pay when your order arrives' },
-      { id: 'upi', icon: 'UPI', label: 'UPI / QR', desc: 'GPay, PhonePe, Paytm & more' },
-      { id: 'card', icon: '💳', label: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay' },
-      { id: 'emi', icon: 'EMI', label: 'EMI', desc: 'No-cost EMI on eligible cards' },
     ];
     return `
       <div class="checkout-card">
@@ -329,19 +352,6 @@
               <div class="pay-info"><h4>${m.label}</h4><p>${m.desc}</p></div>
               <div class="pay-radio"></div>
             </div>`).join('')}
-        </div>
-        <div class="card-fields ${payMethod==='card'?'open':''}" id="card-fields">
-          <div class="form-group card-num-row" style="margin-bottom:14px">
-            <label>Card Number</label>
-            <input id="cf-num" placeholder="4242 4242 4242 4242" maxlength="19"
-              oninput="fmtCard(this)" style="padding-right:60px">
-            <span class="card-brand" id="card-brand">VISA</span>
-          </div>
-          <div class="form-row cols-2">
-            <div class="form-group"><label>Expiry</label><input id="cf-exp" placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)"></div>
-            <div class="form-group"><label>CVV</label><input id="cf-cvv" placeholder="•••" maxlength="3" type="password"></div>
-          </div>
-          <div class="form-group"><label>Cardholder Name</label><input id="cf-name" placeholder="Aryan Kadam"></div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;justify-content:flex-end;flex-wrap:wrap">
@@ -514,115 +524,112 @@
 
   async function placeOrder() {
     if (!selectedAddressId) { toast('Please select a delivery address', 'error'); return; }
-    const btn = document.getElementById('place-order-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
     const t = calcTotals();
 
-    // COD — direct order, no payment gateway
-    if (payMethod === 'cod') {
-      try {
-        const data = await api('/orders', 'POST', {
-          address_id: selectedAddressId, payment_method: 'cod',
-          coupon_code: checkoutState.coupon || null,
-          subtotal: t.subtotal, discount: t.discountAmt,
-          shipping: t.shipping, tax: t.tax, total: t.total
-        });
-        placedOrder = data.order || data;
-        sessionStorage.removeItem('checkout_state');
-        step = 4; renderAll(); updateBadges();
-      } catch(e) {
-        toast('Could not place order. Please try again.', 'error');
-        if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
-      }
+    if (payMethod === 'upi') {
+      openUpiModal(t.total);
       return;
     }
 
-    // UPI / Card / EMI — Razorpay
+    // COD — direct save
+    const btn = document.getElementById('place-order-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Placing Order...'; }
     try {
-      const rzpOrder = await api('/payment/create-order', 'POST', { amount: t.total });
-
-      const user = Auth.getUser();
-      const addr = addresses.find(a => a.id === selectedAddressId);
-
-      const options = {
-        key: rzpOrder.key_id,
-        amount: rzpOrder.amount,
-        currency: rzpOrder.currency || 'INR',
-        name: 'ARUVA',
-        description: `Order · ${cartItems.reduce((s,i)=>s+i.quantity,0)} item(s)`,
-        image: '/logo.png',
-        order_id: rzpOrder.razorpay_order_id,
-        prefill: {
-          name: (user?.first_name || '') + ' ' + (user?.last_name || ''),
-          email: user?.email || '',
-          contact: addr?.phone || ''
-        },
-        notes: { address: addr ? `${addr.line1}, ${addr.city}` : '' },
-        theme: { color: '#87B9D4' },
-        modal: { ondismiss: () => {
-          if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
-        }},
-        handler: async (response) => {
-          try {
-            if (btn) btn.textContent = 'Verifying...';
-            const orderData = {
-              items: cartItems.map(i => ({
-                product_id: i.product_id, product_name: i.name,
-                quantity: i.quantity, size: i.size, color: i.color,
-                price: i.effective_price, custom_design: i.custom_design || null
-              })),
-              address_id: selectedAddressId,
-              payment_method: payMethod,
-              coupon_code: checkoutState.coupon || null,
-              subtotal: t.subtotal, discount: t.discountAmt,
-              shipping: t.shipping, tax: t.tax, total: t.total
-            };
-            const verifyData = await api('/payment/verify', 'POST', {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              order_data: orderData
-            });
-            placedOrder = verifyData.order;
-            sessionStorage.removeItem('checkout_state');
-            step = 4; renderAll(); updateBadges();
-          } catch(e) {
-            toast('Payment done but order save failed. Contact support.', 'error');
-            if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
-          }
-        }
-      };
-
-      // Open Razorpay checkout
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', (res) => {
-        toast('Payment failed: ' + (res.error?.description || 'Try again'), 'error');
-        if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
+      const data = await api('/orders', 'POST', {
+        address_id: selectedAddressId, payment_method: 'cod',
+        coupon_code: checkoutState.coupon || null,
+        subtotal: t.subtotal, discount: t.discountAmt,
+        shipping: t.shipping, tax: t.tax, total: t.total
       });
-      rzp.open();
-
+      placedOrder = data.order || data;
+      sessionStorage.removeItem('checkout_state');
+      step = 4; renderAll(); updateBadges();
     } catch(e) {
-      toast('Could not initiate payment. Please try again.', 'error');
+      toast('Could not place order. Please try again.', 'error');
       if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
     }
   }
 
-  function fmtCard(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 16);
-    input.value = v.replace(/(.{4})/g, '$1 ').trim();
-    const brand = document.getElementById('card-brand');
-    if (brand) brand.textContent = v[0] === '4' ? 'VISA' : v[0] === '5' ? 'MC' : v.slice(0,2) === '60' ? 'RuPay' : 'CARD';
+  function openUpiModal(amount) {
+    const ref = 'ARUVA' + Math.floor(100000 + Math.random() * 900000);
+    const upiLink = `upi://pay?pa=aryankadam0718@oksbi&pn=ARUVA&am=${amount}&cu=INR&tn=${ref}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+    const modal = document.getElementById('upi-modal');
+    modal.querySelector('#upi-display-amount').textContent = '₹' + amount.toLocaleString('en-IN');
+    modal.querySelector('#upi-display-ref').textContent = 'Ref: ' + ref;
+    modal.querySelector('#upi-qr-img').src = qrUrl;
+    modal.querySelector('#upi-open-app-link').href = upiLink;
+    modal.querySelector('#upi-utr-input').value = '';
+    modal.dataset.amount = amount;
+    modal.dataset.ref = ref;
+    modal.classList.add('open');
   }
 
-  function fmtExpiry(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 4);
-    if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
-    input.value = v;
+  async function confirmUpiPayment() {
+    const modal = document.getElementById('upi-modal');
+    const utrInput = modal.querySelector('#upi-utr-input');
+    const utr = utrInput.value.trim();
+    if (!utr) { toast('Please enter your UPI Transaction ID / UTR', 'error'); utrInput.focus(); return; }
+    const btn = modal.querySelector('#upi-confirm-btn');
+    btn.disabled = true; btn.textContent = 'Confirming...';
+    const t = calcTotals();
+    try {
+      const data = await api('/orders', 'POST', {
+        address_id: selectedAddressId,
+        payment_method: 'upi',
+        notes: 'upi-utr:' + utr + ' ref:' + modal.dataset.ref,
+        coupon_code: checkoutState.coupon || null,
+        subtotal: t.subtotal, discount: t.discountAmt,
+        shipping: t.shipping, tax: t.tax, total: t.total
+      });
+      placedOrder = data.order || data;
+      sessionStorage.removeItem('checkout_state');
+      modal.classList.remove('open');
+      step = 4; renderAll(); updateBadges();
+    } catch(e) {
+      toast('Could not save order. Please try again.', 'error');
+      btn.disabled = false; btn.textContent = 'Confirm Payment';
+    }
   }
 
   init();
 </script>
 <script src="js/animations.js" defer></script>
+
+<!-- UPI Payment Modal -->
+<div id="upi-modal">
+  <div class="upi-box">
+    <div class="upi-header">
+      <span class="upi-header-title">Complete Payment</span>
+      <button class="upi-header-close" onclick="document.getElementById('upi-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="upi-body">
+      <div class="upi-amount"><span>₹</span><span id="upi-display-amount" style="margin-left:2px"></span></div>
+      <div class="upi-ref" id="upi-display-ref"></div>
+
+      <div class="upi-qr-wrap">
+        <img id="upi-qr-img" src="" alt="UPI QR Code">
+      </div>
+
+      <div style="font-size:.75rem;color:rgba(255,255,255,.35);margin-bottom:12px">Scan with any UPI app</div>
+
+      <div class="upi-id-row">
+        <span style="font-size:.72rem;color:rgba(255,255,255,.35);margin-right:4px">UPI ID</span>
+        <span class="upi-id-text">aryankadam0718@oksbi</span>
+        <button class="upi-copy-btn" onclick="navigator.clipboard.writeText('aryankadam0718@oksbi').then(()=>toast('UPI ID copied'))">Copy</button>
+      </div>
+
+      <a id="upi-open-app-link" href="#" class="upi-open-btn">Open UPI App to Pay</a>
+
+      <hr class="upi-divider">
+
+      <div class="upi-utr-label">After paying, enter Transaction ID / UTR</div>
+      <input id="upi-utr-input" class="upi-utr-input" placeholder="e.g. 425123456789" maxlength="22">
+      <button id="upi-confirm-btn" class="upi-confirm-btn" onclick="confirmUpiPayment()">Confirm Payment</button>
+      <div class="upi-note">Your order will be placed only after you confirm.<br>UTR is found in your UPI app's payment history.</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 

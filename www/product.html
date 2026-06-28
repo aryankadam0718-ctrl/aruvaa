@@ -1188,13 +1188,13 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    const res = await fetch('http://localhost:3000/api/products/' + id);
+    const res = await fetch('/api/products/' + id);
     if (!res.ok) throw new Error('not found');
     PRODUCT = await res.json();
     // If API returned no related, try fetching from products list
     if (!PRODUCT.related || !PRODUCT.related.length) {
       try {
-        const all = await fetch('http://localhost:3000/api/products?limit=8&sort=rating').then(r=>r.json());
+        const all = await fetch('/api/products?limit=8&sort=rating').then(r=>r.json());
         PRODUCT.related = (all.products||[]).filter(p=>p.id!==PRODUCT.id).slice(0,8);
       } catch {}
     }
@@ -1474,7 +1474,7 @@ async function addToCart() {
 
   if (token) {
     try {
-      await fetch('http://localhost:3000/api/cart', {
+      await fetch('/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ product_id: PRODUCT.id, quantity: qty, size: selSize, color: selColor })
@@ -1511,11 +1511,11 @@ async function toggleWishlist() {
   const btn = document.getElementById('wl-btn');
   try {
     if (inWishlist) {
-      await fetch('http://localhost:3000/api/wishlist/' + PRODUCT.id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+      await fetch('/api/wishlist/' + PRODUCT.id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
       btn.classList.remove('saved'); btn.textContent = '♡';
       inWishlist = false; toast('Removed from wishlist');
     } else {
-      await fetch('http://localhost:3000/api/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ product_id: PRODUCT.id }) });
+      await fetch('/api/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ product_id: PRODUCT.id }) });
       btn.classList.add('saved'); btn.textContent = '♥';
       inWishlist = true; toast('Saved to wishlist ♥');
     }
@@ -1527,20 +1527,21 @@ async function submitReview() {
   const token = localStorage.getItem('aruva_token');
   if (!token) { location.href = 'login.html'; return; }
   try {
-    await fetch('http://localhost:3000/api/products/' + PRODUCT.id + '/reviews', {
+    await fetch('/api/products/' + PRODUCT.id + '/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ rating: selRating, title: document.getElementById('rev-title').value, body: document.getElementById('rev-body').value })
     });
     toast('Thank you for your review!');
     document.getElementById('write-rev').style.display = 'none';
-    const updated = await fetch('http://localhost:3000/api/products/' + PRODUCT.id).then(r => r.json());
+    const updated = await fetch('/api/products/' + PRODUCT.id).then(r => r.json());
     renderReviews(updated);
   } catch { toast('Could not submit review — try again'); }
 }
 
 function orderNow() {
   if (!selSize) { toast('Please select a size first'); return; }
+  if (!localStorage.getItem('aruva_token')) { window.location.href = 'login.html'; return; }
   addToCart().then(() => { window.location.href = 'checkout.html'; });
 }
 
@@ -1584,7 +1585,7 @@ async function syncCartCount() {
   const token = localStorage.getItem('aruva_token');
   if (!token) return;
   try {
-    const d = await fetch('http://localhost:3000/api/cart', { headers: { 'Authorization': 'Bearer ' + token } }).then(r => r.json());
+    const d = await fetch('/api/cart', { headers: { 'Authorization': 'Bearer ' + token } }).then(r => r.json());
     document.getElementById('cart-count').textContent = d.reduce((a, i) => a + i.quantity, 0);
   } catch {}
 }
@@ -1631,5 +1632,6 @@ function toast(msg) {
 <script src="js/animations.js" defer></script>
 </body>
 </html>
+
 
 
