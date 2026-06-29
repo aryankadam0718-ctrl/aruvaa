@@ -742,6 +742,12 @@ app.post('/api/payment/verify', auth, async (req, res) => {
   }
 });
 
+// ── DEBUG ─────────────────────────────────────────────────────────
+app.get('/debug-ua', (req, res) => {
+  const ua = req.headers['user-agent'] || 'none';
+  res.json({ ua, isMobile: isMobile(req) });
+});
+
 // ── FALLBACK ─────────────────────────────────────────────────────
 app.get('/', (req, res) => res.redirect('/login.html'));
 
