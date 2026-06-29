@@ -67,7 +67,9 @@ body::before{
 .nav-cta:hover{box-shadow:0 8px 32px rgba(135,185,212,.45);transform:translateY(-1px)}
 @media(max-width:768px){
   .nav{padding:0 14px;height:54px}
-  .nav-links{display:none}
+  .nav-links{display:flex;gap:0}
+  .nav-links li:not(:first-child){display:none}
+  .nav-links a{font-size:9px;padding:5px 12px;border:1px solid var(--gold);border-radius:50px;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
   .nav-logo{font-size:16px;letter-spacing:5px}
   .nav-signin{padding:6px 13px;font-size:11px}
   .nav-cta{padding:7px 14px;font-size:11px;letter-spacing:.3px}

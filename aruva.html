@@ -2055,10 +2055,57 @@ function initThree(glbUrl, productName){
   });
   document.addEventListener('mouseup',()=>{dragging=false;isPainting=false;lastPaintTex=null;elementDragging=null;});
   cv.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.5,Math.min(2.2,zoom-e.deltaY*.001));cam.position.z=7.5/zoom;},{passive:false});
-  let ts=null;
-  cv.addEventListener('touchstart',e=>{ts={x:e.touches[0].clientX,y:e.touches[0].clientY};S.spin=false;});
-  cv.addEventListener('touchmove',e=>{if(!ts||!mesh)return;e.preventDefault();const cw2=cv.getBoundingClientRect().width||600;mesh.rotation.y+=(e.touches[0].clientX-ts.x)*(Math.PI/cw2);mesh.rotation.x=Math.max(-.8,Math.min(.8,mesh.rotation.x+(e.touches[0].clientY-ts.y)*(Math.PI*0.5/cw2)));ts={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:false});
-  cv.addEventListener('touchend',()=>{ts=null;});
+  // Touch — mirrors mousedown/mousemove/mouseup for element drag + model rotation
+  cv.addEventListener('touchstart',e=>{
+    if(handle3DDrag)return;
+    e.preventDefault();S.spin=false;
+    const touch=e.touches[0];
+    const hit=getHit(touch.clientX,touch.clientY);
+    if(hit){
+      const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;
+      if(pendingPlace){
+        const layer=getLayerById(pendingPlace);
+        if(layer){layer.x=tx;layer.y=ty;selectedEl=pendingPlace;}
+        pendingPlace=null;
+        const ph=document.getElementById('place-hint');if(ph)ph.style.display='none';
+        refreshTex();renderLayersList();return;
+      }
+      let hitEl=null;
+      for(let i=layers.length-1;i>=0;i--){
+        const layer=layers[i];const b=getLayerBounds(layer);
+        if(!b.w||!b.h)continue;
+        if(hitInRect(tx,ty,layer,b.w,b.h)){hitEl=layer.id;break;}
+      }
+      if(hitEl!==null){
+        selectedEl=hitEl;elementDragging=hitEl;
+        const hl=getLayerById(hitEl);
+        if(hl&&hl.type==='text'){
+          activeTextLayerId=hitEl;
+          const inp=document.getElementById('custom-text');if(inp)inp.value=hl.text;
+          const tc=document.getElementById('text-color');if(tc)tc.value=hl.textColor;
+          const fs=document.getElementById('font-style');if(fs)fs.value=hl.fontFamily;
+        }
+        renderLayersList();return;
+      }
+    }
+    dragging=true;prevMx=touch.clientX;prevMy=touch.clientY;
+  },{passive:false});
+  document.addEventListener('touchmove',e=>{
+    if(elementDragging){
+      const touch=e.touches[0];
+      const hit=getHit(touch.clientX,touch.clientY);
+      if(hit){const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;const el=getLayerById(elementDragging);if(el){el.x=tx;el.y=ty;refreshTex();}}
+      return;
+    }
+    if(!dragging||!mesh)return;
+    e.preventDefault();
+    const touch=e.touches[0];
+    const cw=cv.getBoundingClientRect().width||600;
+    mesh.rotation.y+=(touch.clientX-prevMx)*(Math.PI/cw);
+    mesh.rotation.x=Math.max(-.8,Math.min(.8,mesh.rotation.x+(touch.clientY-prevMy)*(Math.PI*0.5/cw)));
+    prevMx=touch.clientX;prevMy=touch.clientY;
+  },{passive:false});
+  document.addEventListener('touchend',()=>{dragging=false;elementDragging=null;});
   window.addEventListener('resize',()=>{const W2=wrap.clientWidth,H2=wrap.clientHeight;cam.aspect=W2/H2;cam.updateProjectionMatrix();renderer.setSize(W2,H2);});
   (function loop(){
     requestAnimationFrame(loop);

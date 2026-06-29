@@ -29,11 +29,6 @@ const ROOT_DIR = path.join(__dirname, '..');
 const WWW_DIR  = path.join(__dirname, '..', 'www');
 
 function isMobile(req) {
-  const cookies = req.headers.cookie || '';
-  // Cookie set by client based on actual screen width — takes priority
-  if (cookies.includes('aruva_view=mobile')) return true;
-  if (cookies.includes('aruva_view=desktop')) return false;
-  // Fallback: user-agent detection
   return /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(req.headers['user-agent'] || '');
 }
 
