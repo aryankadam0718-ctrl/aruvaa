@@ -42,6 +42,17 @@ app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
+// Mobile routing — redirect top-level HTML to /www/ for mobile devices
+app.use((req, res, next) => {
+  if (!isMobile(req)) return next();
+  if (req.path.startsWith('/www/')) return next();
+  const isTopHtml = req.path === '/' || /^\/[^\/]+\.html$/.test(req.path);
+  if (!isTopHtml) return next();
+  const file = req.path === '/' ? 'login.html' : path.basename(req.path);
+  const wwwFile = path.join(WWW_DIR, file);
+  if (fs.existsSync(wwwFile)) return res.redirect('/www/' + file);
+  next();
+});
 
 app.use(express.static(ROOT_DIR));
 
