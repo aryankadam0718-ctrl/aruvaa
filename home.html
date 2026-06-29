@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){var p=location.pathname;if(p.startsWith('/www'))return;if(/Mobile|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||screen.width<=768){location.replace('/www'+(p==='/'?'/login.html':p));}})()</script>
+<script>(function(){var p=location.pathname;if(p.startsWith('/www'))return;var t=('ontouchstart' in window)||navigator.maxTouchPoints>0;var n=screen.width<=900||window.innerWidth<=900;var u=/Mobile|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(t||n||u){location.replace('/www'+(p==='/'?'/login.html':p));}})()</script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#87B9D4">
   <meta name="apple-mobile-web-app-capable" content="yes">
