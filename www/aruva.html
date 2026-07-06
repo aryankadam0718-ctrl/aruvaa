@@ -1812,15 +1812,7 @@ function updatePPCards(animate){
   if(price) price.innerHTML=`<small>₹</small>${p.price}`;
   if(cta){ cta.textContent='Customize This →'; cta.onclick=()=>launchCustomize(p.id); }
 
-  // FUTURE — next product
-  const nextP=PRODUCTS[ppIdx+1];
-  if(nextP&&nextP.glb) loadPPBackModel(nextP.glb);
-  else { const bw=document.getElementById('pp-back-wrap'); if(bw) bw.style.opacity='0'; }
-
-  // PAST — previous product
-  const prevP=PRODUCTS[ppIdx-1];
-  if(prevP&&prevP.glb) loadPPPastModel(prevP.glb);
-  else { const pw=document.getElementById('pp-past-wrap'); if(pw) pw.style.opacity='0'; }
+  // Past/back thumbnail canvases are hidden — skip loading to reduce network requests
 
   updatePPBg();
 }
