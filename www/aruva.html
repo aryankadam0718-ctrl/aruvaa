@@ -1619,7 +1619,9 @@ function loadPPModel(glbUrl){
   }
   const ld=document.getElementById('pp-loading');
   if(ld) ld.style.display='flex';
-  if(ppMesh){ppScene.remove(ppMesh);ppMesh=null;}
+  // Clear all non-light objects from scene (removes any lingering old models)
+  if(ppScene) ppScene.children.slice().forEach(c=>{if(!c.isLight)ppScene.remove(c);});
+  ppMesh=null;
   if(!glbUrl){if(ld)ld.style.display='none';return;}
   console.log('[PP] Fetching: '+glbUrl);
   loader.load(glbUrl,gltf=>{
@@ -1640,7 +1642,7 @@ function loadPPModel(glbUrl){
     console.log('[PP] worldSize:',maxDim.toFixed(4),'rootScale:',gltfRootScale,'finalScale:',scale.toFixed(5));
     ppMesh.scale.setScalar(scale);
     ppMesh.position.set(-center.x*worldFit,-center.y*worldFit,-center.z*worldFit);
-    // Reset any baked Blender material colors to white
+    // Reset all materials to clean white — clear baked colors, maps, metalness
     ppMesh.traverse(child=>{
       if(!child.isMesh)return;
       const mats=Array.isArray(child.material)?child.material:[child.material];
@@ -1648,7 +1650,12 @@ function loadPPModel(glbUrl){
         if(!m)return;
         m.color&&m.color.set(0xffffff);
         m.emissive&&m.emissive.set(0x000000);
+        if(m.map){m.map.dispose();m.map=null;}
         if(m.emissiveMap){m.emissiveMap.dispose();m.emissiveMap=null;}
+        if(m.metalnessMap){m.metalnessMap.dispose();m.metalnessMap=null;}
+        if(m.roughnessMap){m.roughnessMap.dispose();m.roughnessMap=null;}
+        if(typeof m.metalness!=='undefined') m.metalness=0;
+        if(typeof m.roughness!=='undefined') m.roughness=0.75;
         m.vertexColors=false;
         m.needsUpdate=true;
       });
