@@ -1625,31 +1625,23 @@ function loadPPModel(glbUrl){
   loader.load(glbUrl,gltf=>{
     if(myId!==_ppLoadId)return;
     console.log('[PP] Loaded OK');
-    const gltfScene=gltf.scene;
-    gltfScene.updateMatrixWorld(true);
-    // World-space bbox using matrixWorld (includes GLTF root scale — e.g. 0.01 for cm export from Blender)
-    let bestBox=null,bestY=-1;
-    gltfScene.traverse(child=>{
-      if(!child.isMesh||!child.geometry)return;
-      child.geometry.computeBoundingBox();
-      const gb=child.geometry.boundingBox.clone();
-      gb.applyMatrix4(child.matrixWorld);
-      const sy=gb.getSize(new THREE.Vector3()).y;
-      if(sy>bestY){bestY=sy;bestBox=gb.clone();}
-    });
-    const box=bestBox||(new THREE.Box3().setFromObject(gltfScene));
+    ppMesh=gltf.scene;
+    ppMesh.updateMatrixWorld(true);
+    // Compute world-space bbox (includes GLTF root scale from Blender cm/mm export)
+    const box=new THREE.Box3().setFromObject(ppMesh);
     const size=box.getSize(new THREE.Vector3());
     const center=box.getCenter(new THREE.Vector3());
     const maxDim=Math.max(size.x,size.y,size.z)||1;
-    const scale=2.4/maxDim;
-    console.log('[PP] worldSize:',size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'scale:',scale.toFixed(5));
-    // Wrap gltfScene so we don't overwrite the GLTF root scale (Blender cm/mm exports have root scale 0.01/0.001)
-    const wrapper=new THREE.Group();
-    wrapper.add(gltfScene);
-    wrapper.scale.setScalar(scale);
-    wrapper.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
-    // Reset any baked Blender material colors (dark/black) to white so product looks clean
-    gltfScene.traverse(child=>{
+    // KEY FIX: new scale = (2.4/worldSize) * gltfRootScale
+    // Without gltfRootScale factor, we overwrite 0.01 with 4.0 → model explodes to 240 units
+    const gltfRootScale=ppMesh.scale.x||1;
+    const worldFit=2.4/maxDim;
+    const scale=worldFit*gltfRootScale;
+    console.log('[PP] worldSize:',maxDim.toFixed(4),'rootScale:',gltfRootScale,'finalScale:',scale.toFixed(5));
+    ppMesh.scale.setScalar(scale);
+    ppMesh.position.set(-center.x*worldFit,-center.y*worldFit,-center.z*worldFit);
+    // Reset any baked Blender material colors to white
+    ppMesh.traverse(child=>{
       if(!child.isMesh)return;
       const mats=Array.isArray(child.material)?child.material:[child.material];
       mats.forEach(m=>{
@@ -1661,7 +1653,6 @@ function loadPPModel(glbUrl){
         m.needsUpdate=true;
       });
     });
-    ppMesh=wrapper;
     ppScene.add(ppMesh);
     if(ld) ld.style.display='none';
   },null,(err)=>{console.error('[PP] LOAD ERROR:',err);if(myId===_ppLoadId&&ld)ld.style.display='none';});
