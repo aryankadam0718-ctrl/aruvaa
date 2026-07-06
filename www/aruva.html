@@ -231,6 +231,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .pp-prod-desc{font-size:12px;color:rgba(255,255,255,.5);line-height:1.75;max-width:240px}
 .pp-center{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
 #pp-preview-wrap{z-index:2;filter:drop-shadow(0 24px 60px rgba(0,0,0,.35))}
+#pp-past-wrap,#pp-back-wrap{display:none !important}
 .pp-emoji-back{position:absolute;font-size:clamp(65px,9vw,120px);opacity:.5;filter:drop-shadow(0 10px 28px rgba(0,0,0,.3));user-select:none;right:6%;top:8%;z-index:1;transform:rotate(10deg) scale(1);transition:opacity .3s,transform .4s;animation:ppFloatBack 4.2s ease-in-out infinite}
 @keyframes ppFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-20px) rotate(3deg)}}
 @keyframes ppFloatBack{0%,100%{transform:rotate(10deg) translateY(0)}50%{transform:rotate(10deg) translateY(-10px)}}
@@ -534,9 +535,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   /* Root overflow fix — prevents vw miscalculation */
   html,body{overflow-x:hidden;max-width:100%}
 
-  /* Intro video — mobile: autoplay at 100vh, no scroll-driven height */
-  .svintro-wrap{height:100vh !important}
-  .svintro-sticky{position:relative !important;height:100vh}
+  /* Intro video — mobile: natural size video on glass panel */
+  /* nav is position:fixed ~56px tall, push content below it */
+  .svintro-wrap{height:auto !important;padding:16px 12px 0;margin-top:72px}
+  .svintro-sticky{position:relative !important;height:auto !important;overflow:visible}
+  .svintro-glass{width:100%;height:auto !important;border-radius:20px;overflow:hidden;position:relative;
+    border:1.5px solid rgba(135,185,212,.38);
+    box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06) inset,0 0 30px rgba(135,185,212,.08)}
+  .svintro-video{position:relative !important;width:100% !important;height:auto !important;object-fit:unset !important;display:block}
+  .svintro-bg-video{display:none !important}
+  .svintro-side{display:none}
+  .svintro-panel-info{display:none}
 
   /* Nav */
   nav{padding:7px 10px;gap:5px;overflow:hidden;max-width:100vw}
@@ -567,7 +576,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   .cust-grid > .panel:first-child{order:2}
   .cust-grid > .viewer-wrap{order:1;padding:0 10px 10px}
   .cust-grid > .panel:last-child{order:3}
-  .canvas-wrap{aspect-ratio:1;max-height:50vh}
+  .canvas-wrap{aspect-ratio:1;max-height:70vh}
   .panel{max-height:260px;border-radius:0}
   .viewer-btns{flex-wrap:wrap;gap:4px;padding:6px 0}
 
@@ -668,14 +677,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <div class="svintro-sticky">
 
     <!-- blurred ambient bg -->
-    <video class="svintro-bg-video" id="svintro-bg-video" muted playsinline preload="metadata">
-      <source src="/edited web dessign.mp4" type="video/mp4">
+    <video class="svintro-bg-video" id="svintro-bg-video" muted playsinline autoplay loop preload="auto">
+      <source src="/svintro-bg.mp4" type="video/mp4">
     </video>
 
     <!-- glass panel with video -->
     <div class="svintro-glass">
-      <video class="svintro-video" id="svintro-video" muted playsinline preload="metadata">
-        <source src="/edited web dessign.mp4" type="video/mp4">
+      <video class="svintro-video" id="svintro-video" muted playsinline autoplay loop preload="auto">
+        <source src="/svintro-bg.mp4" type="video/mp4">
       </video>
     </div>
 
@@ -771,8 +780,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
           <div class="mvis-frame-live"><span class="mvis-live-dot"></span>LIVE</div>
         </div>
 
-        <video class="mvis-video" id="mvis-video" src="/tshirt vedio in web .mp4"
-          muted playsinline preload="metadata" disablepictureinpicture></video>
+        <video class="mvis-video" id="mvis-video" src="/mvis-video.mp4"
+          muted playsinline preload="auto" disablepictureinpicture></video>
 
         <!-- Info overlaid at bottom -->
         <div class="mvis-info-wrap">
@@ -944,6 +953,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="viewer-btns">
           <button class="vbtn vbtn-rot" onclick="rotateModel(-0.6)">◀ Left</button>
           <button class="vbtn vbtn-rot" onclick="rotateModel(0.6)">Right ▶</button>
+          <button class="vbtn" onclick="zoomBy(0.25)" title="Zoom In">＋ Zoom</button>
+          <button class="vbtn" onclick="zoomBy(-0.25)" title="Zoom Out">－ Zoom</button>
           <button class="vbtn" onclick="resetView()">Reset</button>
           <button class="vbtn" onclick="toggleSpin()">Auto Spin</button>
           <button class="vbtn" onclick="flipShirt()">Flip Side</button>
@@ -1171,6 +1182,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 </div>
 
 <script>
+const API_BASE = window.Capacitor ? 'https://aruvaa-production-b599.up.railway.app' : '';
 // ── STATE ──────────────────────────────────────────────
 const S = {
   color:'#FFFFFF', colorName:'White',
@@ -1402,6 +1414,42 @@ function clearBrush(){
 
 
 // ── TEXTURE ───────────────────────────────────────────
+// Grain/noise is identical every call (~7000 fillRect ops) — render it once and reuse,
+// instead of redoing it on every keystroke/pointer-move (was tanking mobile WebGL).
+let _grainCanvas=null;
+let _watermarkLogo=null;
+(function(){
+  const img=new Image();
+  img.onload=function(){
+    const c=document.createElement('canvas');c.width=img.width;c.height=img.height;
+    const ctx=c.getContext('2d');ctx.drawImage(img,0,0);
+    const d=ctx.getImageData(0,0,c.width,c.height);
+    for(let i=0;i<d.data.length;i+=4){
+      const b=(d.data[i]+d.data[i+1]+d.data[i+2])/3;
+      d.data[i]=d.data[i+1]=d.data[i+2]=255;
+      d.data[i+3]=b<160?255:0;
+    }
+    ctx.putImageData(d,0,0);_watermarkLogo=c;
+    if(typeof refreshTex==='function')refreshTex();
+  };
+  img.src='image.png';
+})();
+function getGrainCanvas(){
+  if(_grainCanvas)return _grainCanvas;
+  const c=document.createElement('canvas');c.width=2048;c.height=2048;
+  const x=c.getContext('2d');
+  x.globalAlpha=.045;
+  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(0,i,2048,1);}
+  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(0,i+2,2048,1);}
+  x.globalAlpha=.03;
+  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(i,0,1,2048);}
+  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(i+2,0,1,2048);}
+  x.globalAlpha=1;
+  for(let i=0;i<3000;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
+  for(let i=0;i<2000;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
+  _grainCanvas=c;
+  return c;
+}
 function genTex(){
   const c=document.createElement('canvas');c.width=2048;c.height=2048;
   const x=c.getContext('2d');
@@ -1423,39 +1471,69 @@ function genTex(){
       x.fillText(layer.text,0,0);x.shadowBlur=0;x.restore();
     }
   });
-  // Fabric weave grain — tiny cross-hatch for a realistic textile feel
-  x.globalAlpha=.045;
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(0,i,2048,1);}
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(0,i+2,2048,1);}
-  x.globalAlpha=.03;
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(i,0,1,2048);}
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(i+2,0,1,2048);}
-  x.globalAlpha=1;
-  // Fine noise specks
-  for(let i=0;i<3000;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
-  for(let i=0;i<2000;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
+  // Fabric weave grain — tiny cross-hatch for a realistic textile feel (cached, see getGrainCanvas)
+  x.drawImage(getGrainCanvas(),0,0);
+  // Watermark — ARUVA branding tiled diagonally across texture
+  (function(){
+    try{
+      const hex=(S.color||'#000000').replace(/[^0-9a-fA-F]/g,'').padEnd(6,'0');
+      const r=parseInt(hex.slice(0,2),16)||0,g=parseInt(hex.slice(2,4),16)||0,b=parseInt(hex.slice(4,6),16)||0;
+      const lum=(r*299+g*587+b*114)/1000;
+      const wColor=lum>128?'rgba(0,0,0,0.40)':'rgba(255,255,255,0.40)';
+      x.save();
+      x.fillStyle=wColor;
+      x.font='bold 38px monospace';
+      x.textBaseline='middle';x.textAlign='center';
+      x.translate(1024,1024);x.rotate(-Math.PI/6);
+      const step=300;
+      for(let row=-4;row<=4;row++){
+        for(let col=-4;col<=4;col++){
+          x.fillText('✦ ARUVA',col*step,row*step);
+        }
+      }
+      x.restore();
+      console.log('[ARUVA] watermark drawn, color:',wColor,'lum:',lum);
+    }catch(e){console.error('[ARUVA] watermark err',e);}
+  })();
   const tex=new THREE.CanvasTexture(c);
   tex.encoding=THREE.sRGBEncoding;
   tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-  tex.generateMipmaps=false;
-  tex.minFilter=THREE.LinearFilter;
+  tex.generateMipmaps=true;
+  tex.minFilter=THREE.LinearMipmapLinearFilter;
   tex.magFilter=THREE.LinearFilter;
-  tex.anisotropy=16;
+  tex.anisotropy=Math.min(4,renderer?renderer.capabilities.getMaxAnisotropy():4);
   return tex;
 }
-function refreshTex(){
+function applyTex(t){
   if(!mesh)return;
-  const t=genTex();
   if(isGLTFModel){
     mesh.traverse(child=>{
       if(child.isMesh){
         if(child.material.map)child.material.map.dispose();
-        child.material.map=t;child.material.needsUpdate=true;
+        child.material.map=t;
+        // Clear any baked Blender colors so only the canvas texture shows
+        child.material.color.set(0xffffff);
+        child.material.emissive&&child.material.emissive.set(0x000000);
+        if(child.material.emissiveMap){child.material.emissiveMap.dispose();child.material.emissiveMap=null;}
+        child.material.vertexColors=false;
+        child.material.needsUpdate=true;
       }
     });
   }else{
     mesh.material.map.dispose();mesh.material.map=t;mesh.material.needsUpdate=true;
   }
+}
+// Coalesce rapid-fire calls (typing, dragging, painting) into one regen per animation
+// frame — regenerating a full 2048x2048 GPU texture per pointer-move event was the
+// cause of the customize-screen freeze/crash on mobile.
+let _texRAF=null;
+function refreshTex(){
+  if(!mesh)return;
+  if(_texRAF)return;
+  _texRAF=requestAnimationFrame(()=>{
+    _texRAF=null;
+    applyTex(genTex());
+  });
 }
 
 // ── PRODUCT PICKER ────────────────────────────────────
@@ -1483,7 +1561,7 @@ const PRODUCTS = [
    price:'999', emoji:'👖', accent:'rgba(251,146,60,.55)', glb:'/trackpant_uv_fixed.glb'},
   {id:'baggyjeans', name:'Baggy Jeans',  sub:'The Street Icon',
    desc:'Premium denim, relaxed fit. Bold silhouette built for your unique custom print.',
-   price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggy_trackpant.glb'},
+   price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggyjeans.glb'},
 ];
 let ppIdx = 0;
 let _loadedGLB = null;
@@ -1526,8 +1604,13 @@ function initPPThree(){
   loop();
 }
 
+let _ppLoadId=0;
 function loadPPModel(glbUrl){
-  if(!ppThreeReady||!window.THREE||!THREE.GLTFLoader) return;
+  const myId=++_ppLoadId;
+  if(!ppThreeReady||!window.THREE||!THREE.GLTFLoader){
+    setTimeout(()=>loadPPModel(glbUrl),300);
+    return;
+  }
   const loader=new THREE.GLTFLoader();
   if(THREE.DRACOLoader){
     const draco=new THREE.DRACOLoader();
@@ -1538,19 +1621,50 @@ function loadPPModel(glbUrl){
   if(ld) ld.style.display='flex';
   if(ppMesh){ppScene.remove(ppMesh);ppMesh=null;}
   if(!glbUrl){if(ld)ld.style.display='none';return;}
+  console.log('[PP] Fetching: '+glbUrl);
   loader.load(glbUrl,gltf=>{
-    ppMesh=gltf.scene;
-    ppMesh.updateMatrixWorld(true);
-    const box=new THREE.Box3();
-    box.setFromObject(ppMesh);
+    if(myId!==_ppLoadId)return;
+    console.log('[PP] Loaded OK');
+    const gltfScene=gltf.scene;
+    gltfScene.updateMatrixWorld(true);
+    // World-space bbox using matrixWorld (includes GLTF root scale — e.g. 0.01 for cm export from Blender)
+    let bestBox=null,bestY=-1;
+    gltfScene.traverse(child=>{
+      if(!child.isMesh||!child.geometry)return;
+      child.geometry.computeBoundingBox();
+      const gb=child.geometry.boundingBox.clone();
+      gb.applyMatrix4(child.matrixWorld);
+      const sy=gb.getSize(new THREE.Vector3()).y;
+      if(sy>bestY){bestY=sy;bestBox=gb.clone();}
+    });
+    const box=bestBox||(new THREE.Box3().setFromObject(gltfScene));
     const size=box.getSize(new THREE.Vector3());
     const center=box.getCenter(new THREE.Vector3());
-    const scale=2.4/Math.max(size.x,size.y,size.z)||1;
-    ppMesh.scale.setScalar(scale);
-    ppMesh.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
+    const maxDim=Math.max(size.x,size.y,size.z)||1;
+    const scale=2.4/maxDim;
+    console.log('[PP] worldSize:',size.x.toFixed(3),size.y.toFixed(3),size.z.toFixed(3),'scale:',scale.toFixed(5));
+    // Wrap gltfScene so we don't overwrite the GLTF root scale (Blender cm/mm exports have root scale 0.01/0.001)
+    const wrapper=new THREE.Group();
+    wrapper.add(gltfScene);
+    wrapper.scale.setScalar(scale);
+    wrapper.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
+    // Reset any baked Blender material colors (dark/black) to white so product looks clean
+    gltfScene.traverse(child=>{
+      if(!child.isMesh)return;
+      const mats=Array.isArray(child.material)?child.material:[child.material];
+      mats.forEach(m=>{
+        if(!m)return;
+        m.color&&m.color.set(0xffffff);
+        m.emissive&&m.emissive.set(0x000000);
+        if(m.emissiveMap){m.emissiveMap.dispose();m.emissiveMap=null;}
+        m.vertexColors=false;
+        m.needsUpdate=true;
+      });
+    });
+    ppMesh=wrapper;
     ppScene.add(ppMesh);
     if(ld) ld.style.display='none';
-  },null,()=>{if(ld)ld.style.display='none';});
+  },null,(err)=>{console.error('[PP] LOAD ERROR:',err);if(myId===_ppLoadId&&ld)ld.style.display='none';});
 }
 
 let ppBackScene,ppBackCam,ppBackRenderer,ppBackMesh;
@@ -1641,6 +1755,7 @@ function initProductPicker(){
   const pp=document.getElementById('product-picker');
   if(!pp) return;
   initPPThree();
+  resizePPRenderer();
 
   // Scroll wheel — exactly 1 model per gesture, no matter how long the scroll
   let wheelAccum=0, wheelLocked=false, wheelReset=null;
@@ -1730,8 +1845,8 @@ function showProductPicker(){
   if(bd) bd.style.display='block';
   if(pp){
     pp.style.display='flex';
-    setTimeout(()=>{initPPThree(); updatePPCards(false);},50);
-    setTimeout(()=>resizePPRenderer(),200);
+    setTimeout(()=>{initPPThree(); resizePPRenderer(); updatePPCards(false);},400);
+    setTimeout(()=>resizePPRenderer(),600);
   }
 }
 
@@ -1882,7 +1997,8 @@ function closeStudioToHome(){
 }
 
 // ── THREE.JS ──────────────────────────────────────────
-let scene,cam,renderer,mesh,dragging=false,prevMx=0,prevMy=0,zoom=1;
+let scene,cam,renderer,mesh,dragging=false,prevMx=0,prevMy=0,zoom=1,_pinchDist=0,panning=false,panX=0,panY=0,_pinchMidX=0,_pinchMidY=0;
+const _CAM_Z=5.5;
 let isGLTFModel=false;
 
 function makeTshirtShape(){
@@ -1971,7 +2087,7 @@ function initThree(glbUrl, productName){
   const wrap=document.getElementById('viewer-wrap');
   const W=wrap.clientWidth,H=wrap.clientHeight;
   scene=new THREE.Scene();scene.background=null;
-  cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,7.5);
+  cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:true,alpha:true,preserveDrawingBuffer:true});
   renderer.setClearColor(0x000000,0);
   renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
@@ -2014,9 +2130,12 @@ function initThree(glbUrl, productName){
     return hits.length&&hits[0].uv?hits[0]:null;
   }
 
+  cv.addEventListener('contextmenu',e=>e.preventDefault());
   cv.addEventListener('mousedown',e=>{
     if(handle3DDrag)return;
     S.spin=false;
+    // Right-click or middle-click → pan camera
+    if(e.button===2||e.button===1){panning=true;prevMx=e.clientX;prevMy=e.clientY;return;}
     const hit=getHit(e.clientX,e.clientY);
 
     // ── BRUSH / ERASER ──────────────────────────
@@ -2089,6 +2208,15 @@ function initThree(glbUrl, productName){
       }
       return;
     }
+    // Camera pan (right-click drag)
+    if(panning){
+      const rect=cv.getBoundingClientRect();
+      panX+=(e.clientX-prevMx)*(cam.position.z/(rect.width||600))*1.8;
+      panY-=(e.clientY-prevMy)*(cam.position.z/(rect.height||600))*1.8;
+      panX=Math.max(-3,Math.min(3,panX));panY=Math.max(-3,Math.min(3,panY));
+      cam.position.x=panX;cam.position.y=panY;
+      prevMx=e.clientX;prevMy=e.clientY;return;
+    }
     // Model rotation — drag full canvas width = half circle (π)
     if(!dragging||!mesh)return;
     const cw=cv.getBoundingClientRect().width||600;
@@ -2096,13 +2224,41 @@ function initThree(glbUrl, productName){
     mesh.rotation.x=Math.max(-.8,Math.min(.8,mesh.rotation.x+(e.clientY-prevMy)*(Math.PI*0.5/cw)));
     prevMx=e.clientX;prevMy=e.clientY;
   });
-  document.addEventListener('mouseup',()=>{dragging=false;isPainting=false;lastPaintTex=null;elementDragging=null;});
-  cv.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.5,Math.min(2.2,zoom-e.deltaY*.001));cam.position.z=7.5/zoom;},{passive:false});
+  document.addEventListener('mouseup',()=>{dragging=false;panning=false;isPainting=false;lastPaintTex=null;elementDragging=null;});
+  cv.addEventListener('wheel',e=>{
+    e.preventDefault();
+    if(e.ctrlKey||e.metaKey||Math.abs(e.deltaY)>50){
+      // Pinch-zoom (ctrl+scroll) or fast scroll = zoom
+      zoom=Math.max(.5,Math.min(2.5,zoom-e.deltaY*.001));
+      cam.position.z=_CAM_Z/zoom;
+    } else {
+      // Trackpad 2-finger swipe = pan
+      panY+=e.deltaY*(cam.position.z/(cv.getBoundingClientRect().height||600))*0.12;
+      panX+=e.deltaX*(cam.position.z/(cv.getBoundingClientRect().width||600))*0.12;
+      panX=Math.max(-3,Math.min(3,panX));panY=Math.max(-3,Math.min(3,panY));
+      cam.position.x=panX;cam.position.y=panY;
+    }
+  },{passive:false});
+  // Keyboard arrow keys — pan when studio canvas is focused/hovered
+  document.addEventListener('keydown',e=>{
+    if(!cam) return;
+    const step=0.12;
+    if(e.key==='ArrowUp'){e.preventDefault();panY=Math.min(3,panY+step);cam.position.y=panY;}
+    else if(e.key==='ArrowDown'){e.preventDefault();panY=Math.max(-3,panY-step);cam.position.y=panY;}
+    else if(e.key==='ArrowLeft'){e.preventDefault();panX=Math.max(-3,panX-step);cam.position.x=panX;}
+    else if(e.key==='ArrowRight'){e.preventDefault();panX=Math.min(3,panX+step);cam.position.x=panX;}
+  });
   // Touch — full interaction mirrors mousedown/mousemove/mouseup
   cv.addEventListener('touchstart',e=>{
     e.preventDefault();
-    const t=e.touches[0];
     S.spin=false;
+    if(e.touches.length===2){
+      _pinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      _pinchMidX=(e.touches[0].clientX+e.touches[1].clientX)/2;
+      _pinchMidY=(e.touches[0].clientY+e.touches[1].clientY)/2;
+      dragging=false;return;
+    }
+    const t=e.touches[0];
     if(handle3DDrag) return;
     const hit=getHit(t.clientX,t.clientY);
     if(S.brushMode==='brush'||S.brushMode==='eraser'){
@@ -2130,6 +2286,24 @@ function initThree(glbUrl, productName){
   },{passive:false});
   document.addEventListener('touchmove',e=>{
     if(!e.touches.length)return;
+    if(e.touches.length===2){
+      e.preventDefault();
+      const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      if(_pinchDist){zoom=Math.max(.5,Math.min(2.5,zoom*(d/_pinchDist)));cam.position.z=_CAM_Z/zoom;}
+      _pinchDist=d;
+      // Pan: track midpoint movement
+      const midX=(e.touches[0].clientX+e.touches[1].clientX)/2;
+      const midY=(e.touches[0].clientY+e.touches[1].clientY)/2;
+      if(_pinchMidX){
+        const rect=cv.getBoundingClientRect();
+        panX+=(midX-_pinchMidX)*(cam.position.z/(rect.width||600))*1.8;
+        panY-=(midY-_pinchMidY)*(cam.position.z/(rect.height||600))*1.8;
+        panX=Math.max(-3,Math.min(3,panX));panY=Math.max(-3,Math.min(3,panY));
+        cam.position.x=panX;cam.position.y=panY;
+      }
+      _pinchMidX=midX;_pinchMidY=midY;
+      return;
+    }
     const t=e.touches[0];
     if(isPainting){
       e.preventDefault();
@@ -2159,7 +2333,7 @@ function initThree(glbUrl, productName){
     mesh.rotation.x=Math.max(-.8,Math.min(.8,mesh.rotation.x+(t.clientY-prevMy)*(Math.PI*0.5/cw2)));
     prevMx=t.clientX;prevMy=t.clientY;
   },{passive:false});
-  document.addEventListener('touchend',()=>{dragging=false;isPainting=false;lastPaintTex=null;elementDragging=null;});
+  document.addEventListener('touchend',()=>{dragging=false;isPainting=false;lastPaintTex=null;elementDragging=null;_pinchDist=0;_pinchMidX=0;_pinchMidY=0;});
   window.addEventListener('resize',()=>{const W2=wrap.clientWidth,H2=wrap.clientHeight;cam.aspect=W2/H2;cam.updateProjectionMatrix();renderer.setSize(W2,H2);});
   (function loop(){
     requestAnimationFrame(loop);
@@ -2177,7 +2351,8 @@ function onGLBFileSelect(inp){
   loadGLB(url);
 }
 
-function resetView(){if(mesh)mesh.rotation.set(.1,0,0);S.spin=true;}
+function resetView(){if(mesh)mesh.rotation.set(.1,0,0);zoom=1;panX=0;panY=0;if(cam)cam.position.set(0,0,_CAM_Z);S.spin=true;}
+function zoomBy(d){zoom=Math.max(.5,Math.min(2.5,zoom+d));if(cam)cam.position.z=_CAM_Z/zoom;}
 function toggleSpin(){S.spin=!S.spin;}
 function rotateModel(delta){
   if(!mesh)return;S.spin=false;
@@ -2394,8 +2569,8 @@ async function addToCart(){
   if(token){
     try{
       const pid=PRODUCT_IDS[S.cat]||5;
-      await fetch('/api/cart',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({product_id:pid,quantity:S.qty,size:S.size,color:S.color,custom_design:customDesign})});
-      const cartData=await(await fetch('/api/cart',{headers:{'Authorization':'Bearer '+token}})).json();
+      await fetch(API_BASE+'/api/cart',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({product_id:pid,quantity:S.qty,size:S.size,color:S.color,custom_design:customDesign})});
+      const cartData=await(await fetch(API_BASE+'/api/cart',{headers:{'Authorization':'Bearer '+token}})).json();
       document.getElementById('cart-count').textContent=cartData.reduce((a,i)=>a+i.quantity,0);
       toast(`Added to cart ✓`);toggleCart();return;
     }catch(e){console.warn('API cart failed',e);}
@@ -2468,7 +2643,7 @@ async function confirmStudioPayment(){
   const token=localStorage.getItem('aruva_token');
   const payload={..._pendingOrderPayload,notes:'3D Custom Order | upi-utr:'+utr+' ref:'+modal.dataset.ref,payment_method:'upi'};
   try{
-    const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload)});
+    const res=await fetch(API_BASE+'/api/orders',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload)});
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||'Order failed');
     modal.style.display='none';
@@ -2488,7 +2663,7 @@ async function saveDesign(){
   if(!name)return;
   const thumb=document.getElementById('three-canvas')?.toDataURL('image/jpeg',.5)||'';
   try{
-    await fetch('/api/designs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name,product_type:S.cat,design_data:{color:S.color,colorName:S.colorName,text:layers.filter(l=>l.type==='text'&&l.text).map(l=>l.text).join(', '),textColor:'#ffffff',font:S.fontFamily},thumbnail:thumb})});
+    await fetch(API_BASE+'/api/designs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name,product_type:S.cat,design_data:{color:S.color,colorName:S.colorName,text:layers.filter(l=>l.type==='text'&&l.text).map(l=>l.text).join(', '),textColor:'#ffffff',font:S.fontFamily},thumbnail:thumb})});
     toast('Design saved ✓');
   }catch{toast('Save failed');}
 }
@@ -2496,7 +2671,7 @@ async function showSavedDesigns(){
   const token=localStorage.getItem('aruva_token');
   if(!token){toast('Sign in to view saved designs');return;}
   try{
-    const designs=await(await fetch('/api/designs',{headers:{'Authorization':'Bearer '+token}})).json();
+    const designs=await(await fetch(API_BASE+'/api/designs',{headers:{'Authorization':'Bearer '+token}})).json();
     const list=document.getElementById('designs-list');
     list.innerHTML=designs.length?designs.map(d=>`<div class="dcard" onclick="loadDesign(${d.id})" style="background:#172638;border:1px solid rgba(135,185,212,.15);border-radius:12px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:8px">${d.thumbnail?`<img src="${d.thumbnail}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:'<div style="width:48px;height:48px;border-radius:8px;background:#1D2F44;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">🎨</div>'}<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div><div style="font-size:10px;color:#4A6B82;text-transform:capitalize">${d.product_type} · ${new Date(d.updated_at).toLocaleDateString('en-IN')}</div></div><button onclick="event.stopPropagation();deleteDesign(${d.id},this)" style="background:none;border:none;color:#4A6B82;cursor:pointer;font-size:18px;padding:4px 6px">×</button></div>`).join(''):'<div style="text-align:center;padding:40px;color:#555;font-size:13px">No saved designs yet.<br>Design something and save it!</div>';
     document.getElementById('designs-modal').style.display='flex';
@@ -2505,7 +2680,7 @@ async function showSavedDesigns(){
 async function loadDesign(id){
   const token=localStorage.getItem('aruva_token');
   try{
-    const d=await(await fetch('/api/designs/'+id,{headers:{'Authorization':'Bearer '+token}})).json();
+    const d=await(await fetch(API_BASE+'/api/designs/'+id,{headers:{'Authorization':'Bearer '+token}})).json();
     const dd=typeof d.design_data==='string'?JSON.parse(d.design_data):d.design_data;
     if(dd.color){S.color=dd.color;S.colorName=dd.colorName||'Custom';document.getElementById('s-color').textContent=S.colorName;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));}
     if(dd.text){
@@ -2519,7 +2694,7 @@ async function loadDesign(id){
 }
 async function deleteDesign(id,btn){
   const token=localStorage.getItem('aruva_token');
-  try{await fetch('/api/designs/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});btn.closest('.dcard').remove();toast('Deleted');}catch{toast('Delete failed');}
+  try{await fetch(API_BASE+'/api/designs/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});btn.closest('.dcard').remove();toast('Deleted');}catch{toast('Delete failed');}
 }
 function rmItem(id){const i=cart.findIndex(x=>x.id===id);if(i!==-1){cart.splice(i,1);renderCart();}}
 function renderCart(){
@@ -2545,7 +2720,7 @@ async function loadShop(reset=true){
   const sort=document.getElementById('shop-sort-sel')?.value||'';
   if(sort)qs.set('sort',sort);
   try{
-    const data=await fetch('/api/products?'+qs).then(r=>r.json());
+    const data=await fetch(API_BASE+'/api/products?'+qs).then(r=>r.json());
     shopTotal=data.total;
     if(reset)grid.innerHTML='';
     if(!data.products.length&&reset){grid.innerHTML='<div class="shop-empty">No products found.</div>';return;}
@@ -2559,7 +2734,7 @@ async function loadMoreShop(){await loadShop(false);}
 
 async function initShopCats(){
   try{
-    const cats=await fetch('/api/categories').then(r=>r.json());
+    const cats=await fetch(API_BASE+'/api/categories').then(r=>r.json());
     const wrap=document.getElementById('shop-cats');
     cats.filter(c=>!c.parent_id).slice(0,6).forEach(c=>{
       wrap.insertAdjacentHTML('beforeend',`<button class="cat-chip" onclick="setShopCat(this,'${c.slug}')">${c.name}</button>`);
@@ -2644,8 +2819,8 @@ async function addCatalogToCart(pid,name,price,imgSrc){
   const token=localStorage.getItem('aruva_token');
   if(token){
     try{
-      await fetch('/api/cart',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({product_id:pid,quantity:1,size,color:''})});
-      const cartData=await(await fetch('/api/cart',{headers:{'Authorization':'Bearer '+token}})).json();
+      await fetch(API_BASE+'/api/cart',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({product_id:pid,quantity:1,size,color:''})});
+      const cartData=await(await fetch(API_BASE+'/api/cart',{headers:{'Authorization':'Bearer '+token}})).json();
       document.getElementById('cart-count').textContent=cartData.reduce((a,i)=>a+i.quantity,0);
       toast(`${name} added to cart ✓`);
       toggleCart();
@@ -2771,9 +2946,28 @@ window.addEventListener('load',async()=>{
   loadShop();
   // Sync cart count from API if logged in
   const _tok=localStorage.getItem('aruva_token');
-  if(_tok){fetch('/api/cart',{headers:{'Authorization':'Bearer '+_tok}}).then(r=>r.json()).then(d=>{document.getElementById('cart-count').textContent=d.reduce((a,i)=>a+i.quantity,0);}).catch(()=>{});}
+  if(_tok){fetch(API_BASE+'/api/cart',{headers:{'Authorization':'Bearer '+_tok}}).then(r=>r.json()).then(d=>{document.getElementById('cart-count').textContent=d.reduce((a,i)=>a+i.quantity,0);}).catch(()=>{});}
   document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
 });
+
+// ── BACK BUTTON (Capacitor Android) ──────────────────
+document.addEventListener('backbutton',function(e){
+  e.preventDefault();
+  // 1. UPI payment modal
+  const upiM=document.getElementById('studio-upi-modal');
+  if(upiM&&upiM.style.display==='flex'){upiM.style.display='none';return;}
+  // 2. Designs/saved modal
+  const desM=document.getElementById('designs-modal');
+  if(desM&&desM.style.display==='flex'){desM.style.display='none';return;}
+  // 3. Cart sidebar
+  const cartSide=document.getElementById('cart-side');
+  if(cartSide&&cartSide.classList.contains('open')){toggleCart();return;}
+  // 4. Customize studio overlay → back to product picker
+  const studioOv=document.getElementById('studio-overlay');
+  if(studioOv&&studioOv.style.display==='flex'){closeStudio();return;}
+  // 5. Nothing open → go to home
+  window.location.href='home.html';
+},false);
 </script>
 <script src="js/animations.js" defer></script>
 <style>
