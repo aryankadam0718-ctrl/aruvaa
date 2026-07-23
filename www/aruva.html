@@ -1374,8 +1374,20 @@ function loadUserImage(input){
   reader.onload=e=>{
     const img=new Image();
     img.onload=()=>{
-      const asp=img.naturalWidth/img.naturalHeight||1;
-      const layer=mkLayer('image',{img,w:800,h:Math.round(800/asp)});
+      const MAX=1024;
+      let finalImg=img,aspW=img.naturalWidth,aspH=img.naturalHeight;
+      if(img.naturalWidth>MAX||img.naturalHeight>MAX){
+        const sc=MAX/Math.max(img.naturalWidth,img.naturalHeight);
+        const oc=document.createElement('canvas');
+        oc.width=Math.round(img.naturalWidth*sc);
+        oc.height=Math.round(img.naturalHeight*sc);
+        aspW=oc.width;aspH=oc.height;
+        oc.getContext('2d').drawImage(img,0,0,oc.width,oc.height);
+        const ri=new Image();ri.src=oc.toDataURL('image/jpeg',0.9);
+        finalImg=ri;
+      }
+      const asp=aspW/aspH||1;
+      const layer=mkLayer('image',{img:finalImg,w:800,h:Math.round(800/asp)});
       layers.push(layer);
       selectedEl=layer.id;pendingPlace=layer.id;
       const ph=document.getElementById('place-hint');
@@ -1450,9 +1462,11 @@ function getGrainCanvas(){
   _grainCanvas=c;
   return c;
 }
+let _texCanvas=null,_texCtx=null,_sharedTex=null;
 function genTex(){
-  const c=document.createElement('canvas');c.width=2048;c.height=2048;
-  const x=c.getContext('2d');
+  if(!_texCanvas){_texCanvas=document.createElement('canvas');_texCanvas.width=2048;_texCanvas.height=2048;_texCtx=_texCanvas.getContext('2d');}
+  const c=_texCanvas,x=_texCtx;
+  x.clearRect(0,0,2048,2048);
   x.fillStyle=S.color;x.fillRect(0,0,2048,2048);
   if(hasBrushStrokes){
     if(S.brushSmooth){x.filter='blur(8px)';x.drawImage(brushCanvas,0,0);x.filter='none';}
@@ -1495,21 +1509,25 @@ function genTex(){
       console.log('[ARUVA] watermark drawn, color:',wColor,'lum:',lum);
     }catch(e){console.error('[ARUVA] watermark err',e);}
   })();
-  const tex=new THREE.CanvasTexture(c);
-  tex.encoding=THREE.sRGBEncoding;
-  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-  tex.generateMipmaps=true;
-  tex.minFilter=THREE.LinearMipmapLinearFilter;
-  tex.magFilter=THREE.LinearFilter;
-  tex.anisotropy=Math.min(4,renderer?renderer.capabilities.getMaxAnisotropy():4);
-  return tex;
+  if(!_sharedTex){
+    _sharedTex=new THREE.CanvasTexture(c);
+    _sharedTex.encoding=THREE.sRGBEncoding;
+    _sharedTex.wrapS=_sharedTex.wrapT=THREE.RepeatWrapping;
+    _sharedTex.generateMipmaps=true;
+    _sharedTex.minFilter=THREE.LinearMipmapLinearFilter;
+    _sharedTex.magFilter=THREE.LinearFilter;
+    _sharedTex.anisotropy=Math.min(4,renderer?renderer.capabilities.getMaxAnisotropy():4);
+  } else {
+    _sharedTex.needsUpdate=true;
+  }
+  return _sharedTex;
 }
 function applyTex(t){
   if(!mesh)return;
   if(isGLTFModel){
     mesh.traverse(child=>{
       if(child.isMesh){
-        if(child.material.map)child.material.map.dispose();
+        if(child.material.map&&child.material.map!==t)child.material.map.dispose();
         child.material.map=t;
         // Clear any baked Blender colors so only the canvas texture shows
         child.material.color.set(0xffffff);
@@ -1520,7 +1538,7 @@ function applyTex(t){
       }
     });
   }else{
-    mesh.material.map.dispose();mesh.material.map=t;mesh.material.needsUpdate=true;
+    if(mesh.material.map&&mesh.material.map!==t)mesh.material.map.dispose();mesh.material.map=t;mesh.material.needsUpdate=true;
   }
 }
 // Coalesce rapid-fire calls (typing, dragging, painting) into one regen per animation
@@ -2079,6 +2097,8 @@ function initThree(glbUrl, productName){
   scene=new THREE.Scene();scene.background=null;
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:true,alpha:true,preserveDrawingBuffer:true});
+  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();console.warn('[ARUVA] WebGL context lost — will restore');},false);
+  renderer.domElement.addEventListener('webglcontextrestored',()=>{console.warn('[ARUVA] WebGL context restored');_sharedTex=null;_texCanvas=null;_texCtx=null;refreshTex();},false);
   renderer.setClearColor(0x000000,0);
   renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.outputEncoding=THREE.sRGBEncoding;
