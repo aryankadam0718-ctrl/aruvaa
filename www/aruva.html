@@ -424,6 +424,23 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .studio-close{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .studio-close:hover{border-color:rgba(255,80,80,.4);color:#ff6060}
 .studio-body{flex:1;overflow-y:auto;padding:20px 32px 28px}
+/* ── MOBILE STUDIO FLOATING UI ─────────────────────── */
+#mob-toolbar{display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:15}
+.mob-icon{width:46px;height:46px;border-radius:14px;background:rgba(8,14,24,.86);backdrop-filter:blur(14px);border:1px solid rgba(135,185,212,.18);color:#87B9D4;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.mob-icon svg{width:20px;height:20px;stroke:#87B9D4;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mob-icon:active,.mob-icon.active{background:rgba(135,185,212,.22);border-color:rgba(135,185,212,.55)}
+#mob-btm-bar{display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.1);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:15}
+.mob-btm-btn{flex:1;height:40px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.15);color:#87B9D4;border-radius:12px;font-size:11px;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.mob-btm-btn:active{background:rgba(135,185,212,.18)}
+.mob-btm-btn svg{width:15px;height:15px;stroke:#87B9D4;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+#mob-overlay-bg{display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:20;-webkit-tap-highlight-color:transparent}
+#mob-overlay-bg.open{display:block}
+.mob-sheet{position:absolute;bottom:0;left:0;right:0;background:#0b1520;border:1px solid rgba(135,185,212,.12);border-radius:22px 22px 0 0;z-index:30;transform:translateY(101%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:72vh;display:flex;flex-direction:column;overflow:hidden}
+.mob-sheet.open{transform:translateY(0)}
+.mob-sh-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(135,185,212,.08);background:#0b1520;flex-shrink:0}
+.mob-sh-hdr>span{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text)}
+.mob-sh-hdr>button{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.mob-sh-body{padding:16px 18px 20px;overflow-y:auto;flex:1}
 /* ── NAV SEARCH & USER ── */
 .nav-search-wrap{position:relative;display:flex;align-items:center}
 .nav-search-inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text);padding:7px 14px 7px 36px;border-radius:50px;font-size:12px;outline:none;width:190px;transition:all .25s}
@@ -624,9 +641,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   .pp-colors{display:none}
   .pp-price{font-size:18px}
   .pp-cta{padding:10px 16px;font-size:11px;white-space:nowrap}
-  .studio-body{padding:10px}
   .studio-topbar{padding:10px 14px}
   .studio-pname{font-size:13px}
+  /* Studio mobile: fullscreen canvas + floating tools */
+  .studio-overlay .studio-body{padding:0 !important;overflow:hidden !important;position:relative}
+  .studio-overlay .cust-inner{height:100%;max-width:100%;padding:0 !important}
+  .studio-overlay .cust-grid{display:flex !important;flex-direction:column !important;height:100%;gap:0 !important}
+  .studio-overlay .cust-grid>.panel{display:none !important}
+  .studio-overlay .viewer-wrap{flex:1;min-height:0;gap:0 !important;align-items:stretch !important;padding-bottom:60px}
+  .studio-overlay .canvas-wrap{aspect-ratio:unset !important;flex:1 !important;min-height:0 !important;max-height:none !important;border-radius:0 !important;width:100% !important;height:100% !important}
+  .studio-overlay .viewer-hint,.studio-overlay .viewer-btns{display:none !important}
+  #mob-toolbar{display:flex !important}
+  #mob-btm-bar{display:flex !important}
 
   /* Process section */
   .process-section{padding:40px 16px}
@@ -995,6 +1021,137 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
     </div><!-- /cust-inner -->
   </div><!-- /studio-body -->
+<!-- ══ MOBILE STUDIO UI (hidden on desktop) ══════════════════ -->
+<!-- Left icon toolbar -->
+<div id="mob-toolbar">
+  <button class="mob-icon" id="mi-color" onclick="mobOpenPanel('color')" title="Fabric Colour">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="2" fill="#87B9D4" stroke="none"/><circle cx="16" cy="10" r="2" fill="#e87" stroke="none"/><circle cx="8" cy="16" r="2" fill="#8e7" stroke="none"/><circle cx="16" cy="16" r="2" fill="#fb0" stroke="none"/><circle cx="12" cy="8" r="2" fill="#c8f" stroke="none"/></svg>
+  </button>
+  <button class="mob-icon" id="mi-text" onclick="mobOpenPanel('text')" title="Add Text">
+    <span style="font-size:18px;font-weight:900;font-family:Georgia,serif;color:#87B9D4;line-height:1">T</span>
+  </button>
+  <button class="mob-icon" id="mi-image" onclick="mobOpenPanel('image')" title="Add Image">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+  </button>
+  <button class="mob-icon" id="mi-brush" onclick="mobOpenPanel('brush')" title="Brush Tools">
+    <svg viewBox="0 0 24 24"><path d="M3 17c0 2 1.5 4 4 4 1.5 0 2.5-.5 3-2l7-12-2-2L3 17z"/><line x1="15" y1="5" x2="19" y2="9"/></svg>
+  </button>
+  <button class="mob-icon" id="mi-layers" onclick="mobOpenPanel('layers')" title="Layers">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 12 15 2 8.5"/><polyline points="2 15 12 21.5 22 15"/><polyline points="2 11.5 12 18 22 11.5"/></svg>
+  </button>
+</div>
+<!-- Bottom action bar -->
+<div id="mob-btm-bar">
+  <button class="mob-btm-btn" onclick="rotateModel(-0.6)">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Left
+  </button>
+  <button class="mob-btm-btn" onclick="rotateModel(0.6)">
+    Right<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <button class="mob-btm-btn" onclick="flipShirt()">
+    <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Flip
+  </button>
+  <button class="mob-btm-btn" onclick="mobOpenPanel('order')" style="flex:1.4;background:rgba(135,185,212,.16);border-color:rgba(135,185,212,.4);color:#fff;font-weight:700;letter-spacing:.5px">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Order
+  </button>
+</div>
+<!-- Sheet dim overlay -->
+<div id="mob-overlay-bg" onclick="mobClosePanel()"></div>
+<!-- ── Sheet: Colour ── -->
+<div class="mob-sheet" id="mob-sh-color">
+  <div class="mob-sh-hdr"><span>Fabric Colour</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body">
+    <div class="color-grid" id="mob-color-swatches" style="gap:8px"></div>
+  </div>
+</div>
+<!-- ── Sheet: Text ── -->
+<div class="mob-sheet" id="mob-sh-text">
+  <div class="mob-sh-hdr"><span>Add Text</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;gap:10px">
+    <input type="text" class="ti" id="mob-text-inp" placeholder="Type your text here…" style="font-size:14px">
+    <select class="si" id="mob-font-sel">
+      <option value="bold-sans">Bold Sans</option><option value="bold-serif">Bold Serif</option>
+      <option value="italic-bold">Bold Italic</option><option value="mono">Monospace</option>
+      <option value="bebas">Bebas Neue</option><option value="pacifico">Pacifico</option>
+      <option value="russo">Russo One</option><option value="playfair">Playfair Display</option>
+      <option value="special-elite">Special Elite</option><option value="press-start">Press Start 2P</option>
+      <option value="righteous">Righteous</option><option value="boogaloo">Boogaloo</option>
+      <option value="orbitron">Orbitron</option><option value="lobster">Lobster</option>
+      <option value="oswald">Oswald</option><option value="bangers">Bangers</option>
+      <option value="black-ops">Black Ops One</option>
+    </select>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="color" id="mob-text-clr" value="#ffffff" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(135,185,212,.25);background:none;cursor:pointer;padding:2px">
+      <span style="font-size:12px;color:var(--muted);letter-spacing:.5px">Text Colour</span>
+    </div>
+    <button onclick="mobAddText()" style="background:linear-gradient(135deg,rgba(135,185,212,.25),rgba(135,185,212,.12));border:1px solid rgba(135,185,212,.4);color:#fff;padding:12px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;width:100%">+ Place on Garment</button>
+  </div>
+</div>
+<!-- ── Sheet: Image ── -->
+<div class="mob-sheet" id="mob-sh-image">
+  <div class="mob-sh-hdr"><span>Add Image / Print</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;gap:10px">
+    <label class="upload-lbl" style="justify-content:center;padding:18px;font-size:13px">
+      <input type="file" id="mob-img-inp" accept="image/*" style="display:none" onchange="loadUserImage(this);mobClosePanel()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Image
+    </label>
+    <div style="font-size:10px;color:rgba(135,185,212,.5);text-align:center;letter-spacing:.5px">Each upload adds a new layer</div>
+  </div>
+</div>
+<!-- ── Sheet: Brush ── -->
+<div class="mob-sheet" id="mob-sh-brush">
+  <div class="mob-sh-hdr"><span>Drawing Tools</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;gap:12px">
+    <div class="be-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <button class="be-btn active" id="mob-mode-select" onclick="setBrushMode('select')">↖ Select</button>
+      <button class="be-btn" id="mob-mode-brush" onclick="setBrushMode('brush')">✏ Brush</button>
+      <button class="be-btn" id="mob-mode-eraser" onclick="setBrushMode('eraser')">◻ Eraser</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="color" id="mob-brush-clr" value="#87B9D4" oninput="S.brushColor=this.value" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(135,185,212,.25);background:none;cursor:pointer;padding:2px">
+      <span style="font-size:12px;color:var(--muted);letter-spacing:.5px">Brush Colour</span>
+    </div>
+    <div>
+      <span class="ctrl-label">Brush Size</span>
+      <input type="range" id="mob-brush-sz" min="4" max="160" value="40" oninput="S.brushSize=+this.value" style="width:100%;margin-top:6px">
+    </div>
+    <button class="clr-btn" onclick="clearBrush()">Clear All Brush Strokes</button>
+  </div>
+</div>
+<!-- ── Sheet: Layers ── -->
+<div class="mob-sheet" id="mob-sh-layers">
+  <div class="mob-sh-hdr"><span>Layers</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body">
+    <div id="mob-layers-list" style="display:flex;flex-direction:column;gap:4px"></div>
+  </div>
+</div>
+<!-- ── Sheet: Order ── -->
+<div class="mob-sheet" id="mob-sh-order">
+  <div class="mob-sh-hdr"><span>Your Order</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;gap:14px">
+    <div class="price" style="margin:0"><span class="cur">₹</span><span id="mob-price-val">1,999</span></div>
+    <div>
+      <span class="ctrl-label">Select Size</span>
+      <div class="size-grid" style="margin-top:8px">
+        <button class="sz-btn active" onclick="setSz(this,'S')">S</button>
+        <button class="sz-btn" onclick="setSz(this,'M')">M</button>
+        <button class="sz-btn" onclick="setSz(this,'L')">L</button>
+        <button class="sz-btn" onclick="setSz(this,'XL')">XL</button>
+      </div>
+    </div>
+    <div>
+      <span class="ctrl-label">Quantity</span>
+      <div class="qty-row" style="margin-top:8px">
+        <button class="qbtn" onclick="chgQty(-1)">−</button>
+        <span class="qnum" id="mob-qty-val">1</span>
+        <button class="qbtn" onclick="chgQty(1)">+</button>
+      </div>
+    </div>
+    <button class="atc-btn" onclick="placeOrder()" style="width:100%">Order Now →</button>
+    <button class="wl-btn" onclick="saveDesign();mobClosePanel()" style="width:100%">↓ Save Design</button>
+  </div>
+</div>
 </div><!-- /studio-overlay -->
 
 <!-- PROCESS -->
@@ -1269,28 +1426,30 @@ function updateDesignSummary(){
   const si=document.getElementById('s-img');if(si)si.textContent=imgs.length?imgs.length+' image(s)':'None';
 }
 function renderLayersList(){
-  const wrap=document.getElementById('layers-list');
-  if(!wrap)return;
-  wrap.innerHTML='';
-  if(!layers.length){wrap.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">No layers yet</div>';return;}
-  let imgCount=0;
-  layers.forEach(layer=>{
-    if(layer.type==='image')imgCount++;
-    const lbl=layer.type==='text'?(layer.text.substring(0,15)||'(empty)'):'Image '+imgCount;
-    const div=document.createElement('div');
-    div.className='layer-item'+(selectedEl===layer.id?' layer-sel':'');
-    div.innerHTML=`<span style="font-size:10px;font-weight:800;opacity:.6;margin-right:4px;flex-shrink:0">${layer.type==='text'?'T':'⬜'}</span><span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lbl}</span><button onclick="removeLayer(${layer.id});event.stopPropagation()" style="background:none;border:none;color:#ff7070;cursor:pointer;font-size:13px;padding:0 3px;line-height:1;flex-shrink:0">✕</button>`;
-    div.onclick=()=>{
-      selectedEl=layer.id;
-      if(layer.type==='text'){
-        activeTextLayerId=layer.id;
-        const inp=document.getElementById('custom-text');if(inp)inp.value=layer.text;
-        const tc=document.getElementById('text-color');if(tc)tc.value=layer.textColor;
-        const fs=document.getElementById('font-style');if(fs)fs.value=layer.fontFamily;
-      }
-      renderLayersList();
-    };
-    wrap.appendChild(div);
+  const wraps=[document.getElementById('layers-list'),document.getElementById('mob-layers-list')].filter(Boolean);
+  if(!wraps.length)return;
+  wraps.forEach(wrap=>{
+    wrap.innerHTML='';
+    if(!layers.length){wrap.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">No layers yet</div>';return;}
+    let imgCount=0;
+    layers.forEach(layer=>{
+      if(layer.type==='image')imgCount++;
+      const lbl=layer.type==='text'?(layer.text.substring(0,15)||'(empty)'):'Image '+imgCount;
+      const div=document.createElement('div');
+      div.className='layer-item'+(selectedEl===layer.id?' layer-sel':'');
+      div.innerHTML=`<span style="font-size:10px;font-weight:800;opacity:.6;margin-right:4px;flex-shrink:0">${layer.type==='text'?'T':'⬜'}</span><span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lbl}</span><button onclick="removeLayer(${layer.id});event.stopPropagation()" style="background:none;border:none;color:#ff7070;cursor:pointer;font-size:13px;padding:0 3px;line-height:1;flex-shrink:0">✕</button>`;
+      div.onclick=()=>{
+        selectedEl=layer.id;
+        if(layer.type==='text'){
+          activeTextLayerId=layer.id;
+          const inp=document.getElementById('custom-text');if(inp)inp.value=layer.text;
+          const tc=document.getElementById('text-color');if(tc)tc.value=layer.textColor;
+          const fs=document.getElementById('font-style');if(fs)fs.value=layer.fontFamily;
+        }
+        renderLayersList();
+      };
+      wrap.appendChild(div);
+    });
   });
   updateDesignSummary();
 }
@@ -1308,30 +1467,56 @@ function addTextLayer(){
 }
 function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
 
+// ── MOBILE PANEL CONTROLS ────────────────────────────────
+function mobOpenPanel(name){
+  document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
+  const bg=document.getElementById('mob-overlay-bg');if(bg)bg.classList.add('open');
+  const sh=document.getElementById('mob-sh-'+name);if(sh)sh.classList.add('open');
+  document.querySelectorAll('.mob-icon').forEach(b=>b.classList.remove('active'));
+  const ic=document.getElementById('mi-'+name);if(ic)ic.classList.add('active');
+  if(name==='layers')renderLayersList();
+}
+function mobClosePanel(){
+  document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
+  const bg=document.getElementById('mob-overlay-bg');if(bg)bg.classList.remove('open');
+  document.querySelectorAll('.mob-icon').forEach(b=>b.classList.remove('active'));
+}
+function mobAddText(){
+  const inp=document.getElementById('mob-text-inp');
+  if(!inp||!inp.value.trim())return;
+  document.getElementById('custom-text').value=inp.value;
+  const clr=document.getElementById('mob-text-clr');if(clr)document.getElementById('text-color').value=clr.value;
+  const fnt=document.getElementById('mob-font-sel');if(fnt)document.getElementById('font-style').value=fnt.value;
+  updateDesign();
+  mobClosePanel();
+}
+
 // ── SWATCHES ──────────────────────────────────────────
 function initSwatches(){
-  const g=document.getElementById('color-swatches');
   const light=new Set(['#FFFFFF','#F5F5F0','#E8E8E8','#C0C0C0','#FFFDE7','#FFF176','#FFEE58','#C8E6C9','#B3E5FC','#E1BEE7','#FFCCBC','#FFB3C6']);
+  const targets=[document.getElementById('color-swatches'),document.getElementById('mob-color-swatches')].filter(Boolean);
   COLORS.forEach((c,i)=>{
-    const el=document.createElement('div');
-    el.className='swatch'+(i===0?' active':'');
-    el.style.background=c.h;
-    if(light.has(c.h))el.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.12)';
-    el.title=c.n;
-    el.onclick=()=>{
-      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-      el.classList.add('active');
-      S.color=c.h;S.colorName=c.n;
-      document.getElementById('s-color').textContent=c.n;
-      refreshTex();
-    };
-    g.appendChild(el);
+    targets.forEach(g=>{
+      const el=document.createElement('div');
+      el.className='swatch'+(i===0?' active':'');
+      el.style.background=c.h;
+      if(light.has(c.h))el.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.12)';
+      el.title=c.n;
+      el.onclick=()=>{
+        document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+        el.classList.add('active');
+        S.color=c.h;S.colorName=c.n;
+        document.getElementById('s-color').textContent=c.n;
+        refreshTex();
+      };
+      g.appendChild(el);
+    });
   });
 }
 
 // ── UI CONTROLS ───────────────────────────────────────
 function setSz(btn,s){document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');S.size=s;document.getElementById('s-size').textContent=s;}
-function chgQty(d){S.qty=Math.max(1,Math.min(10,S.qty+d));document.getElementById('qty-val').textContent=S.qty;}
+function chgQty(d){S.qty=Math.max(1,Math.min(10,S.qty+d));document.getElementById('qty-val').textContent=S.qty;const mq=document.getElementById('mob-qty-val');if(mq)mq.textContent=S.qty;}
 function selectCat(card,type){
   document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
   card.classList.add('active');
@@ -1410,8 +1595,8 @@ let pendingPlace=null;
 function setBrushMode(m){
   S.brushMode=m;
   ['select','brush','eraser'].forEach(k=>{
-    const b=document.getElementById('mode-'+k);
-    if(b)b.classList.toggle('active',k===m);
+    const b=document.getElementById('mode-'+k);if(b)b.classList.toggle('active',k===m);
+    const mb=document.getElementById('mob-mode-'+k);if(mb)mb.classList.toggle('active',k===m);
   });
   const badge=document.getElementById('tool-badge');
   if(badge)badge.textContent=m==='select'?'↖ Select':m==='brush'?'✏ Brush':'◻ Eraser';
@@ -1894,7 +2079,7 @@ function launchCustomize(productId){
 
   S.cat=productId;
   document.getElementById('s-type').textContent=prod.name;
-  document.getElementById('price-val').textContent=prod.price;
+  document.getElementById('price-val').textContent=prod.price;const mpv=document.getElementById('mob-price-val');if(mpv)mpv.textContent=prod.price;
   const spn=document.getElementById('studio-product-name');
   if(spn) spn.textContent=prod.name;
 
