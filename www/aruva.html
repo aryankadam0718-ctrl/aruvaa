@@ -1192,10 +1192,11 @@ const S = {
 };
 const PRICES = {tshirt:1499,hoodie:1999,jacket:3999,croptop:999};
 const cart = [];
+const _TEX_SIZE=window.innerWidth<768?1024:2048;
 
 // ── BRUSH CANVAS ──────────────────────────────────────
 const brushCanvas = document.createElement('canvas');
-brushCanvas.width = 2048; brushCanvas.height = 2048;
+brushCanvas.width = _TEX_SIZE; brushCanvas.height = _TEX_SIZE;
 const brushCtx = brushCanvas.getContext('2d');
 let hasBrushStrokes = false;
 
@@ -1419,7 +1420,7 @@ function setBrushMode(m){
 }
 
 function clearBrush(){
-  brushCtx.clearRect(0,0,2048,2048);hasBrushStrokes=false;
+  brushCtx.clearRect(0,0,_TEX_SIZE,_TEX_SIZE);hasBrushStrokes=false;
   document.getElementById('s-brush').textContent='None';
   refreshTex();
 }
@@ -1448,26 +1449,27 @@ let _watermarkLogo=null;
 })();
 function getGrainCanvas(){
   if(_grainCanvas)return _grainCanvas;
-  const c=document.createElement('canvas');c.width=2048;c.height=2048;
+  const c=document.createElement('canvas');c.width=_TEX_SIZE;c.height=_TEX_SIZE;
   const x=c.getContext('2d');
   x.globalAlpha=.045;
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(0,i,2048,1);}
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(0,i+2,2048,1);}
+  for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(0,i,_TEX_SIZE,1);}
+  for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(0,i+2,_TEX_SIZE,1);}
   x.globalAlpha=.03;
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(i,0,1,2048);}
-  for(let i=0;i<2048;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(i+2,0,1,2048);}
+  for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(i,0,1,_TEX_SIZE);}
+  for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(i+2,0,1,_TEX_SIZE);}
   x.globalAlpha=1;
-  for(let i=0;i<3000;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
-  for(let i=0;i<2000;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*2048,Math.random()*2048,1,1);}
+  const dots=_TEX_SIZE===1024?750:3000;
+  for(let i=0;i<dots;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*_TEX_SIZE,Math.random()*_TEX_SIZE,1,1);}
+  for(let i=0;i<dots*0.66;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*_TEX_SIZE,Math.random()*_TEX_SIZE,1,1);}
   _grainCanvas=c;
   return c;
 }
 let _texCanvas=null,_texCtx=null,_sharedTex=null;
 function genTex(){
-  if(!_texCanvas){_texCanvas=document.createElement('canvas');_texCanvas.width=2048;_texCanvas.height=2048;_texCtx=_texCanvas.getContext('2d');}
+  if(!_texCanvas){_texCanvas=document.createElement('canvas');_texCanvas.width=_TEX_SIZE;_texCanvas.height=_TEX_SIZE;_texCtx=_texCanvas.getContext('2d');}
   const c=_texCanvas,x=_texCtx;
-  x.clearRect(0,0,2048,2048);
-  x.fillStyle=S.color;x.fillRect(0,0,2048,2048);
+  x.clearRect(0,0,_TEX_SIZE,_TEX_SIZE);
+  x.fillStyle=S.color;x.fillRect(0,0,_TEX_SIZE,_TEX_SIZE);
   if(hasBrushStrokes){
     if(S.brushSmooth){x.filter='blur(8px)';x.drawImage(brushCanvas,0,0);x.filter='none';}
     else x.drawImage(brushCanvas,0,0);
@@ -1498,8 +1500,8 @@ function genTex(){
       x.fillStyle=wColor;
       x.font='bold 38px monospace';
       x.textBaseline='middle';x.textAlign='center';
-      x.translate(1024,1024);x.rotate(-Math.PI/6);
-      const step=300;
+      x.translate(_TEX_SIZE/2,_TEX_SIZE/2);x.rotate(-Math.PI/6);
+      const step=_TEX_SIZE*0.146;
       for(let row=-4;row<=4;row++){
         for(let col=-4;col<=4;col++){
           x.fillText('✦ ARUVA',col*step,row*step);
@@ -1609,7 +1611,7 @@ function initPPThree(){
   ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
   ppRenderer.setSize(W,H,false);
   ppRenderer.setClearColor(0x000000,0);
-  ppRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  ppRenderer.setPixelRatio(Math.min(window.devicePixelRatio,window.innerWidth<768?1:1.5));
   ppRenderer.outputEncoding=THREE.sRGBEncoding;
   ppRenderer.toneMapping=THREE.ACESFilmicToneMapping;
   ppRenderer.toneMappingExposure=1.05;
@@ -1686,74 +1688,10 @@ function loadPPModel(glbUrl){
 let ppBackScene,ppBackCam,ppBackRenderer,ppBackMesh;
 let ppPastScene,ppPastCam,ppPastRenderer,ppPastMesh;
 
-function initPPPastThree(){
-  const cvs=document.getElementById('pp-past-canvas');
-  if(!cvs||!window.THREE) return;
-  ppPastScene=new THREE.Scene();
-  ppPastCam=new THREE.PerspectiveCamera(44,1,.1,100);ppPastCam.position.set(0,0,6);
-  ppPastRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
-  ppPastRenderer.setSize(110,110,false);ppPastRenderer.setClearColor(0x000000,0);
-  ppPastRenderer.outputEncoding=THREE.sRGBEncoding;ppPastRenderer.toneMapping=THREE.ACESFilmicToneMapping;ppPastRenderer.toneMappingExposure=1.05;
-  ppPastScene.add(new THREE.HemisphereLight(0xddeeff,0x221133,.55));
-  const d=new THREE.DirectionalLight(0xfff8f0,1.5);d.position.set(3,6,5);ppPastScene.add(d);
-  (function loop(){requestAnimationFrame(loop);if(ppPastMesh)ppPastMesh.rotation.y-=.007;ppPastRenderer.render(ppPastScene,ppPastCam);})();
-}
-function loadPPPastModel(glbUrl){
-  if(!ppPastScene) initPPPastThree();
-  if(!ppPastScene||!window.THREE||!THREE.GLTFLoader) return;
-  const pw=document.getElementById('pp-past-wrap');
-  if(ppPastMesh){ppPastScene.remove(ppPastMesh);ppPastMesh=null;}
-  if(!glbUrl){if(pw)pw.style.opacity='0';return;}
-  const loader=new THREE.GLTFLoader();
-  loader.load(glbUrl,gltf=>{
-    ppPastMesh=gltf.scene;
-    ppPastMesh.updateMatrixWorld(true);
-    const box=new THREE.Box3();
-    box.setFromObject(ppPastMesh);
-    const size=box.getSize(new THREE.Vector3());
-    const center=box.getCenter(new THREE.Vector3());
-    const scale=3.5/Math.max(size.x,size.y,size.z)||1;
-    ppPastMesh.scale.setScalar(scale);
-    ppPastMesh.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
-    ppPastScene.add(ppPastMesh);
-    if(pw)pw.style.opacity='.45';
-  },null,()=>{if(pw)pw.style.opacity='0';});
-}
-function initPPBackThree(){
-  const cvs=document.getElementById('pp-back-canvas');
-  if(!cvs||!window.THREE) return;
-  ppBackScene=new THREE.Scene();
-  ppBackCam=new THREE.PerspectiveCamera(44,1,.1,100);
-  ppBackCam.position.set(0,0,6);
-  ppBackRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
-  ppBackRenderer.setSize(130,130,false);
-  ppBackRenderer.setClearColor(0x000000,0);
-  ppBackRenderer.outputEncoding=THREE.sRGBEncoding;ppBackRenderer.toneMapping=THREE.ACESFilmicToneMapping;ppBackRenderer.toneMappingExposure=1.05;
-  ppBackScene.add(new THREE.HemisphereLight(0xddeeff,0x221133,.55));
-  const d=new THREE.DirectionalLight(0xfff8f0,1.5);d.position.set(3,6,5);ppBackScene.add(d);
-  (function loop(){requestAnimationFrame(loop);if(ppBackMesh)ppBackMesh.rotation.y+=.008;ppBackRenderer.render(ppBackScene,ppBackCam);})();
-}
-function loadPPBackModel(glbUrl){
-  if(!ppBackScene){initPPBackThree();}
-  if(!ppBackScene||!window.THREE||!THREE.GLTFLoader) return;
-  const bw=document.getElementById('pp-back-wrap');
-  if(ppBackMesh){ppBackScene.remove(ppBackMesh);ppBackMesh=null;}
-  if(!glbUrl){if(bw)bw.style.opacity='0';return;}
-  const loader=new THREE.GLTFLoader();
-  loader.load(glbUrl,gltf=>{
-    ppBackMesh=gltf.scene;
-    ppBackMesh.updateMatrixWorld(true);
-    const box=new THREE.Box3();
-    box.setFromObject(ppBackMesh);
-    const size=box.getSize(new THREE.Vector3());
-    const center=box.getCenter(new THREE.Vector3());
-    const scale=3.5/Math.max(size.x,size.y,size.z)||1;
-    ppBackMesh.scale.setScalar(scale);
-    ppBackMesh.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
-    ppBackScene.add(ppBackMesh);
-    if(bw)bw.style.opacity='.55';
-  },null,()=>{if(bw)bw.style.opacity='0';});
-}
+function initPPPastThree(){/* disabled — thumbnails hidden, saves GPU context on mobile */}
+function loadPPPastModel(){/* disabled */}
+function initPPBackThree(){/* disabled — thumbnails hidden, saves GPU context on mobile */}
+function loadPPBackModel(){/* disabled */}
 
 function updatePPBg(){
   const pp=document.getElementById('product-picker');
@@ -2100,7 +2038,7 @@ function initThree(glbUrl, productName){
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();console.warn('[ARUVA] WebGL context lost — will restore');},false);
   renderer.domElement.addEventListener('webglcontextrestored',()=>{console.warn('[ARUVA] WebGL context restored');_sharedTex=null;_texCanvas=null;_texCtx=null;refreshTex();},false);
   renderer.setClearColor(0x000000,0);
-  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,window.innerWidth<768?1:1.5));
   renderer.outputEncoding=THREE.sRGBEncoding;
   renderer.toneMapping=THREE.LinearToneMapping;
   renderer.toneMappingExposure=1.0;
@@ -2152,7 +2090,7 @@ function initThree(glbUrl, productName){
     if(S.brushMode==='brush'||S.brushMode==='eraser'){
       if(hit){
         isPainting=true;
-        const tx=hit.uv.x*2048, ty=(1-hit.uv.y)*2048;
+        const tx=hit.uv.x*_TEX_SIZE, ty=(1-hit.uv.y)*_TEX_SIZE;
         doBrushDot(tx,ty);
         lastPaintTex={x:tx,y:ty};
         refreshTex();
@@ -2162,7 +2100,7 @@ function initThree(glbUrl, productName){
 
     // ── SELECT ──────────────────────────────────
     if(hit){
-      const tx=hit.uv.x*2048, ty=(1-hit.uv.y)*2048;
+      const tx=hit.uv.x*_TEX_SIZE, ty=(1-hit.uv.y)*_TEX_SIZE;
       // Pending place: user added image/text → click to drop it here
       if(pendingPlace){
         const layer=getLayerById(pendingPlace);
@@ -2201,7 +2139,7 @@ function initThree(glbUrl, productName){
     if(isPainting){
       const hit=getHit(e.clientX,e.clientY);
       if(hit){
-        const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;
+        const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;
         if(lastPaintTex)doBrushLine(lastPaintTex,{x:tx,y:ty});
         lastPaintTex={x:tx,y:ty};
         refreshTex();
@@ -2212,7 +2150,7 @@ function initThree(glbUrl, productName){
     if(elementDragging){
       const hit=getHit(e.clientX,e.clientY);
       if(hit){
-        const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;
+        const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;
         const el=getLayerById(elementDragging);
         if(el){el.x=tx;el.y=ty;refreshTex();}
       }
@@ -2272,11 +2210,11 @@ function initThree(glbUrl, productName){
     if(handle3DDrag) return;
     const hit=getHit(t.clientX,t.clientY);
     if(S.brushMode==='brush'||S.brushMode==='eraser'){
-      if(hit){isPainting=true;const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;doBrushDot(tx,ty);lastPaintTex={x:tx,y:ty};refreshTex();}
+      if(hit){isPainting=true;const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;doBrushDot(tx,ty);lastPaintTex={x:tx,y:ty};refreshTex();}
       return;
     }
     if(hit){
-      const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;
+      const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;
       if(pendingPlace){
         const layer=getLayerById(pendingPlace);
         if(layer){layer.x=tx;layer.y=ty;selectedEl=pendingPlace;}
@@ -2318,7 +2256,7 @@ function initThree(glbUrl, productName){
     if(isPainting){
       e.preventDefault();
       const hit=getHit(t.clientX,t.clientY);
-      if(hit){const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;if(lastPaintTex)doBrushLine(lastPaintTex,{x:tx,y:ty});lastPaintTex={x:tx,y:ty};refreshTex();}
+      if(hit){const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;if(lastPaintTex)doBrushLine(lastPaintTex,{x:tx,y:ty});lastPaintTex={x:tx,y:ty};refreshTex();}
       return;
     }
     if(handle3DDrag&&selectedEl){
@@ -2333,7 +2271,7 @@ function initThree(glbUrl, productName){
     if(elementDragging){
       e.preventDefault();
       const hit=getHit(t.clientX,t.clientY);
-      if(hit){const tx=hit.uv.x*2048,ty=(1-hit.uv.y)*2048;const el=getLayerById(elementDragging);if(el){el.x=tx;el.y=ty;refreshTex();}}
+      if(hit){const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;const el=getLayerById(elementDragging);if(el){el.x=tx;el.y=ty;refreshTex();}}
       return;
     }
     if(!dragging||!mesh)return;
@@ -2430,7 +2368,7 @@ function uvToCanvas(u,v){
 }
 
 // tex coords (0-1023) → UV → canvas px
-function texToCanvas(tx,ty){return uvToCanvas(tx/2048, 1-ty/2048);}
+function texToCanvas(tx,ty){return uvToCanvas(tx/_TEX_SIZE, 1-ty/_TEX_SIZE);}
 
 function updateHandleOverlay(){
   const hTL=document.getElementById('h-tl');
