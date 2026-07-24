@@ -2150,7 +2150,21 @@ function launchCustomize(productId){
 
   // Show studio overlay as full-screen page
   const overlay=document.getElementById('studio-overlay');
-  if(overlay){overlay.style.display='flex';if(window.innerWidth<900)overlay.classList.add('mob-mode');}
+  if(overlay){
+    overlay.style.display='flex';
+    const isMob=window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
+    if(isMob){
+      overlay.classList.add('mob-mode');
+      document.body.classList.add('is-mob');
+      // Force via inline styles — bypasses all CSS cascade issues
+      const tb=document.getElementById('mob-toolbar');
+      const bb=document.getElementById('mob-btm-bar');
+      if(tb)tb.style.setProperty('display','flex','important');
+      if(bb)bb.style.setProperty('display','flex','important');
+      document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.style.setProperty('display','none','important'));
+      document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.style.setProperty('display','none','important'));
+    }
+  }
   document.body.style.overflow='hidden';
 
   if(!_threeReady){
