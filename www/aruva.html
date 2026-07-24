@@ -1397,7 +1397,7 @@ const S = {
 };
 const PRICES = {tshirt:1499,hoodie:1999,jacket:3999,croptop:999};
 const cart = [];
-const _TEX_SIZE=window.innerWidth<768?1024:2048;
+const _TEX_SIZE=window.innerWidth<768?512:2048;
 
 // ── BRUSH CANVAS ──────────────────────────────────────
 const brushCanvas = document.createElement('canvas');
@@ -1622,7 +1622,7 @@ function loadUserImage(input){
   reader.onload=e=>{
     const img=new Image();
     img.onload=()=>{
-      const MAX=1024;
+      const MAX=window.innerWidth<768?512:1024;
       const doAdd=(finalImg,aspW,aspH)=>{
         const asp=aspW/aspH||1;
         const layer=mkLayer('image',{img:finalImg,w:_TEX_SIZE*0.8,h:Math.round(_TEX_SIZE*0.8/asp)});
