@@ -880,9 +880,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
         <div class="ctrl">
           <span class="ctrl-label">Match Custom Colour</span>
-          <div class="color-row">
-            <input type="color" id="fabric-color-picker" value="#ffffff" oninput="setFabricColor(this.value)">
-            <span class="color-hint">Pick any colour — match image background</span>
+          <div class="color-row" style="align-items:center;gap:10px">
+            <button id="eyedropper-btn" onclick="openEyeDropper()" title="Pick colour from screen" style="width:34px;height:34px;border-radius:8px;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
+            </button>
+            <div id="eyedropper-preview" style="width:34px;height:34px;border-radius:8px;background:#fff;border:1px solid rgba(255,255,255,.15);flex-shrink:0"></div>
+            <span class="color-hint">Pick colour from screen</span>
           </div>
         </div>
 
@@ -1137,14 +1140,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <div id="mob-layers-list" style="display:flex;flex-direction:column;gap:4px"></div>
   </div>
 </div>
-<!-- ── Sheet: Colour Picker ── -->
+<!-- ── Sheet: Colour Picker (eyedropper) ── -->
 <div class="mob-sheet" id="mob-sh-picker">
   <div class="mob-sh-hdr"><span>Match Colour</span><button onclick="mobClosePanel()">✕</button></div>
-  <div class="mob-sh-body" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:24px;padding-bottom:32px">
-    <input type="color" id="mob-fabric-picker" value="#ffffff" oninput="setFabricColor(this.value)" style="width:90px;height:90px;border-radius:20px;border:2px solid rgba(135,185,212,.3);background:none;cursor:pointer;padding:4px">
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding-top:28px;padding-bottom:36px">
+    <button onclick="openEyeDropper();mobClosePanel()" style="width:80px;height:80px;border-radius:24px;background:rgba(135,185,212,.1);border:2px solid rgba(135,185,212,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
+    </button>
+    <div id="mob-eyedropper-preview" style="width:48px;height:48px;border-radius:50%;background:#ffffff;border:2px solid rgba(135,185,212,.3)"></div>
     <div style="text-align:center">
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">Pick Any Colour</div>
-      <div style="font-size:11px;color:var(--muted);letter-spacing:.5px;line-height:1.6">Select a colour to match your<br>image or design background</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Pick from Screen</div>
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.3px;line-height:1.7">Tap the eyedropper, then tap<br>any colour on your screen</div>
     </div>
   </div>
 </div>
@@ -1491,10 +1497,14 @@ function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.sli
 function setFabricColor(hex){
   S.color=hex;S.colorName='Custom';
   document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-  const fp=document.getElementById('fabric-color-picker');if(fp)fp.value=hex;
-  const mfp=document.getElementById('mob-fabric-picker');if(mfp)mfp.value=hex;
   const sc=document.getElementById('s-color');if(sc)sc.textContent='Custom';
+  const ep=document.getElementById('eyedropper-preview');if(ep)ep.style.background=hex;
+  const mep=document.getElementById('mob-eyedropper-preview');if(mep)mep.style.background=hex;
   refreshTex();
+}
+function openEyeDropper(){
+  if(!window.EyeDropper){alert('Eyedropper is not supported in this browser. Try Chrome.');return;}
+  new EyeDropper().open().then(r=>setFabricColor(r.sRGBHex)).catch(()=>{});
 }
 
 // ── MOBILE PANEL CONTROLS ────────────────────────────────
@@ -1537,8 +1547,8 @@ function initSwatches(){
         el.classList.add('active');
         S.color=c.h;S.colorName=c.n;
         document.getElementById('s-color').textContent=c.n;
-        const fp=document.getElementById('fabric-color-picker');if(fp)fp.value=c.h;
-        const mfp=document.getElementById('mob-fabric-picker');if(mfp)mfp.value=c.h;
+        const ep=document.getElementById('eyedropper-preview');if(ep)ep.style.background=c.h;
+        const mep=document.getElementById('mob-eyedropper-preview');if(mep)mep.style.background=c.h;
         refreshTex();
       };
       g.appendChild(el);
