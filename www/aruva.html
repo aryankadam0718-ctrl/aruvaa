@@ -875,11 +875,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
         <div class="ctrl">
           <span class="ctrl-label">Fabric Colour</span>
-          <div class="color-row" style="margin-bottom:10px">
-            <input type="color" id="fabric-color-picker" value="#ffffff" oninput="setFabricColor(this.value)">
-            <span class="color-hint">Custom colour picker</span>
-          </div>
           <div class="color-grid" id="color-swatches"></div>
+        </div>
+
+        <div class="ctrl">
+          <span class="ctrl-label">Match Custom Colour</span>
+          <div class="color-row">
+            <input type="color" id="fabric-color-picker" value="#ffffff" oninput="setFabricColor(this.value)">
+            <span class="color-hint">Pick any colour — match image background</span>
+          </div>
         </div>
 
         <div class="ctrl">
@@ -1043,6 +1047,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <button class="mob-icon" id="mi-layers" onclick="mobOpenPanel('layers')" title="Layers">
     <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 12 15 2 8.5"/><polyline points="2 15 12 21.5 22 15"/><polyline points="2 11.5 12 18 22 11.5"/></svg>
   </button>
+  <button class="mob-icon" id="mi-picker" onclick="mobOpenPanel('picker')" title="Match Colour">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3.5-2.5 4.5L18 15l-3 3-3.5-3.5C10.5 15.5 9 16.5 7 16.5a5 5 0 0 1 0-10"/><circle cx="9" cy="11" r="1" fill="#87B9D4" stroke="none"/></svg>
+  </button>
 </div>
 <!-- Bottom action bar -->
 <div id="mob-btm-bar">
@@ -1065,13 +1072,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="mob-sheet" id="mob-sh-color">
   <div class="mob-sh-hdr"><span>Fabric Colour</span><button onclick="mobClosePanel()">✕</button></div>
   <div class="mob-sh-body">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(135,185,212,.08)">
-      <input type="color" id="mob-fabric-picker" value="#ffffff" oninput="setFabricColor(this.value)" style="width:44px;height:44px;border-radius:10px;border:1px solid rgba(135,185,212,.25);background:none;cursor:pointer;padding:3px;flex-shrink:0">
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px">Custom Colour</div>
-        <div style="font-size:10px;color:var(--muted);letter-spacing:.5px">Match any colour exactly</div>
-      </div>
-    </div>
     <div class="color-grid" id="mob-color-swatches" style="gap:8px"></div>
   </div>
 </div>
@@ -1135,6 +1135,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <div class="mob-sh-hdr"><span>Layers</span><button onclick="mobClosePanel()">✕</button></div>
   <div class="mob-sh-body">
     <div id="mob-layers-list" style="display:flex;flex-direction:column;gap:4px"></div>
+  </div>
+</div>
+<!-- ── Sheet: Colour Picker ── -->
+<div class="mob-sheet" id="mob-sh-picker">
+  <div class="mob-sh-hdr"><span>Match Colour</span><button onclick="mobClosePanel()">✕</button></div>
+  <div class="mob-sh-body" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:24px;padding-bottom:32px">
+    <input type="color" id="mob-fabric-picker" value="#ffffff" oninput="setFabricColor(this.value)" style="width:90px;height:90px;border-radius:20px;border:2px solid rgba(135,185,212,.3);background:none;cursor:pointer;padding:4px">
+    <div style="text-align:center">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">Pick Any Colour</div>
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.5px;line-height:1.6">Select a colour to match your<br>image or design background</div>
+    </div>
   </div>
 </div>
 <!-- ── Sheet: Order ── -->
