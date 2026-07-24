@@ -672,6 +672,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   /* Cart */
   .cart-side{width:100%;border-radius:20px 20px 0 0}
 }
+/* JS-applied mobile class — works on Android WebView regardless of media query */
+.studio-overlay.mob-mode .studio-body{padding:0 !important;overflow:hidden !important;position:relative}
+.studio-overlay.mob-mode .cust-inner{height:100%;max-width:100%;padding:0 !important}
+.studio-overlay.mob-mode .cust-grid{display:flex !important;flex-direction:column !important;height:100%;gap:0 !important}
+.studio-overlay.mob-mode .cust-grid>.panel{display:none !important}
+.studio-overlay.mob-mode .viewer-wrap{flex:1;min-height:0;gap:0 !important;align-items:stretch !important;padding-bottom:60px}
+.studio-overlay.mob-mode .canvas-wrap{aspect-ratio:unset !important;flex:1 !important;min-height:0 !important;max-height:none !important;border-radius:0 !important;width:100% !important;height:100% !important}
+.studio-overlay.mob-mode .viewer-hint,.studio-overlay.mob-mode .viewer-btns{display:none !important}
+.studio-overlay.mob-mode #mob-toolbar{display:flex !important}
+.studio-overlay.mob-mode #mob-btm-bar{display:flex !important}
 </style>
 </head>
 <body data-mobile="true">
@@ -2129,7 +2139,7 @@ function launchCustomize(productId){
 
   // Show studio overlay as full-screen page
   const overlay=document.getElementById('studio-overlay');
-  if(overlay) overlay.style.display='flex';
+  if(overlay){overlay.style.display='flex';if(window.innerWidth<900)overlay.classList.add('mob-mode');}
   document.body.style.overflow='hidden';
 
   if(!_threeReady){
