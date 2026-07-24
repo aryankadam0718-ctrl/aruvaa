@@ -2156,13 +2156,14 @@ function launchCustomize(productId){
     if(isMob){
       overlay.classList.add('mob-mode');
       document.body.classList.add('is-mob');
-      // Force via inline styles — bypasses all CSS cascade issues
+      // Remove desktop panels from DOM entirely — most reliable approach
+      document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.remove());
+      document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.remove());
+      // Show mobile toolbar + bottom bar directly via style attribute
       const tb=document.getElementById('mob-toolbar');
       const bb=document.getElementById('mob-btm-bar');
-      if(tb)tb.style.setProperty('display','flex','important');
-      if(bb)bb.style.setProperty('display','flex','important');
-      document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.style.setProperty('display','none','important'));
-      document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.style.setProperty('display','none','important'));
+      if(tb)tb.setAttribute('style','display:flex!important;position:absolute;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:9999');
+      if(bb)bb.setAttribute('style','display:flex!important;position:absolute;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);padding:10px 14px;gap:8px;align-items:center;z-index:9999');
     }
   }
   document.body.style.overflow='hidden';
