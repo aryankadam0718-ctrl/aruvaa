@@ -874,17 +874,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="panel-title">Design Controls</div>
 
         <div class="ctrl">
-          <span class="ctrl-label">Fabric Colour</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span class="ctrl-label" style="margin-bottom:0">Fabric Colour</span>
+            <button id="eyedropper-btn" onclick="openEyeDropper()" title="Pick colour from screen" style="display:flex;align-items:center;gap:6px;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.3);color:#87B9D4;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:10px;letter-spacing:.5px;transition:all .2s">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
+              Pick
+            </button>
+          </div>
+          <div id="eyedropper-preview" style="display:none"></div>
           <div class="color-grid" id="color-swatches"></div>
         </div>
-
-        <div class="ctrl">
-          <span class="ctrl-label">Match Custom Colour</span>
-          <div class="color-row" style="align-items:center;gap:10px">
-            <button id="eyedropper-btn" onclick="openEyeDropper()" title="Pick colour from screen" style="width:34px;height:34px;border-radius:8px;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
-            </button>
-            <div id="eyedropper-preview" style="width:34px;height:34px;border-radius:8px;background:#fff;border:1px solid rgba(255,255,255,.15);flex-shrink:0"></div>
             <span class="color-hint">Pick colour from screen</span>
           </div>
         </div>
@@ -1603,25 +1602,28 @@ function loadUserImage(input){
     const img=new Image();
     img.onload=()=>{
       const MAX=1024;
-      let finalImg=img,aspW=img.naturalWidth,aspH=img.naturalHeight;
+      const doAdd=(finalImg,aspW,aspH)=>{
+        const asp=aspW/aspH||1;
+        const layer=mkLayer('image',{img:finalImg,w:_TEX_SIZE*0.8,h:Math.round(_TEX_SIZE*0.8/asp)});
+        layers.push(layer);
+        selectedEl=layer.id;pendingPlace=layer.id;
+        const ph=document.getElementById('place-hint');
+        if(ph){ph.textContent='📍 Click on hoodie to place image';ph.style.display='block';}
+        setBrushMode('select');
+        renderLayersList();refreshTex();
+      };
       if(img.naturalWidth>MAX||img.naturalHeight>MAX){
         const sc=MAX/Math.max(img.naturalWidth,img.naturalHeight);
         const oc=document.createElement('canvas');
         oc.width=Math.round(img.naturalWidth*sc);
         oc.height=Math.round(img.naturalHeight*sc);
-        aspW=oc.width;aspH=oc.height;
         oc.getContext('2d').drawImage(img,0,0,oc.width,oc.height);
-        const ri=new Image();ri.src=oc.toDataURL('image/jpeg',0.9);
-        finalImg=ri;
+        const ri=new Image();
+        ri.onload=()=>doAdd(ri,oc.width,oc.height);
+        ri.src=oc.toDataURL('image/jpeg',0.9);
+      } else {
+        doAdd(img,img.naturalWidth,img.naturalHeight);
       }
-      const asp=aspW/aspH||1;
-      const layer=mkLayer('image',{img:finalImg,w:800,h:Math.round(800/asp)});
-      layers.push(layer);
-      selectedEl=layer.id;pendingPlace=layer.id;
-      const ph=document.getElementById('place-hint');
-      if(ph){ph.textContent='📍 Click on hoodie to place image';ph.style.display='block';}
-      setBrushMode('select');
-      renderLayersList();refreshTex();
     };
     img.src=e.target.result;
   };
@@ -1703,15 +1705,15 @@ function genTex(){
   }
   layers.forEach(layer=>{
     if(pendingPlace===layer.id)return;
-    if(layer.type==='image'&&layer.img){
-      x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
-      x.drawImage(layer.img,-layer.w/2,-layer.h/2,layer.w,layer.h);x.restore();
+    if(layer.type==='image'&&layer.img&&layer.img.complete&&layer.img.naturalWidth>0){
+      try{x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
+      x.drawImage(layer.img,-layer.w/2,-layer.h/2,layer.w,layer.h);x.restore();}catch(e){x.restore();}
     }else if(layer.type==='text'&&layer.text){
-      x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
+      try{x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
       x.scale(layer.scaleX||1,layer.scaleY||1);
       x.font=getLayerFont(layer);x.textAlign='center';x.textBaseline='middle';
-      x.fillStyle=layer.textColor;x.shadowColor='rgba(0,0,0,.4)';x.shadowBlur=16;
-      x.fillText(layer.text,0,0);x.shadowBlur=0;x.restore();
+      x.fillStyle=layer.textColor||'#fff';x.shadowColor='rgba(0,0,0,.4)';x.shadowBlur=16;
+      x.fillText(layer.text,0,0);x.shadowBlur=0;x.restore();}catch(e){x.restore();}
     }
   });
   // Fabric weave grain — tiny cross-hatch for a realistic textile feel (cached, see getGrainCanvas)
@@ -2734,7 +2736,7 @@ async function addToCart(){
   px.fillStyle=S.color;px.fillRect(0,0,180,180);
   if(hasBrushStrokes)px.drawImage(brushCanvas,0,0,180,180);
   layers.forEach(layer=>{
-    if(layer.type==='image'&&layer.img){px.save();px.translate(80,70);const asp=layer.w/layer.h||1;const sw=70,sh=70/asp;px.drawImage(layer.img,-sw/2,-sh/2,sw,sh);px.restore();}
+    if(layer.type==='image'&&layer.img&&layer.img.complete&&layer.img.naturalWidth>0){try{px.save();px.translate(80,70);const asp=layer.w/layer.h||1;const sw=70,sh=70/asp;px.drawImage(layer.img,-sw/2,-sh/2,sw,sh);px.restore();}catch(e){px.restore();}}
     if(layer.type==='text'&&layer.text){px.fillStyle=layer.textColor;px.font='bold 18px Arial';px.textAlign='center';px.textBaseline='middle';px.fillText(layer.text.substring(0,12),90,135);}
   });
   const thumb=pc.toDataURL();
