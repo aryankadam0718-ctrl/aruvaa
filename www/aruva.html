@@ -425,11 +425,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .studio-close:hover{border-color:rgba(255,80,80,.4);color:#ff6060}
 .studio-body{flex:1;overflow-y:auto;padding:20px 32px 28px}
 /* ── MOBILE STUDIO FLOATING UI ─────────────────────── */
-#mob-toolbar{display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:15}
+#mob-toolbar{display:none;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:9999;will-change:transform}
 .mob-icon{width:46px;height:46px;border-radius:14px;background:rgba(8,14,24,.86);backdrop-filter:blur(14px);border:1px solid rgba(135,185,212,.18);color:#87B9D4;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
 .mob-icon svg{width:20px;height:20px;stroke:#87B9D4;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .mob-icon:active,.mob-icon.active{background:rgba(135,185,212,.22);border-color:rgba(135,185,212,.55)}
-#mob-btm-bar{display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.1);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:15}
+#mob-btm-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.1);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:9999;will-change:transform}
 .mob-btm-btn{flex:1;height:40px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.15);color:#87B9D4;border-radius:12px;font-size:11px;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;transition:background .15s}
 .mob-btm-btn:active{background:rgba(135,185,212,.18)}
 .mob-btm-btn svg{width:15px;height:15px;stroke:#87B9D4;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -2162,8 +2162,8 @@ function launchCustomize(productId){
       // Show mobile toolbar + bottom bar directly via style attribute
       const tb=document.getElementById('mob-toolbar');
       const bb=document.getElementById('mob-btm-bar');
-      if(tb)tb.setAttribute('style','display:flex!important;position:absolute;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:9999');
-      if(bb)bb.setAttribute('style','display:flex!important;position:absolute;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);padding:10px 14px;gap:8px;align-items:center;z-index:9999');
+      if(tb)tb.setAttribute('style','display:flex!important;position:fixed!important;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:9999;will-change:transform');
+      if(bb)bb.setAttribute('style','display:flex!important;position:fixed!important;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);padding:10px 14px;gap:8px;align-items:center;z-index:9999;will-change:transform');
     }
   }
   document.body.style.overflow='hidden';
