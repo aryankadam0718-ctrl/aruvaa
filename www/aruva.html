@@ -1832,6 +1832,9 @@ const PRODUCTS = [
   {id:'baggyjeans', name:'Baggy Jeans',  sub:'The Street Icon',
    desc:'Premium denim, relaxed fit. Bold silhouette built for your unique custom print.',
    price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggyjeans.glb'},
+  {id:'baggytrack', name:'Baggy Track Pant', sub:'The Street Legend',
+   desc:'Premium performance fleece, oversized baggy silhouette. Built for the streets — your custom design, your movement.',
+   price:'1,299', emoji:'👖', accent:'rgba(50,55,75,.85)', glb:'/baggy_trackpant.glb', locked:true},
 ];
 let ppIdx = 0;
 let _loadedGLB = null;
@@ -2013,6 +2016,22 @@ function updatePPCards(animate){
   // 3D model in picker
   setTimeout(()=>loadPPModel(p.glb), animate?220:0);
 
+  // Lock overlay on 3D preview
+  const wrap=document.getElementById('pp-preview-wrap');
+  let lo=document.getElementById('pp-lock-overlay');
+  if(p.locked){
+    if(!lo){
+      lo=document.createElement('div');
+      lo.id='pp-lock-overlay';
+      lo.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;backdrop-filter:blur(3px);background:rgba(8,12,22,.35);border-radius:16px';
+      lo.innerHTML='<div style="font-size:3rem">🔒</div><div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.75);text-align:center;padding:0 20px">This will unlock soon<br>in next update</div>';
+      if(wrap) wrap.appendChild(lo);
+    }
+    lo.style.display='flex';
+  } else {
+    if(lo) lo.style.display='none';
+  }
+
   // Text info
   const sub=document.getElementById('pp-prod-sub');
   const name=document.getElementById('pp-prod-name');
@@ -2021,9 +2040,19 @@ function updatePPCards(animate){
   const cta=document.getElementById('pp-cta-btn');
   if(sub) sub.textContent=p.sub;
   if(name) name.textContent=p.name;
-  if(desc) desc.textContent=p.desc;
+  if(desc) desc.textContent=p.locked?'This will unlock soon in next update — we\'re perfecting every stitch, every detail, just for you. Stay tuned.':p.desc;
   if(price) price.innerHTML=`<small>₹</small>${p.price}`;
-  if(cta){ cta.textContent='Customize This →'; cta.onclick=()=>launchCustomize(p.id); }
+  if(cta){
+    if(p.locked){
+      cta.innerHTML='🔒 &nbsp;Unlocking Soon';
+      cta.style.cssText='opacity:.5;cursor:not-allowed;pointer-events:none;filter:grayscale(.6)';
+      cta.onclick=null;
+    } else {
+      cta.innerHTML='Customize This →';
+      cta.style.cssText='';
+      cta.onclick=()=>launchCustomize(p.id);
+    }
+  }
 
   // Past/back thumbnail canvases are hidden — skip loading to reduce network requests
 
@@ -2066,7 +2095,24 @@ function initInlinePP(){
     card.id='ppin-card-'+i;
     card.className='pp-card';
     card.style.transform=`translateY(${i*100}%)`;
-    card.innerHTML=`
+    card.innerHTML=p.locked?`
+      <div class="pp-card-left">
+        <div class="pp-prod-sub">${p.sub}</div>
+        <div class="pp-prod-name">${p.name}</div>
+        <div class="pp-prod-desc" style="color:rgba(255,255,255,.5);font-style:italic">This will unlock soon in next update — we're perfecting every detail for you. Stay tuned.</div>
+        <div class="pp-prod-price" style="opacity:.45">₹${p.price}</div>
+        <button class="pp-cta" style="opacity:.45;cursor:not-allowed;pointer-events:none;filter:grayscale(.7)">🔒 &nbsp;Unlocking Soon</button>
+      </div>
+      <div class="pp-card-right" style="position:relative">
+        <div class="pp-frame" style="--pp-accent:${p.accent};filter:grayscale(.7);opacity:.6">
+          <div class="pp-emoji">${p.emoji}</div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(2px)">
+          <div style="font-size:2rem">🔒</div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);text-align:center;padding:0 8px">Coming Next Update</div>
+        </div>
+      </div>`:
+    `
       <div class="pp-card-left">
         <div class="pp-prod-sub">${p.sub}</div>
         <div class="pp-prod-name">${p.name}</div>
