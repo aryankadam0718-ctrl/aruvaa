@@ -1869,6 +1869,7 @@ function resizePPRenderer(){
 }
 function initPPThree(){
   if(ppThreeReady) return;
+  if(window._IS_MOB) return; // Mobile: no 3D product preview — saves GPU context for studio
   const wrap=document.getElementById('pp-preview-wrap');
   const cvs=document.getElementById('pp-canvas');
   if(!wrap||!cvs||!window.THREE) return;
@@ -2428,7 +2429,9 @@ function initThree(glbUrl, productName){
   }
   scene=new THREE.Scene();scene.background=null;
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
+  try{
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:!_isMob,alpha:true,preserveDrawingBuffer:!_isMob,powerPreference:_isMob?'low-power':'high-performance'});
+  }catch(webglErr){showToast('WebGL fail:'+webglErr.message);console.error(webglErr);return;}
   renderer.domElement.addEventListener('webglcontextlost',e=>{
     e.preventDefault();
     const rec=document.createElement('div');
