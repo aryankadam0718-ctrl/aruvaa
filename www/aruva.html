@@ -699,9 +699,11 @@ body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btn
 </style>
 </head>
 <body>
+<!-- BUILD: v26Jul-C -->
 <script>
 // Detect mobile — Capacitor native app always counts as mobile
 var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent));
+console.log('[ARUVA BUILD] v26Jul-C | _IS_MOB='+_IS_MOB+' | Capacitor='+(typeof window.Capacitor!=='undefined')+' | w='+window.innerWidth);
 if(_IS_MOB)document.body.classList.add('is-mob');
 // Global crash guard — ONLY fires when studio overlay is actively open (display:flex set by launchCustomize)
 window._studioOpen=false;
