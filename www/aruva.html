@@ -2335,6 +2335,7 @@ function buildShirt(){
 function hideOverlay(){const ov=document.getElementById('glb-overlay');if(ov)ov.style.display='none';}
 
 function loadGLB(url, productName){
+  showToast('GLB fetch:'+url); // DEBUG
   if(!window.THREE||!THREE.GLTFLoader){hideOverlay();showToast('GLTFLoader not ready');return;}
   const loader=new THREE.GLTFLoader();
   // Support Draco-compressed GLBs
@@ -2390,23 +2391,24 @@ function loadGLB(url, productName){
   },err=>{
     console.error('GLB error:',err);
     hideOverlay();
-    showToast('GLB failed — try Load GLB button');
+    showToast('GLB ERR:'+(err&&err.message?err.message:JSON.stringify(err)));
   });
 }
 
 function initThree(glbUrl, productName){
   const wrap=document.getElementById('viewer-wrap');
   const _isMob=window.innerWidth<768;
-  // On mobile, viewer-wrap.clientHeight is 0 due to CSS chain (studio-body overflow:auto → no definite height).
-  // Use window dimensions directly — more reliable than trying to read layout.
   let W,H;
   if(_isMob){
     W=window.innerWidth;
-    H=Math.max(window.innerHeight-130,300); // subtract topbar+btmbar
+    H=Math.max(window.innerHeight-130,300);
   }else{
     W=wrap.clientWidth||wrap.offsetWidth||window.innerWidth;
     H=wrap.clientHeight||wrap.offsetHeight||window.innerHeight;
   }
+  // DEBUG — remove after confirming model works
+  showToast('3D:W='+W+',H='+H+',glb='+(glbUrl?glbUrl.split('/').pop():'none'));
+  try{
   scene=new THREE.Scene();scene.background=null;
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:!_isMob,alpha:true,preserveDrawingBuffer:!_isMob,powerPreference:_isMob?'low-power':'high-performance'});
@@ -2670,6 +2672,7 @@ function initThree(glbUrl, productName){
     renderer.render(scene,cam);
     updateHandleOverlay();
   })();
+  }catch(e3d){showToast('3D ERR:'+e3d.message);console.error('initThree error',e3d);}
 }
 
 function initHero(){}
