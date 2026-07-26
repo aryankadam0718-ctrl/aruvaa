@@ -2233,6 +2233,18 @@ function launchCustomize(productId){
       // Dispose product picker renderer to free GPU memory before studio loads
       if(typeof ppAnimId!=='undefined'&&ppAnimId){cancelAnimationFrame(ppAnimId);ppAnimId=null;}
       if(typeof ppRenderer!=='undefined'&&ppRenderer){try{ppRenderer.dispose();}catch(e){}ppRenderer=null;}
+      // Explicitly size canvas-wrap chain — CSS height:100% resolves to 0 because viewer-wrap
+      // is auto-height inside studio-body (overflow:auto), causing overflow:hidden to clip canvas.
+      // Must use setProperty('height','…','important') to beat the !important CSS rules.
+      (function fixCanvasHeight(){
+        const tbar=document.querySelector('.studio-topbar');
+        const topH=tbar?(tbar.offsetHeight||56):56;
+        const canvH=Math.max(window.innerHeight-topH-74,300);
+        const vw=document.getElementById('viewer-wrap');
+        if(vw){vw.style.setProperty('height',canvH+'px','important');vw.style.setProperty('width','100%','important');vw.style.setProperty('overflow','hidden','important');}
+        const cw=document.querySelector('#studio-overlay .canvas-wrap')||document.querySelector('.canvas-wrap');
+        if(cw){cw.style.setProperty('height',canvH+'px','important');cw.style.setProperty('width','100%','important');cw.style.setProperty('overflow','visible','important');cw.style.setProperty('border-radius','0','important');cw.style.setProperty('aspect-ratio','unset','important');}
+      })();
     }
   }
   document.body.style.overflow='hidden';
