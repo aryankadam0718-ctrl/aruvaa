@@ -700,15 +700,17 @@ body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btn
 </head>
 <body>
 <script>
-if(window.innerWidth<900||screen.width<900)document.body.classList.add('is-mob');
-// Global crash guard — show restart screen instead of white screen
+// Detect mobile — Capacitor native app always counts as mobile
+var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent));
+if(_IS_MOB)document.body.classList.add('is-mob');
+// Global crash guard — ONLY fires when studio overlay is actively open (display:flex set by launchCustomize)
+window._studioOpen=false;
 window.addEventListener('error',function(e){
+  if(!window._studioOpen) return; // home page errors don't trigger this
   if(document.getElementById('_aruva-crash')) return;
-  const overlay=document.getElementById('studio-overlay');
-  if(!overlay||overlay.style.display==='none') return;
   const d=document.createElement('div');d.id='_aruva-crash';
   d.style.cssText='position:fixed;inset:0;background:rgba(6,10,18,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999999;color:#fff;font-family:inherit;text-align:center;padding:24px';
-  d.innerHTML='<div style="font-size:2.5rem">⚠️</div><div style="font-size:15px;font-weight:700;letter-spacing:.5px">Something went wrong</div><div style="font-size:12px;color:rgba(255,255,255,.6);max-width:260px">The app ran out of memory. Try using fewer images or smaller designs.</div><button onclick="location.reload()" style="background:#87B9D4;color:#0b1622;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px">Restart App</button>';
+  d.innerHTML='<div style="font-size:2.5rem">⚠️</div><div style="font-size:15px;font-weight:700;letter-spacing:.5px">Something went wrong</div><div style="font-size:12px;color:rgba(255,255,255,.6);max-width:260px">App ran out of memory. Use fewer images or tap restart.</div><button onclick="location.reload()" style="background:#87B9D4;color:#0b1622;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px">Restart App</button>';
   document.body.appendChild(d);
 });
 </script>
@@ -1873,10 +1875,11 @@ function initPPThree(){
   ppScene=new THREE.Scene();
   ppCam=new THREE.PerspectiveCamera(44,W/H,.1,100);
   ppCam.position.set(0,0,7);
-  ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+  try{ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:!window._IS_MOB,alpha:true,powerPreference:'low-power'});}
+  catch(e){console.warn('[ARUVA] ppRenderer init failed',e);return;}
   ppRenderer.setSize(W,H,false);
   ppRenderer.setClearColor(0x000000,0);
-  ppRenderer.setPixelRatio(Math.min(window.devicePixelRatio,window.innerWidth<768?1:1.5));
+  ppRenderer.setPixelRatio(window._IS_MOB?1:Math.min(window.devicePixelRatio,1.5));
   ppRenderer.outputEncoding=THREE.sRGBEncoding;
   ppRenderer.toneMapping=THREE.ACESFilmicToneMapping;
   ppRenderer.toneMappingExposure=1.05;
@@ -2210,23 +2213,24 @@ function launchCustomize(productId){
   const overlay=document.getElementById('studio-overlay');
   if(overlay){
     overlay.style.display='flex';
-    const isMob=window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
-    if(isMob){
+    window._studioOpen=true; // enables error crash screen
+    // Use global _IS_MOB — computed at load time, includes Capacitor native app detection
+    if(window._IS_MOB){
       overlay.classList.add('mob-mode');
       document.body.classList.add('is-mob');
       // Remove desktop panels from DOM entirely — most reliable approach
       document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.remove());
       document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.remove());
-      // Move mob UI elements to body root so they render ABOVE the WebGL canvas compositing layer
+      // Move mob UI to body root — renders ABOVE WebGL canvas compositing layer (z-index:99999)
       const tb=document.getElementById('mob-toolbar');
       const bb=document.getElementById('mob-btm-bar');
       const mobBg=document.getElementById('mob-overlay-bg');
       document.querySelectorAll('.mob-sheet').forEach(s=>document.body.appendChild(s));
       if(mobBg) document.body.appendChild(mobBg);
-      if(tb){document.body.appendChild(tb);tb.style.cssText='display:flex;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:99999;will-change:transform;-webkit-transform:translateY(-50%) translateZ(0)';}
-      if(bb){document.body.appendChild(bb);bb.style.cssText='display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.97);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.15);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:99999;will-change:transform;-webkit-transform:translateZ(0)';}
+      if(tb){document.body.appendChild(tb);tb.style.cssText='display:flex;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:99999;will-change:transform';}
+      if(bb){document.body.appendChild(bb);bb.style.cssText='display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.97);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.15);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:99999;will-change:transform';}
       // Dispose product picker renderer to free GPU memory before studio loads
-      if(typeof ppAnimId!=='undefined'&&ppAnimId) cancelAnimationFrame(ppAnimId);
+      if(typeof ppAnimId!=='undefined'&&ppAnimId){cancelAnimationFrame(ppAnimId);ppAnimId=null;}
       if(typeof ppRenderer!=='undefined'&&ppRenderer){try{ppRenderer.dispose();}catch(e){}ppRenderer=null;}
     }
   }
@@ -2259,6 +2263,7 @@ function launchCustomize(productId){
 }
 
 function _hideMobUI(){
+  window._studioOpen=false;
   const tb=document.getElementById('mob-toolbar');
   const bb=document.getElementById('mob-btm-bar');
   if(tb) tb.style.cssText='display:none';
