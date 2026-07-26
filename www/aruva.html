@@ -699,11 +699,19 @@ body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btn
 </style>
 </head>
 <body>
-<!-- BUILD: v26Jul-C -->
+<!-- BUILD: v26Jul-D -->
 <script>
 // Detect mobile — Capacitor native app always counts as mobile
 var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent));
-console.log('[ARUVA BUILD] v26Jul-C | _IS_MOB='+_IS_MOB+' | Capacitor='+(typeof window.Capacitor!=='undefined')+' | w='+window.innerWidth);
+// Visible build banner — shows for 4s so user can verify which APK is running
+(function(){
+  var b=document.createElement('div');
+  b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:#e63;color:#fff;font-size:12px;font-weight:700;text-align:center;padding:6px;font-family:monospace;letter-spacing:.5px';
+  b.textContent='BUILD v26Jul-D | mob='+_IS_MOB+' | w='+window.innerWidth;
+  document.body.appendChild(b);
+  setTimeout(function(){b.remove();},5000);
+})();
+console.log('[ARUVA BUILD] v26Jul-D | _IS_MOB='+_IS_MOB+' | Capacitor='+(typeof window.Capacitor!=='undefined')+' | w='+window.innerWidth);
 if(_IS_MOB)document.body.classList.add('is-mob');
 // Global crash guard — ONLY fires when studio overlay is actively open (display:flex set by launchCustomize)
 window._studioOpen=false;
