@@ -703,15 +703,6 @@ body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btn
 <script>
 // Detect mobile — Capacitor native app always counts as mobile
 var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent));
-// Visible build banner — shows for 4s so user can verify which APK is running
-(function(){
-  var b=document.createElement('div');
-  b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:#e63;color:#fff;font-size:12px;font-weight:700;text-align:center;padding:6px;font-family:monospace;letter-spacing:.5px';
-  b.textContent='BUILD v26Jul-D | mob='+_IS_MOB+' | w='+window.innerWidth;
-  document.body.appendChild(b);
-  setTimeout(function(){b.remove();},5000);
-})();
-console.log('[ARUVA BUILD] v26Jul-D | _IS_MOB='+_IS_MOB+' | Capacitor='+(typeof window.Capacitor!=='undefined')+' | w='+window.innerWidth);
 if(_IS_MOB)document.body.classList.add('is-mob');
 // Global crash guard — ONLY fires when studio overlay is actively open (display:flex set by launchCustomize)
 window._studioOpen=false;
@@ -1872,7 +1863,7 @@ function resizePPRenderer(){
   const wrap=document.getElementById('pp-preview-wrap');
   if(!wrap) return;
   const W=wrap.clientWidth||wrap.offsetWidth||380, H=wrap.clientHeight||wrap.offsetHeight||240;
-  ppRenderer.setSize(W,H,false);
+  ppRenderer.setSize(W,H);
   ppCam.aspect=W/H;
   ppCam.updateProjectionMatrix();
 }
@@ -1885,11 +1876,11 @@ function initPPThree(){
   ppScene=new THREE.Scene();
   ppCam=new THREE.PerspectiveCamera(44,W/H,.1,100);
   ppCam.position.set(0,0,7);
-  try{ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:!window._IS_MOB,alpha:true,powerPreference:'low-power'});}
+  try{ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true,powerPreference:'low-power'});}
   catch(e){console.warn('[ARUVA] ppRenderer init failed',e);return;}
-  ppRenderer.setSize(W,H,false);
+  ppRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  ppRenderer.setSize(W,H);
   ppRenderer.setClearColor(0x000000,0);
-  ppRenderer.setPixelRatio(window._IS_MOB?1:Math.min(window.devicePixelRatio,1.5));
   ppRenderer.outputEncoding=THREE.sRGBEncoding;
   ppRenderer.toneMapping=THREE.ACESFilmicToneMapping;
   ppRenderer.toneMappingExposure=1.05;
@@ -2235,8 +2226,8 @@ function launchCustomize(productId){
       const tb=document.getElementById('mob-toolbar');
       const bb=document.getElementById('mob-btm-bar');
       const mobBg=document.getElementById('mob-overlay-bg');
-      document.querySelectorAll('.mob-sheet').forEach(s=>document.body.appendChild(s));
-      if(mobBg) document.body.appendChild(mobBg);
+      document.querySelectorAll('.mob-sheet').forEach(s=>{document.body.appendChild(s);s.style.position='fixed';});
+      if(mobBg){document.body.appendChild(mobBg);mobBg.style.position='fixed';mobBg.style.inset='0';}
       if(tb){document.body.appendChild(tb);tb.style.cssText='display:flex;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:99999;will-change:transform';}
       if(bb){document.body.appendChild(bb);bb.style.cssText='display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.97);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.15);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:99999;will-change:transform';}
       // Dispose product picker renderer to free GPU memory before studio loads
@@ -2368,6 +2359,13 @@ function loadGLB(url, productName){
     scene.add(mesh);
     S.spin=true;
     hideOverlay();
+    // Re-sync renderer size in case canvas was 0×0 at initThree time
+    if(renderer&&cam){
+      const rw=document.getElementById('viewer-wrap');
+      const rW=rw?(rw.clientWidth||rw.offsetWidth):0;
+      const rH=rw?(rw.clientHeight||rw.offsetHeight):0;
+      if(rW>1&&rH>1){cam.aspect=rW/rH;cam.updateProjectionMatrix();renderer.setSize(rW,rH);}
+    }
     buildUVLookup();
     showToast((productName||'Model')+' loaded!');
   },xhr=>{
@@ -2385,8 +2383,10 @@ function loadGLB(url, productName){
 
 function initThree(glbUrl, productName){
   const wrap=document.getElementById('viewer-wrap');
-  const W=wrap.clientWidth,H=wrap.clientHeight;
   const _isMob=window.innerWidth<768;
+  let W=wrap.clientWidth||wrap.offsetWidth;
+  let H=wrap.clientHeight||wrap.offsetHeight;
+  if(!W||!H){W=window.innerWidth;H=Math.max(window.innerHeight-(_isMob?130:100),300);}
   scene=new THREE.Scene();scene.background=null;
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:!_isMob,alpha:true,preserveDrawingBuffer:!_isMob,powerPreference:_isMob?'low-power':'high-performance'});
