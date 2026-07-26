@@ -2361,6 +2361,7 @@ function loadGLB(url, productName){
     }
   }
   loader.load(url,gltf=>{
+    showToast('GLB parsed OK'); // DBG
     if(mesh){scene.remove(mesh);if(!isGLTFModel)mesh.geometry.dispose();}
     const model=gltf.scene;isGLTFModel=true;
     model.updateMatrixWorld(true);
@@ -2386,6 +2387,7 @@ function loadGLB(url, productName){
     if(url&&url.includes('shorts'))pivot.rotation.y=Math.PI;
     mesh=pivot;
     scene.add(mesh);
+    showToast('mesh in scene'); // DBG
     S.spin=true;
     hideOverlay();
     // Re-sync renderer size after load (mobile viewer-wrap may have had 0 height at init)
@@ -2406,6 +2408,7 @@ function loadGLB(url, productName){
     }
   },err=>{
     console.error('GLB error:',err);
+    showToast('GLB ERR:'+(err&&(err.message||err.type||err)||'unknown')); // DBG
     hideOverlay();
     if(window._IS_MOB){buildShirt();refreshTex();}
     else{showToast('Model failed to load');}
