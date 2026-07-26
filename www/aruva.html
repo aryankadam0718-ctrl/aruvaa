@@ -2252,12 +2252,11 @@ function launchCustomize(productId){
   if(!_threeReady){
     _threeReady=true;
     requestAnimationFrame(()=>{
-      // On mobile: skip GLB entirely (causes GPU OOM on low-end phones). Use basic 3D shape.
-      initThree(window._IS_MOB?null:(prod.glb||null), prod.name);
+      initThree(prod.glb||null, prod.name);
     });
   }else{
     // Studio already init'd — just switch model
-    const _useGLB=!window._IS_MOB&&!!prod.glb;
+    const _useGLB=!!prod.glb;
     if(_useGLB){
       if(_loadedGLB===prod.glb&&isGLTFModel&&mesh){
         refreshTex();
@@ -2345,11 +2344,21 @@ function hideOverlay(){const ov=document.getElementById('glb-overlay');if(ov)ov.
 function loadGLB(url, productName){
   if(!window.THREE||!THREE.GLTFLoader){hideOverlay();showToast('GLTFLoader not ready');return;}
   const loader=new THREE.GLTFLoader();
-  // Support Draco-compressed GLBs
-  if(THREE.DRACOLoader){
-    const draco=new THREE.DRACOLoader();
-    draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
-    loader.setDRACOLoader(draco);
+  if(window._IS_MOB){
+    // Mobile: intercept embedded texture blob-URLs so GLB geometry loads but
+    // textures (often 2048×2048 = 16MB GPU each) are replaced with a 1×1 blank.
+    // We apply our own genTex() material anyway, so GLB textures are unused.
+    const mgr=new THREE.LoadingManager();
+    const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    mgr.setURLModifier(u=>(u.startsWith('blob:')||/\.(png|jpg|jpeg|ktx2?|basis)/i.test(u))?BLANK:u);
+    loader.manager=mgr;
+  }else{
+    // Desktop: full Draco support
+    if(THREE.DRACOLoader){
+      const draco=new THREE.DRACOLoader();
+      draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+      loader.setDRACOLoader(draco);
+    }
   }
   loader.load(url,gltf=>{
     if(mesh){scene.remove(mesh);if(!isGLTFModel)mesh.geometry.dispose();}
@@ -2398,7 +2407,8 @@ function loadGLB(url, productName){
   },err=>{
     console.error('GLB error:',err);
     hideOverlay();
-    showToast('Model failed to load');
+    if(window._IS_MOB){buildShirt();refreshTex();}
+    else{showToast('Model failed to load');}
   });
 }
 
