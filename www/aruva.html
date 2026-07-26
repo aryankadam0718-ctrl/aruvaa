@@ -651,8 +651,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   .studio-overlay .viewer-wrap{flex:1;min-height:0;gap:0 !important;align-items:stretch !important;padding-bottom:60px}
   .studio-overlay .canvas-wrap{aspect-ratio:unset !important;flex:1 !important;min-height:0 !important;max-height:none !important;border-radius:0 !important;width:100% !important;height:100% !important}
   .studio-overlay .viewer-hint,.studio-overlay .viewer-btns{display:none !important}
-  #mob-toolbar{display:flex !important}
-  #mob-btm-bar{display:flex !important}
+  /* mob-toolbar visibility controlled by JS only — no CSS override */
 
   /* Process section */
   .process-section{padding:40px 16px}
@@ -680,8 +679,7 @@ body.is-mob .studio-overlay .cust-grid>.panel{display:none !important}
 body.is-mob .studio-overlay .viewer-wrap{flex:1;min-height:0;gap:0 !important;align-items:stretch !important;padding-bottom:60px}
 body.is-mob .studio-overlay .canvas-wrap{aspect-ratio:unset !important;flex:1 !important;min-height:0 !important;max-height:none !important;border-radius:0 !important;width:100% !important;height:100% !important}
 body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btns{display:none !important}
-body.is-mob #mob-toolbar{display:flex !important}
-body.is-mob #mob-btm-bar{display:flex !important}
+/* mob-toolbar/btm-bar visibility = JS only; no CSS to conflict with _hideMobUI */
 /* keep mob-mode as fallback */
 .studio-overlay.mob-mode .studio-body{padding:0 !important;overflow:hidden !important;position:relative}
 .studio-overlay.mob-mode .cust-inner{height:100%;max-width:100%;padding:0 !important}
@@ -690,8 +688,14 @@ body.is-mob #mob-btm-bar{display:flex !important}
 .studio-overlay.mob-mode .viewer-wrap{flex:1;min-height:0;gap:0 !important;align-items:stretch !important;padding-bottom:60px}
 .studio-overlay.mob-mode .canvas-wrap{aspect-ratio:unset !important;flex:1 !important;min-height:0 !important;max-height:none !important;border-radius:0 !important;width:100% !important;height:100% !important}
 .studio-overlay.mob-mode .viewer-hint,.studio-overlay.mob-mode .viewer-btns{display:none !important}
-.studio-overlay.mob-mode #mob-toolbar{display:flex !important}
-.studio-overlay.mob-mode #mob-btm-bar{display:flex !important}
+/* mob-toolbar JS-only */
+/* ── LOCKED PRODUCT OVERLAY ───────────────────────── */
+.pp-lock-overlay{position:absolute;inset:0;border-radius:inherit;background:rgba(6,10,18,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;text-align:center;padding:20px}
+.pp-lock-icon{font-size:2.2rem;line-height:1}
+.pp-lock-title{font-size:13px;font-weight:800;color:#fff;letter-spacing:.5px}
+.pp-lock-sub{font-size:11px;color:rgba(255,255,255,.55);max-width:200px;line-height:1.5}
+.pp-lock-badge{background:rgba(135,185,212,.12);border:1px solid rgba(135,185,212,.3);color:#87B9D4;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;font-weight:700;margin-top:4px}
+.pp-cta-locked{background:rgba(255,255,255,.07)!important;color:rgba(255,255,255,.4)!important;cursor:not-allowed!important;pointer-events:none!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -1711,6 +1715,7 @@ let _watermarkLogo=null;
 })();
 function getGrainCanvas(){
   if(_grainCanvas)return _grainCanvas;
+  if(_TEX_SIZE<=256){_grainCanvas=null;return null;} // skip grain on mobile — saves ~5ms per frame
   const c=document.createElement('canvas');c.width=_TEX_SIZE;c.height=_TEX_SIZE;
   const x=c.getContext('2d');
   x.globalAlpha=.045;
@@ -1720,7 +1725,7 @@ function getGrainCanvas(){
   for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(0,0,0,1)';x.fillRect(i,0,1,_TEX_SIZE);}
   for(let i=0;i<_TEX_SIZE;i+=4){x.fillStyle='rgba(255,255,255,1)';x.fillRect(i+2,0,1,_TEX_SIZE);}
   x.globalAlpha=1;
-  const dots=_TEX_SIZE===1024?750:3000;
+  const dots=Math.round(_TEX_SIZE*_TEX_SIZE/2048/2048*7000);
   for(let i=0;i<dots;i++){x.fillStyle=`rgba(0,0,0,${Math.random()*.04})`;x.fillRect(Math.random()*_TEX_SIZE,Math.random()*_TEX_SIZE,1,1);}
   for(let i=0;i<dots*0.66;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.04})`;x.fillRect(Math.random()*_TEX_SIZE,Math.random()*_TEX_SIZE,1,1);}
   _grainCanvas=c;
@@ -1749,10 +1754,10 @@ function genTex(){
       x.fillText(layer.text,0,0);x.shadowBlur=0;x.restore();}catch(e){x.restore();}
     }
   });
-  // Fabric weave grain — tiny cross-hatch for a realistic textile feel (cached, see getGrainCanvas)
-  x.drawImage(getGrainCanvas(),0,0);
-  // Watermark — ARUVA branding tiled diagonally across texture
-  (function(){
+  // Grain + watermark: skip on mobile (saves ~8ms per frame, no visible diff at 256px)
+  const _gc=getGrainCanvas();
+  if(_gc) x.drawImage(_gc,0,0);
+  if(_TEX_SIZE>256)(function(){
     try{
       const hex=(S.color||'#000000').replace(/[^0-9a-fA-F]/g,'').padEnd(6,'0');
       const r=parseInt(hex.slice(0,2),16)||0,g=parseInt(hex.slice(2,4),16)||0,b=parseInt(hex.slice(4,6),16)||0;
@@ -1764,14 +1769,9 @@ function genTex(){
       x.textBaseline='middle';x.textAlign='center';
       x.translate(_TEX_SIZE/2,_TEX_SIZE/2);x.rotate(-Math.PI/6);
       const step=_TEX_SIZE*0.146;
-      for(let row=-4;row<=4;row++){
-        for(let col=-4;col<=4;col++){
-          x.fillText('✦ ARUVA',col*step,row*step);
-        }
-      }
+      for(let row=-4;row<=4;row++){for(let col=-4;col<=4;col++){x.fillText('✦ ARUVA',col*step,row*step);}}
       x.restore();
-      console.log('[ARUVA] watermark drawn, color:',wColor,'lum:',lum);
-    }catch(e){console.error('[ARUVA] watermark err',e);}
+    }catch(e){}
   })();
   if(!_sharedTex){
     _sharedTex=new THREE.CanvasTexture(c);
@@ -1843,7 +1843,7 @@ const PRODUCTS = [
    price:'999', emoji:'👖', accent:'rgba(251,146,60,.55)', glb:'/trackpant_uv_fixed.glb'},
   {id:'baggyjeans', name:'Baggy Jeans',  sub:'The Street Icon',
    desc:'Premium denim, relaxed fit. Bold silhouette built for your unique custom print.',
-   price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggyjeans.glb'},
+   price:'1,399', emoji:'👗', accent:'rgba(100,160,255,.55)', glb:'/baggyjeans.glb', locked:true},
   {id:'baggytrack', name:'Baggy Track Pant', sub:'The Street Legend',
    desc:'Premium performance fleece, oversized baggy silhouette. Built for the streets — your custom design, your movement.',
    price:'1,299', emoji:'👖', accent:'rgba(50,55,75,.85)', glb:'/baggy_trackpant.glb', locked:true},
@@ -2261,8 +2261,10 @@ function launchCustomize(productId){
 function _hideMobUI(){
   const tb=document.getElementById('mob-toolbar');
   const bb=document.getElementById('mob-btm-bar');
-  if(tb) tb.style.display='none';
-  if(bb) bb.style.display='none';
+  if(tb) tb.style.cssText='display:none';
+  if(bb) bb.style.cssText='display:none';
+  document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
+  const bg=document.getElementById('mob-overlay-bg');if(bg)bg.classList.remove('open');
 }
 function closeStudio(){
   const overlay=document.getElementById('studio-overlay');
