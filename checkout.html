@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — ARUVA</title>
   <link rel="stylesheet" href="css/main.css">
+  <script src="js/pay.js"></script>
   <style>
     .checkout-page { padding: 100px 0 60px; min-height: 100vh; background: var(--dark); }
     .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 32px; align-items: start; }
@@ -15,7 +16,7 @@
     .steps-bar { display: flex; align-items: center; margin-bottom: 32px; }
     .step-item { display: flex; align-items: center; gap: 10px; flex: 1; }
     .step-num { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .82rem; font-weight: 700; flex-shrink: 0; transition: all .3s; border: 2px solid var(--border); color: var(--muted); background: var(--dark2); }
-    .step-num.active { border-color: var(--gold); color: var(--gold); background: rgba(135,185,212,.12); }
+    .step-num.active { border-color: var(--gold); color: var(--gold); background: rgba(201,177,147,.12); }
     .step-num.done { border-color: #2ecc71; color: #000; background: #2ecc71; }
     .step-label { font-size: .82rem; color: var(--muted); transition: color .3s; }
     .step-label.active { color: var(--gold); font-weight: 600; }
@@ -33,14 +34,14 @@
     /* Address */
     .saved-addr-list { display: grid; gap: 12px; margin-bottom: 20px; }
     .addr-card { border: 2px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; position: relative; }
-    .addr-card.selected { border-color: var(--gold); background: rgba(135,185,212,.06); }
-    .addr-card:hover:not(.selected) { border-color: rgba(135,185,212,.4); }
+    .addr-card.selected { border-color: var(--gold); background: rgba(201,177,147,.06); }
+    .addr-card:hover:not(.selected) { border-color: rgba(201,177,147,.4); }
     .addr-card-radio { position: absolute; top: 14px; right: 14px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); transition: all .2s; }
     .addr-card.selected .addr-card-radio { border-color: var(--gold); background: var(--gold); }
     .addr-name { font-size: .9rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
     .addr-line { font-size: .82rem; color: var(--muted); line-height: 1.5; }
     .addr-tag { display: inline-block; font-size: .68rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-    .addr-tag.home { background: rgba(135,185,212,.15); color: var(--gold); }
+    .addr-tag.home { background: rgba(201,177,147,.15); color: var(--gold); }
     .addr-tag.work { background: rgba(46,204,113,.12); color: #2ecc71; }
     .addr-tag.other { background: rgba(255,255,255,.08); color: var(--muted); }
     .add-addr-btn { border: 2px dashed var(--border); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; color: var(--muted); font-size: .85rem; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -63,13 +64,13 @@
     .form-group textarea { resize: vertical; min-height: 70px; }
     .addr-type-btns { display: flex; gap: 8px; }
     .addr-type-btn { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--dark3); color: var(--muted); font-size: .8rem; cursor: pointer; transition: all .2s; text-align: center; }
-    .addr-type-btn.sel { border-color: var(--gold); color: var(--gold); background: rgba(135,185,212,.08); }
+    .addr-type-btn.sel { border-color: var(--gold); color: var(--gold); background: rgba(201,177,147,.08); }
 
     /* Payment */
     .payment-methods { display: grid; gap: 10px; margin-bottom: 20px; }
     .pay-method { border: 2px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 14px; }
-    .pay-method.selected { border-color: var(--gold); background: rgba(135,185,212,.06); }
-    .pay-method:hover:not(.selected) { border-color: rgba(135,185,212,.4); }
+    .pay-method.selected { border-color: var(--gold); background: rgba(201,177,147,.06); }
+    .pay-method:hover:not(.selected) { border-color: rgba(201,177,147,.4); }
     .pay-icon { width: 40px; height: 28px; background: var(--dark3); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--gold); flex-shrink: 0; border: 1px solid var(--border); }
     .pay-info h4 { font-size: .88rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
     .pay-info p { font-size: .75rem; color: var(--muted); }
@@ -115,7 +116,7 @@
     .success-icon svg { width: 40px; height: 40px; color: #2ecc71; }
     .success-page h2 { font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 8px; }
     .success-page p { color: var(--muted); margin-bottom: 4px; font-size: .9rem; }
-    .order-num-badge { background: rgba(135,185,212,.1); border: 1px solid rgba(135,185,212,.3); border-radius: 8px; padding: 12px 24px; display: inline-block; margin: 20px 0; }
+    .order-num-badge { background: rgba(201,177,147,.1); border: 1px solid rgba(201,177,147,.3); border-radius: 8px; padding: 12px 24px; display: inline-block; margin: 20px 0; }
     .order-num-badge span { font-size: .75rem; color: var(--muted); display: block; margin-bottom: 4px; }
     .order-num-badge strong { font-size: 1.1rem; color: var(--gold); letter-spacing: .08em; }
     .success-actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
@@ -126,7 +127,7 @@
     /* UPI Payment Modal */
     #upi-modal { display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:16px; }
     #upi-modal.open { display:flex; }
-    .upi-box { background:#0B1622;border:1px solid rgba(135,185,212,.2);border-radius:24px;width:min(480px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8); }
+    .upi-box { background:#2A1019;border:1px solid rgba(201,177,147,.2);border-radius:24px;width:min(480px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8); }
     .upi-header { padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center; }
     .upi-header-title { font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700; }
     .upi-header-close { background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;line-height:1;padding:0; }
@@ -136,19 +137,25 @@
     .upi-ref { font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:24px;letter-spacing:.5px; }
     .upi-qr-wrap { background:#fff;border-radius:16px;padding:14px;display:inline-block;margin-bottom:20px; }
     .upi-qr-wrap img { display:block;width:200px;height:200px; }
-    .upi-id-row { display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.2);border-radius:10px;padding:12px 16px;margin-bottom:20px; }
+    .upi-id-row { display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(201,177,147,.07);border:1px solid rgba(201,177,147,.2);border-radius:10px;padding:12px 16px;margin-bottom:20px; }
     .upi-id-text { font-size:.95rem;font-weight:600;color:#fff;letter-spacing:.3px; }
-    .upi-copy-btn { background:rgba(135,185,212,.15);border:1px solid rgba(135,185,212,.3);color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:6px;cursor:pointer;text-transform:uppercase; }
-    .upi-open-btn { display:block;width:100%;padding:13px;background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border:1px solid rgba(135,185,212,.3);color:#fff;font-size:.95rem;font-weight:700;border-radius:12px;cursor:pointer;margin-bottom:24px;letter-spacing:.5px; }
+    .upi-copy-btn { background:rgba(201,177,147,.15);border:1px solid rgba(201,177,147,.3);color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:6px;cursor:pointer;text-transform:uppercase; }
+    .upi-open-btn { display:block;width:100%;padding:13px;background:linear-gradient(135deg,#6E3045,#8C4058);border:1px solid rgba(201,177,147,.3);color:#fff;font-size:.95rem;font-weight:700;border-radius:12px;cursor:pointer;margin-bottom:24px;letter-spacing:.5px; }
     .upi-divider { border:none;border-top:1px solid rgba(255,255,255,.08);margin:0 0 20px; }
     .upi-utr-label { font-size:.72rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px; }
     .upi-utr-input { width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:12px 16px;font-size:.95rem;outline:none;text-align:center;letter-spacing:1px;transition:border-color .2s; }
     .upi-utr-input:focus { border-color:var(--gold); }
     .upi-utr-input::placeholder { color:rgba(255,255,255,.2); }
-    .upi-confirm-btn { width:100%;padding:14px;margin-top:12px;background:linear-gradient(135deg,var(--gold-d,#5A97BC),var(--gold,#87B9D4));color:#0B1622;font-size:1rem;font-weight:800;border:none;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:opacity .2s; }
+    .upi-confirm-btn { width:100%;padding:14px;margin-top:12px;background:linear-gradient(135deg,var(--gold-d,#8C7258),var(--gold,#C9B193));color:#2A1019;font-size:1rem;font-weight:800;border:none;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:opacity .2s; }
     .upi-confirm-btn:disabled { opacity:.5;cursor:not-allowed; }
     .upi-note { font-size:.72rem;color:rgba(255,255,255,.25);margin-top:12px;line-height:1.5; }
-  </style>
+/* ═══ SECTION COLOUR MOODS — plum · taupe · cream, a new blend per section ═══ */
+    .checkout-page{background:radial-gradient(ellipse 60% 50% at 10% 0%,rgba(140,64,88,.45) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 100% 100%,rgba(201,177,147,.12) 0%,transparent 60%),linear-gradient(160deg,#3A1724 0%,#2A1019 60%,#1F0B13 100%)}
+    /* Mulberry gloss cards */
+    .checkout-card{background:linear-gradient(160deg,#4A1E2E 0%,#3A1724 100%);border-color:rgba(201,177,147,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 16px 40px rgba(0,0,0,.25)}
+    /* Taupe Stone summary */
+    .co-summary{--gold:#F3E7D3;--gold-l:#FFFFFF;--muted:#E3D5C3;--dark3:rgba(42,16,25,.4);--border:rgba(239,228,210,.16);background:radial-gradient(ellipse 70% 60% at 30% 0%,rgba(255,255,255,.14) 0%,transparent 60%),linear-gradient(165deg,#7A6553 0%,#5C4A3D 55%,#3E3129 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 20px 50px rgba(0,0,0,.3)}
+</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -182,7 +189,7 @@
   let cartItems = [];
   let addresses = [];
   let selectedAddressId = null;
-  let payMethod = 'cod';
+  let payMethod = 'online';
   let checkoutState = {};
   let placedOrder = null;
   let addrFormOpen = false;
@@ -198,8 +205,8 @@
       api('/cart').catch(() => ({ items: [] })),
       api('/users/me/addresses').catch(() => ({ addresses: [] }))
     ]);
-    cartItems = cartData.items || [];
-    addresses = addrData.addresses || [];
+    cartItems = (Array.isArray(cartData) ? cartData : cartData.items || []).map(i => ({ ...i, effective_price: i.effective_price ?? (i.is_on_sale && i.sale_price ? i.sale_price : i.price) }));
+    addresses = (Array.isArray(addrData) ? addrData : addrData.addresses || []).map(a => ({ ...a, name: a.name || a.full_name }));
     if (cartItems.length === 0) { location.href = 'cart.html'; return; }
     if (addresses.length > 0) selectedAddressId = addresses[0].id;
     renderAll();
@@ -211,7 +218,7 @@
     const afterDiscount = subtotal - discountAmt;
     const shipping = afterDiscount >= FREE_SHIP_THRESHOLD ? 0 : SHIP_FEE;
     const taxable = afterDiscount + shipping;
-    const tax = Math.round(taxable * TAX_RATE);
+    const tax = Math.round(afterDiscount * TAX_RATE * 100) / 100;
     const total = taxable + tax;
     return { subtotal, discountAmt, shipping, tax, total };
   }
@@ -335,7 +342,7 @@
 
   function renderPaymentPanel() {
     const methods = [
-      { id: 'upi', icon: 'UPI', label: 'UPI / QR Code', desc: 'GPay, PhonePe, Paytm — scan & pay instantly' },
+      { id: 'online', icon: '⚡', label: 'Pay Online', desc: 'UPI, Cards, NetBanking, Wallets, EMI & Pay Later — secured by Razorpay' },
       { id: 'cod', icon: '₹', label: 'Cash on Delivery', desc: 'Pay when your order arrives' },
     ];
     return `
@@ -364,7 +371,7 @@
   function renderReviewPanel() {
     const t = calcTotals();
     const addr = addresses.find(a => a.id === selectedAddressId);
-    const payLabels = { cod:'Cash on Delivery', upi:'UPI / QR', card:'Credit / Debit Card', emi:'EMI' };
+    const payLabels = { online:'Pay Online (Razorpay)', cod:'Cash on Delivery', upi:'UPI / QR', card:'Credit / Debit Card', emi:'EMI' };
 
     return `
       <div class="checkout-card">
@@ -502,9 +509,9 @@
     if (!/^\d{10}$/.test(phone)) { toast('Enter a valid 10-digit phone number', 'error'); return; }
     if (!/^\d{6}$/.test(pincode)) { toast('Enter a valid 6-digit pincode', 'error'); return; }
     try {
-      const data = await api('/users/me/addresses', 'POST', { name, phone, line1, line2, city, state, pincode, type: addrType });
-      addresses.push(data.address);
-      selectedAddressId = data.address.id;
+      const data = await api('/users/me/addresses', 'POST', { full_name: name, label: addrType, phone, line1, line2, city, state, pincode });
+      const saved = data.address || data; saved.name = saved.name || saved.full_name; addresses.push(saved);
+      selectedAddressId = saved.id;
       addrFormOpen = false;
       renderAll();
       toast('Address saved');
@@ -527,6 +534,10 @@
     if (!selectedAddressId) { toast('Please select a delivery address', 'error'); return; }
     const t = calcTotals();
 
+    if (payMethod === 'online') {
+      payOnline(t);
+      return;
+    }
     if (payMethod === 'upi') {
       openUpiModal(t.total);
       return;
@@ -537,7 +548,7 @@
     if (btn) { btn.disabled = true; btn.textContent = 'Placing Order...'; }
     try {
       const data = await api('/orders', 'POST', {
-        address_id: selectedAddressId, payment_method: 'cod',
+        address_id: selectedAddressId, payment_method: 'cod', items: orderItems(),
         coupon_code: checkoutState.coupon || null,
         subtotal: t.subtotal, discount: t.discountAmt,
         shipping: t.shipping, tax: t.tax, total: t.total
@@ -549,6 +560,26 @@
       toast('Could not place order. Please try again.', 'error');
       if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; }
     }
+  }
+
+  function orderItems() {
+    return cartItems.map(i => ({ product_id: i.product_id, quantity: i.quantity, size: i.size, color: i.color, custom_design: i.custom_design || null }));
+  }
+
+  // Razorpay — UPI, cards, netbanking, wallets, EMI. Falls back to manual UPI if the server has no keys.
+  function payOnline(t) {
+    const btn = document.getElementById('place-order-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Opening payment...'; }
+    const reset = () => { if (btn) { btn.disabled = false; btn.textContent = `Place Order · ${fmt(t.total)}`; } };
+    AruvaPay.start({
+      apiBase: API.replace(//api$/, ''),
+      token: Auth.token(),
+      payload: { address_id: selectedAddressId, coupon_code: checkoutState.coupon || null, items: orderItems() },
+      description: `${cartItems.reduce((s, i) => s + i.quantity, 0)} item(s)`,
+      onSuccess: order => { placedOrder = order; sessionStorage.removeItem('checkout_state'); step = 4; renderAll(); updateBadges(); },
+      onUnavailable: () => { reset(); openUpiModal(t.total); },
+      onError: msg => { reset(); toast(msg, 'error'); }
+    });
   }
 
   function openUpiModal(amount) {
@@ -577,7 +608,7 @@
     try {
       const data = await api('/orders', 'POST', {
         address_id: selectedAddressId,
-        payment_method: 'upi',
+        payment_method: 'upi', items: orderItems(),
         notes: 'upi-utr:' + utr + ' ref:' + modal.dataset.ref,
         coupon_code: checkoutState.coupon || null,
         subtotal: t.subtotal, discount: t.discountAmt,

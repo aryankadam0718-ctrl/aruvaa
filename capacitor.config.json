@@ -2,17 +2,14 @@
   "appId": "com.aruva.fashion",
   "appName": "ARUVA",
   "webDir": "www",
-  "server": {
-    "androidScheme": "https"
-  },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 2000,
-      "backgroundColor": "#0B1622",
+      "backgroundColor": "#2A1019",
       "showSpinner": false
     }
   },
   "android": {
-    "backgroundColor": "#0B1622"
+    "backgroundColor": "#2A1019"
   }
 }

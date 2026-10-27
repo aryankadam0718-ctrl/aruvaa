@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#87B9D4">
+  <meta name="theme-color" content="#C9B193">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ARUVA">
@@ -15,7 +15,7 @@
     body { background: var(--dark); }
     body::before{
       content:'';position:fixed;inset:0;z-index:-1;
-      background:linear-gradient(rgba(11,22,34,.68),rgba(11,22,34,.68)),url('background 3.jpg') center/cover;
+      background:linear-gradient(160deg,rgba(110,48,69,.62) 0%,rgba(58,23,36,.74) 45%,rgba(35,13,22,.88) 100%),url('background 3.jpg') center/cover;
       -webkit-transform:translateZ(0);transform:translateZ(0);
     }
     .account-page { padding: 100px 0 60px; min-height: 100vh; background: transparent; }
@@ -31,7 +31,7 @@
     .sidebar-nav { padding: 8px 0; }
     .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: .88rem; color: var(--muted); cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
     .sidebar-link:hover { color: var(--white); background: rgba(255,255,255,.03); }
-    .sidebar-link.active { color: var(--gold); background: rgba(135,185,212,.07); border-left-color: var(--gold); }
+    .sidebar-link.active { color: var(--gold); background: rgba(201,177,147,.07); border-left-color: var(--gold); }
     .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
     .sidebar-link .badge-cnt { margin-left: auto; background: var(--gold); color: #000; font-size: .65rem; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
     .sidebar-logout { margin: 8px 16px 12px; }
@@ -87,7 +87,7 @@
     .timeline-step:not(:last-child)::before { content:''; position: absolute; left: 11px; top: 24px; bottom: 0; width: 2px; background: var(--border); }
     .timeline-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--dark3); font-size: .65rem; z-index: 1; }
     .timeline-dot.done { border-color: #2ecc71; background: rgba(46,204,113,.15); color: #2ecc71; }
-    .timeline-dot.active { border-color: var(--gold); background: rgba(135,185,212,.15); color: var(--gold); }
+    .timeline-dot.active { border-color: var(--gold); background: rgba(201,177,147,.15); color: var(--gold); }
     .timeline-info h4 { font-size: .85rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
     .timeline-info p { font-size: .75rem; color: var(--muted); }
 
@@ -97,9 +97,9 @@
     /* Addresses */
     .addr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; }
     .addr-card { background: var(--dark3); border: 2px solid var(--border); border-radius: 10px; padding: 16px; position: relative; }
-    .addr-card.default-addr { border-color: rgba(135,185,212,.4); }
+    .addr-card.default-addr { border-color: rgba(201,177,147,.4); }
     .addr-tag { display: inline-block; font-size: .68rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
-    .addr-tag.home { background: rgba(135,185,212,.15); color: var(--gold); }
+    .addr-tag.home { background: rgba(201,177,147,.15); color: var(--gold); }
     .addr-tag.work { background: rgba(46,204,113,.12); color: #2ecc71; }
     .addr-tag.other { background: rgba(255,255,255,.08); color: var(--muted); }
     .default-badge { position: absolute; top: 12px; right: 12px; font-size: .62rem; background: var(--gold); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
@@ -141,7 +141,13 @@
     .addr-form-modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
     .addr-form-modal.open { display: flex; }
     .addr-form-inner { background: var(--dark2); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 28px; position: relative; }
-  </style>
+/* ═══ SECTION COLOUR MOODS — plum · taupe · cream, a new blend per section ═══ */
+    /* Taupe Stone sidebar */
+    .account-sidebar{--gold:#F3E7D3;--muted:#E3D5C3;--dark3:rgba(42,16,25,.4);--border:rgba(239,228,210,.16);background:radial-gradient(ellipse 70% 60% at 30% 0%,rgba(255,255,255,.14) 0%,transparent 60%),linear-gradient(165deg,#7A6553 0%,#5C4A3D 55%,#3E3129 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 20px 50px rgba(0,0,0,.3)}
+    /* Mulberry gloss panels */
+    .panel-card{background:linear-gradient(160deg,#4A1E2E 0%,#3A1724 100%);border-color:rgba(201,177,147,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+    .order-card{background:rgba(31,11,19,.45);border-color:rgba(201,177,147,.16)}
+</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -304,7 +310,7 @@
     if (!panel) return;
     const totalSpent = orders.reduce((s, o) => s + (o.total || 0), 0);
     panel.innerHTML = `
-      <div class="panel-card" style="background:linear-gradient(135deg,rgba(135,185,212,.12),var(--dark2));border-color:rgba(135,185,212,.2)">
+      <div class="panel-card" style="background:linear-gradient(135deg,rgba(201,177,147,.12),var(--dark2));border-color:rgba(201,177,147,.2)">
         <div style="display:flex;align-items:center;gap:20px">
           <div class="avatar-lg">${(user.name||'A').slice(0,2).toUpperCase()}</div>
           <div>

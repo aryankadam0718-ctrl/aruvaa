@@ -1,4 +1,6 @@
 {
   "lirobi.phone-preview.url": "http://localhost:3000/www/home.html",
-  "lirobi.phone-preview.device": "iPhone 14 Pro"
+  "lirobi.phone-preview.device": "iPhone 14 Pro",
+  "liveServer.settings.root": "/www",
+  "liveServer.settings.port": 5500
 }

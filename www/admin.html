@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#87B9D4">
+  <meta name="theme-color" content="#C9B193">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ARUVA">
@@ -12,20 +12,20 @@
 <title>ARUVA Admin</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#87B9D4;--gold-l:#ACD1E5;--gold-d:#5A97BC;--dark:#0B1622;--s1:#111E2C;--s2:#172638;--s3:#1D2F44;--s4:#243A54;--text:#EDF2F8;--muted:#4A6B82;--muted2:#3A566D;--r:12px}
-body{background:#0B1622;color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;display:flex;min-height:100vh}
+:root{--gold:#C9B193;--gold-l:#EFE4D2;--gold-d:#8C7258;--dark:#2A1019;--s1:#3A1724;--s2:#4A1E2E;--s3:#5B2638;--s4:#6E3045;--text:#F6EEE2;--muted:#A99589;--muted2:#86706A;--r:12px}
+body{background:#2A1019;color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;display:flex;min-height:100vh}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer}
 input,select,textarea{font-family:inherit}
 /* ── SIDEBAR ── */
 .sidebar{width:220px;background:var(--dark);border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:10}
 .sb-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
-.sb-brand{font-size:18px;font-weight:800;letter-spacing:6px;background:linear-gradient(135deg,#87B9D4,#ACD1E5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-brand{font-size:18px;font-weight:800;letter-spacing:6px;background:linear-gradient(135deg,#C9B193,#EFE4D2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sb-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:3px}
 .sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:12px;letter-spacing:.5px;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .nav-item:hover{background:rgba(255,255,255,.05);color:var(--text)}
-.nav-item.active{background:rgba(135,185,212,.1);color:var(--gold);border:1px solid rgba(135,185,212,.18)}
+.nav-item.active{background:rgba(201,177,147,.1);color:var(--gold);border:1px solid rgba(201,177,147,.18)}
 .nav-icon{font-size:15px;width:20px;text-align:center}
 .sb-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.06)}
 .sb-user{font-size:11px;color:var(--muted);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -40,7 +40,7 @@ input,select,textarea{font-family:inherit}
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
 .stat-card{background:var(--s1);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:22px 20px;transition:border-color .2s}
-.stat-card:hover{border-color:rgba(135,185,212,.2)}
+.stat-card:hover{border-color:rgba(201,177,147,.2)}
 .stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .stat-value{font-size:28px;font-weight:800;color:var(--gold);line-height:1}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:6px}
@@ -61,7 +61,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
 /* ── STATUS BADGE ── */
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.5px}
 .badge-confirmed{background:rgba(79,110,247,.15);color:#7b9ff5;border:1px solid rgba(79,110,247,.25)}
-.badge-processing{background:rgba(135,185,212,.12);color:#87B9D4;border:1px solid rgba(135,185,212,.25)}
+.badge-processing{background:rgba(201,177,147,.12);color:#C9B193;border:1px solid rgba(201,177,147,.25)}
 .badge-shipped{background:rgba(160,80,220,.12);color:#c47af5;border:1px solid rgba(160,80,220,.25)}
 .badge-delivered{background:rgba(72,199,142,.12);color:#4ecc8e;border:1px solid rgba(72,199,142,.25)}
 .badge-cancelled{background:rgba(255,70,70,.1);color:#ff7070;border:1px solid rgba(255,70,70,.2)}
@@ -69,20 +69,20 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .filter-row{display:flex;gap:8px;flex-wrap:wrap}
 .sel{background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:8px 12px;border-radius:8px;font-size:12px;outline:none;cursor:pointer}
 .btn{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:.5px;transition:all .2s;border:none}
-.btn-gold{background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:#0B1622}
-.btn-gold:hover{box-shadow:0 4px 20px rgba(135,185,212,.35)}
+.btn-gold{background:linear-gradient(135deg,#C9B193,#EFE4D2);color:#2A1019}
+.btn-gold:hover{box-shadow:0 4px 20px rgba(201,177,147,.35)}
 .btn-outline{background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--muted)}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 .btn-danger{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.2);color:#ff9090}
 .btn-danger:hover{background:rgba(255,60,60,.2)}
 .btn-sm{padding:5px 12px;font-size:11px}
 input.inp{background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:8px 12px;border-radius:8px;font-size:12px;outline:none;transition:border-color .2s}
-input.inp:focus{border-color:rgba(135,185,212,.4)}
+input.inp:focus{border-color:rgba(201,177,147,.4)}
 input.inp::placeholder{color:var(--muted)}
 /* ── MODAL ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 .modal-bg.open{display:flex}
-.modal{background:#111E2C;border:1px solid rgba(255,255,255,.08);border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal{background:#3A1724;border:1px solid rgba(255,255,255,.08);border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
 .modal-head{padding:22px 24px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center}
 .modal-head h3{font-size:16px;font-weight:700}
 .modal-close{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);width:30px;height:30px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
@@ -91,7 +91,7 @@ input.inp::placeholder{color:var(--muted)}
 .form-row{margin-bottom:16px}
 .form-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block}
 .form-inp{width:100%;background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:10px 14px;border-radius:10px;font-size:13px;outline:none;transition:border-color .2s}
-.form-inp:focus{border-color:rgba(135,185,212,.4)}
+.form-inp:focus{border-color:rgba(201,177,147,.4)}
 .form-inp::placeholder{color:#444}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modal-foot{padding:14px 24px 20px;display:flex;gap:10px;justify-content:flex-end}
@@ -105,7 +105,7 @@ input.inp::placeholder{color:var(--muted)}
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(135,185,212,.2);border-radius:2px}
+::-webkit-scrollbar-thumb{background:rgba(201,177,147,.2);border-radius:2px}
 </style>
 </head>
 <body data-mobile="true">
@@ -131,6 +131,9 @@ input.inp::placeholder{color:var(--muted)}
     </button>
     <button class="nav-item" onclick="goTab('3dorders',this)">
       <span class="nav-icon">🎨</span> 3D Orders
+    </button>
+  <button class="nav-item" onclick="goTab('designs',this)">
+      <span class="nav-icon">🖼️</span> Saved Designs
     </button>
   </nav>
   <div class="sb-footer">
@@ -236,6 +239,13 @@ input.inp::placeholder{color:var(--muted)}
     <div id="orders3d-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px"></div>
   </div>
 
+  <!-- SAVED DESIGNS -->
+  <div class="page" id="page-designs">
+    <div class="page-title">Saved Designs</div>
+    <div class="page-sub">Designs customers saved in the 3D studio — open one to see the print file</div>
+    <div id="designs-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px"></div>
+  </div>
+
 </main>
 
 <!-- ORDER UPDATE MODAL -->
@@ -280,7 +290,7 @@ input.inp::placeholder{color:var(--muted)}
       <div class="form-row">
         <label class="form-label">Product Image</label>
         <div style="display:flex;gap:12px;align-items:flex-start">
-          <label for="p-image-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:96px;height:96px;border:1.5px dashed rgba(135,185,212,.35);border-radius:12px;cursor:pointer;background:var(--s2);flex-shrink:0;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(135,185,212,.7)'" onmouseleave="this.style.borderColor='rgba(135,185,212,.35)'" id="p-image-label">
+          <label for="p-image-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:96px;height:96px;border:1.5px dashed rgba(201,177,147,.35);border-radius:12px;cursor:pointer;background:var(--s2);flex-shrink:0;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(201,177,147,.7)'" onmouseleave="this.style.borderColor='rgba(201,177,147,.35)'" id="p-image-label">
             <img id="p-image-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:12px">
             <span id="p-image-placeholder" style="font-size:22px;margin-bottom:4px">🖼️</span>
             <span id="p-image-placeholder-text" style="font-size:9px;color:var(--muted);letter-spacing:.5px">Upload</span>
@@ -306,7 +316,7 @@ input.inp::placeholder{color:var(--muted)}
       <div class="form-row"><label class="form-label">Description</label><textarea class="form-inp" id="p-desc" rows="3" placeholder="Product description…" style="resize:vertical"></textarea></div>
       <div class="form-row"><label class="form-label">Material</label><input class="form-inp" id="p-material" placeholder="e.g. 100% Cotton, 380gsm"></div>
       <div class="form-grid">
-        <div class="form-row"><label class="form-label">Base Color</label><input class="form-inp" id="p-color" type="color" value="#172638" style="height:40px;padding:4px 8px"></div>
+        <div class="form-row"><label class="form-label">Base Color</label><input class="form-inp" id="p-color" type="color" value="#4A1E2E" style="height:40px;padding:4px 8px"></div>
         <div style="display:flex;gap:16px;align-items:center;padding-top:24px">
           <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer"><input type="checkbox" id="p-featured"> Featured</label>
           <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer"><input type="checkbox" id="p-new"> New</label>
@@ -319,6 +329,14 @@ input.inp::placeholder{color:var(--muted)}
       <button class="btn btn-outline" onclick="closeModal('product-modal')">Cancel</button>
       <button class="btn btn-gold" id="prod-save-btn" onclick="submitProduct()">Add Product</button>
     </div>
+  </div>
+</div>
+
+<!-- DESIGN DETAIL MODAL -->
+<div class="modal-bg" id="design-modal" onclick="if(event.target===this)closeModal('design-modal')">
+  <div class="modal" style="max-width:860px">
+    <div class="modal-head"><h3 id="dm-title">Design</h3><button class="modal-close" onclick="closeModal('design-modal')">✕</button></div>
+    <div class="modal-body" id="dm-body"></div>
   </div>
 </div>
 
@@ -371,6 +389,7 @@ function goTab(name, btn) {
   if (name === 'products')  loadProducts();
   if (name === 'users')     loadUsers();
   if (name === '3dorders')  load3DOrders();
+  if (name === 'designs')   loadDesigns();
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -526,7 +545,7 @@ function openAddProduct() {
   document.getElementById('prod-modal-title').textContent = 'Add Product';
   document.getElementById('prod-save-btn').textContent = 'Add Product';
   ['p-name','p-price','p-sale','p-stock','p-desc','p-material'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('p-color').value = '#172638';
+  document.getElementById('p-color').value = '#4A1E2E';
   document.getElementById('p-stock').value = '100';
   ['p-featured','p-new','p-onsale','p-custom'].forEach(id => document.getElementById(id).checked = false);
   clearProductImage();
@@ -544,7 +563,7 @@ function openEditProduct(p) {
   document.getElementById('p-stock').value = p.stock || 100;
   document.getElementById('p-desc').value  = p.description || '';
   document.getElementById('p-material').value = p.material || '';
-  document.getElementById('p-color').value = p.color || '#172638';
+  document.getElementById('p-color').value = p.color || '#4A1E2E';
   document.getElementById('p-featured').checked = !!p.is_featured;
   document.getElementById('p-new').checked      = !!p.is_new;
   document.getElementById('p-onsale').checked   = !!p.is_on_sale;
@@ -612,6 +631,67 @@ function filterUsers(q) {
 }
 
 // ── 3D CUSTOM ORDERS ──────────────────────────────────
+// ── SAVED DESIGNS ─────────────────────────────────────
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+async function loadDesigns() {
+  const grid = document.getElementById('designs-grid');
+  grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:20px">Loading…</p>';
+  try {
+    const list = await apiFetch('/admin/designs');
+    if (!list.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:20px;text-align:center">No saved designs yet.</p>'; return; }
+    grid.innerHTML = list.map(d => `
+      <div onclick="openDesign(${d.id})" style="cursor:pointer;background:#3A1724;border:1px solid rgba(201,177,147,.18);border-radius:16px;overflow:hidden;transition:transform .2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <div style="aspect-ratio:1;background:linear-gradient(160deg,#5B2638,#2A1019);display:flex;align-items:center;justify-content:center">
+          ${d.thumbnail ? `<img src="${d.thumbnail}" style="width:100%;height:100%;object-fit:cover">` : '<span style="font-size:40px">🎨</span>'}
+        </div>
+        <div style="padding:12px 14px">
+          <div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(d.name)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;text-transform:capitalize">${esc(d.product_type)} · ${fmtDate(d.updated_at || d.created_at)}</div>
+          <div style="font-size:11px;color:#C9B193;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc([d.first_name, d.last_name].filter(Boolean).join(' ') || d.email)}</div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    grid.innerHTML = `<p style="color:#ff6060;font-size:13px;padding:20px">Could not load designs: ${esc(e.error || e.message || 'error')}</p>`;
+  }
+}
+
+async function openDesign(id) {
+  const body = document.getElementById('dm-body');
+  body.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+  document.getElementById('design-modal').classList.add('open');
+  try {
+    const d = await apiFetch('/admin/designs/' + id);
+    const dd = d.design_data || {};
+    const fileBase = (d.name || 'design').replace(/[^a-z0-9]+/gi, '_');
+    const texts = dd.texts?.length ? dd.texts.map(t => `"${esc(t.text)}" <span style="color:var(--muted)">(${esc(t.font)}, ${esc(t.color)})</span>`).join('<br>') : esc(dd.text || '—');
+    document.getElementById('dm-title').textContent = d.name;
+    body.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">3D PREVIEW</div>
+          ${d.thumbnail ? `<img src="${d.thumbnail}" style="width:100%;border-radius:12px;background:#2A1019">` : '<div style="padding:40px;text-align:center;color:var(--muted)">No preview</div>'}
+          ${d.thumbnail ? `<a href="${d.thumbnail}" download="${fileBase}_preview.jpg" class="btn btn-outline" style="display:inline-block;margin-top:8px;font-size:12px">↓ Preview</a>` : ''}
+        </div>
+        <div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">PRINT FILE (FULL TEXTURE)</div>
+          ${dd.texture ? `<img src="${dd.texture}" style="width:100%;border-radius:12px;background:#fff">` : '<div style="padding:40px;text-align:center;color:var(--muted);border:1px dashed rgba(255,255,255,.15);border-radius:12px">Saved before print files were stored</div>'}
+          ${dd.texture ? `<a href="${dd.texture}" download="${fileBase}_print.jpg" class="btn btn-outline" style="display:inline-block;margin-top:8px;font-size:12px">↓ Print file</a>` : ''}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:8px 14px;font-size:13px">
+        <div style="color:var(--muted)">Customer</div><div>${esc([d.first_name, d.last_name].filter(Boolean).join(' ') || '—')} · ${esc(d.email)}${d.phone ? ' · ' + esc(d.phone) : ''}</div>
+        <div style="color:var(--muted)">Product</div><div style="text-transform:capitalize">${esc(dd.productType || d.product_type)}${dd.size ? ' · Size ' + esc(dd.size) : ''}</div>
+        <div style="color:var(--muted)">Garment colour</div><div><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${esc(dd.color || '#fff')};vertical-align:middle;margin-right:6px;border:1px solid rgba(255,255,255,.3)"></span>${esc(dd.colorName || dd.color || '—')}</div>
+        <div style="color:var(--muted)">Text</div><div>${texts}</div>
+        <div style="color:var(--muted)">Images / brush</div><div>${dd.imageCount ?? '—'} image(s) · ${dd.hasBrush ? 'brush strokes' : 'no brush'}</div>
+        <div style="color:var(--muted)">Saved</div><div>${fmtDate(d.created_at)}${d.updated_at && d.updated_at !== d.created_at ? ' · updated ' + fmtDate(d.updated_at) : ''}</div>
+      </div>`;
+  } catch (e) {
+    body.innerHTML = `<p style="color:#ff6060">Could not load design: ${esc(e.error || e.message || 'error')}</p>`;
+  }
+}
+
 async function load3DOrders() {
   const grid = document.getElementById('orders3d-grid');
   grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:20px">Loading…</p>';
@@ -638,10 +718,10 @@ async function load3DOrders() {
       const imgSrc = design.designImage || '';
       const productLabel = (design.productType||item.product_name||'—').replace(/^\w/,c=>c.toUpperCase());
       const badgeClass = 'badge-'+order.status.toLowerCase();
-      return `<div style="background:var(--s1);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(135,185,212,.3)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.07)'">
+      return `<div style="background:var(--s1);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(201,177,147,.3)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.07)'">
         ${imgSrc
-          ? `<div style="width:100%;aspect-ratio:1;background:#0d0d0d;overflow:hidden"><img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"></div>`
-          : `<div style="width:100%;aspect-ratio:1;background:#111E2C;display:flex;align-items:center;justify-content:center;font-size:60px">🎨</div>`
+          ? `<div style="width:100%;aspect-ratio:1;background:#3A1724;overflow:hidden"><img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"></div>`
+          : `<div style="width:100%;aspect-ratio:1;background:#3A1724;display:flex;align-items:center;justify-content:center;font-size:60px">🎨</div>`
         }
         <div style="padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">

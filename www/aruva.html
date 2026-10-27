@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#87B9D4">
+  <meta name="theme-color" content="#C9B193">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ARUVA">
@@ -16,9 +16,10 @@
 <script src="/js/three.min.js"></script>
 <script src="/js/GLTFLoader.js"></script>
 <script src="/js/DRACOLoader.js"></script>
+<script src="/js/pay.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#87B9D4;--gold-l:#ACD1E5;--gold-d:#5A97BC;--dark:#0B1622;--s1:#111E2C;--s2:#172638;--s3:#1D2F44;--s4:#243A54;--text:#EDF2F8;--muted:#4A6B82;--muted2:#3A566D;--r:12px}
+:root{--gold:#C9B193;--gold-l:#EFE4D2;--gold-d:#8C7258;--dark:#2A1019;--s1:#3A1724;--s2:#4A1E2E;--s3:#5B2638;--s4:#6E3045;--text:#F6EEE2;--muted:#A99589;--muted2:#86706A;--r:12px}
 html{scroll-behavior:smooth}
 body{
   background:var(--dark);
@@ -30,45 +31,45 @@ body::before{
   inset:0;
   z-index:-1;
   background:
-    linear-gradient(rgba(11,22,34,.55),rgba(11,22,34,.55)),
+    linear-gradient(160deg,rgba(110,48,69,.62) 0%,rgba(58,23,36,.74) 45%,rgba(35,13,22,.88) 100%),
     url('/background 4.jpg') center/cover;
   -webkit-transform:translateZ(0);
   transform:translateZ(0);
 }
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(135,185,212,.12)}
-.logo{font-size:26px;font-weight:800;letter-spacing:7px;background:linear-gradient(135deg,#87B9D4,#ACD1E5,#87B9D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(42,16,25,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,177,147,.12)}
+.logo{font-size:26px;font-weight:800;letter-spacing:7px;background:linear-gradient(135deg,#C9B193,#EFE4D2,#C9B193);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
 .nav-links{display:flex;gap:28px;list-style:none}
 .nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:2px;text-transform:uppercase;transition:color .2s}
 .nav-links a:hover{color:var(--gold)}
-.cart-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(135,185,212,.35);color:var(--gold);padding:8px 20px;border-radius:50px;cursor:pointer;font-size:12px;letter-spacing:1px;transition:all .2s}
-.cart-btn:hover{background:rgba(135,185,212,.1);border-color:var(--gold)}
+.cart-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(201,177,147,.35);color:var(--gold);padding:8px 20px;border-radius:50px;cursor:pointer;font-size:12px;letter-spacing:1px;transition:all .2s}
+.cart-btn:hover{background:rgba(201,177,147,.1);border-color:var(--gold)}
 .cc{background:var(--gold);color:var(--dark);border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:100px 48px 60px}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 68% 50%,rgba(135,185,212,.07) 0%,transparent 65%),radial-gradient(ellipse 50% 60% at 15% 80%,rgba(135,185,212,.04) 0%,transparent 55%)}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 68% 50%,rgba(201,177,147,.07) 0%,transparent 65%),radial-gradient(ellipse 50% 60% at 15% 80%,rgba(201,177,147,.04) 0%,transparent 55%)}
 .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:1200px;margin:0 auto;width:100%;position:relative}
-.hero-tag{display:inline-block;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.28);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;border-radius:50px;margin-bottom:22px}
+.hero-tag{display:inline-block;background:rgba(201,177,147,.1);border:1px solid rgba(201,177,147,.28);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;border-radius:50px;margin-bottom:22px}
 .hero-title{font-size:clamp(40px,5vw,68px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:22px}
-.hl{background:linear-gradient(135deg,#87B9D4,#ACD1E5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hl{background:linear-gradient(135deg,#C9B193,#EFE4D2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{color:var(--muted);font-size:16px;line-height:1.7;margin-bottom:38px;max-width:460px}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px}
-.btn-p{background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:var(--dark);border:none;padding:14px 30px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(135,185,212,.4)}
+.btn-p{background:linear-gradient(135deg,#C9B193,#EFE4D2);color:var(--dark);border:none;padding:14px 30px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,177,147,.4)}
 .btn-s{background:transparent;color:var(--text);border:1px solid rgba(240,240,240,.18);padding:14px 30px;border-radius:50px;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex}
 .btn-s:hover{border-color:var(--gold);color:var(--gold)}
 .stats{display:flex;gap:32px}
 .stat-n{font-size:24px;font-weight:700;color:var(--gold)}
 .stat-l{font-size:11px;color:var(--muted);letter-spacing:1px}
 .hero-visual{display:flex;justify-content:center;align-items:center}
-.hero-canvas-wrap{width:420px;height:460px;border-radius:24px;overflow:hidden;position:relative;background:radial-gradient(ellipse at 50% 40%,#1a1a2e 0%,#0a0a0f 70%);border:1px solid rgba(135,185,212,.15)}
+.hero-canvas-wrap{width:420px;height:460px;border-radius:24px;overflow:hidden;position:relative;background:radial-gradient(ellipse at 50% 40%,#5B2638 0%,#1F0B13 70%);border:1px solid rgba(201,177,147,.15)}
 .section{padding:80px 48px;max-width:1200px;margin:0 auto}
 .section-label{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
 .section-title{font-size:clamp(26px,3vw,40px);font-weight:700;margin-bottom:44px}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .cat-card{background:var(--s1);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:30px 22px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
-.cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(135,185,212,.08),transparent);opacity:0;transition:opacity .3s}
+.cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,177,147,.08),transparent);opacity:0;transition:opacity .3s}
 .cat-card:hover::before{opacity:1}
-.cat-card:hover{border-color:rgba(135,185,212,.3);transform:translateY(-4px)}
-.cat-card.active{border-color:var(--gold);background:rgba(135,185,212,.07)}
+.cat-card:hover{border-color:rgba(201,177,147,.3);transform:translateY(-4px)}
+.cat-card.active{border-color:var(--gold);background:rgba(201,177,147,.07)}
 .cat-icon{font-size:44px;margin-bottom:14px}
 .cat-name{font-size:17px;font-weight:600;margin-bottom:7px}
 .cat-desc{font-size:12px;color:var(--muted)}
@@ -83,77 +84,77 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .color-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px}
 .swatch{width:100%;aspect-ratio:1;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:all .15s}
 .swatch:hover{transform:scale(1.2);z-index:1;position:relative}
-.swatch.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(135,185,212,.35)}
+.swatch.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,177,147,.35)}
 input[type=text].ti{width:100%;background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;outline:none;transition:border-color .2s}
-input[type=text].ti:focus{border-color:rgba(135,185,212,.4)}
+input[type=text].ti:focus{border-color:rgba(201,177,147,.4)}
 input[type=text].ti::placeholder{color:var(--muted)}
 select.si{width:100%;background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--text);padding:8px 12px;border-radius:8px;font-size:12px;outline:none;cursor:pointer;margin-top:6px}
 input[type=color]{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;background:none;padding:0;flex-shrink:0}
 .color-row{display:flex;align-items:center;gap:10px}
 .color-hint{font-size:12px;color:var(--muted)}
-.upload-lbl{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--s3);border:1px dashed rgba(135,185,212,.3);color:var(--gold);padding:9px;border-radius:8px;cursor:pointer;font-size:12px;letter-spacing:.5px;transition:all .2s}
-.upload-lbl:hover{background:rgba(135,185,212,.07);border-color:rgba(135,185,212,.55)}
+.upload-lbl{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--s3);border:1px dashed rgba(201,177,147,.3);color:var(--gold);padding:9px;border-radius:8px;cursor:pointer;font-size:12px;letter-spacing:.5px;transition:all .2s}
+.upload-lbl:hover{background:rgba(201,177,147,.07);border-color:rgba(201,177,147,.55)}
 .del-btn{width:100%;margin-top:7px;background:rgba(255,60,60,.07);color:#ff9090;border:1px solid rgba(255,80,80,.18);padding:7px;border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:.5px;transition:all .2s}
 .del-btn:hover{background:rgba(255,60,60,.18);border-color:rgba(255,80,80,.5)}
 .layer-item{display:flex;align-items:center;gap:6px;background:var(--s3);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:6px 8px;cursor:pointer;transition:all .15s}
-.layer-item:hover{border-color:rgba(135,185,212,.25);background:rgba(135,185,212,.05)}
-.layer-sel{border-color:rgba(135,185,212,.5)!important;background:rgba(135,185,212,.1)!important}
-.vbtn-rot{background:rgba(135,185,212,.12)!important;border-color:rgba(135,185,212,.35)!important;color:var(--gold)!important;font-weight:700!important}
+.layer-item:hover{border-color:rgba(201,177,147,.25);background:rgba(201,177,147,.05)}
+.layer-sel{border-color:rgba(201,177,147,.5)!important;background:rgba(201,177,147,.1)!important}
+.vbtn-rot{background:rgba(201,177,147,.12)!important;border-color:rgba(201,177,147,.35)!important;color:var(--gold)!important;font-weight:700!important}
 .toggle-row{display:flex;align-items:center;gap:10px;margin-top:10px}
 .toggle-wrap{position:relative;width:38px;height:21px;display:inline-block;cursor:pointer;flex-shrink:0}
 .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
 .toggle-track{position:absolute;inset:0;background:var(--s3);border:1px solid rgba(255,255,255,.1);border-radius:11px;transition:all .25s}
 .toggle-track::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#555;top:2px;left:2px;transition:all .25s}
-.toggle-wrap input:checked~.toggle-track{background:rgba(135,185,212,.2);border-color:var(--gold)}
+.toggle-wrap input:checked~.toggle-track{background:rgba(201,177,147,.2);border-color:var(--gold)}
 .toggle-wrap input:checked~.toggle-track::after{transform:translateX(17px);background:var(--gold)}
 .toggle-label{font-size:10px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
-.brush-box{background:rgba(135,185,212,.03);border:1px solid rgba(135,185,212,.1);border-radius:10px;padding:12px}
+.brush-box{background:rgba(201,177,147,.03);border:1px solid rgba(201,177,147,.1);border-radius:10px;padding:12px}
 .brush-hdr{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:7px}
-.brush-hdr::after{content:'';flex:1;height:1px;background:rgba(135,185,212,.15)}
+.brush-hdr::after{content:'';flex:1;height:1px;background:rgba(201,177,147,.15)}
 .be-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px}
 .be-btn{background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--muted);padding:6px 5px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s;text-align:center}
-.be-btn:hover{border-color:rgba(135,185,212,.3);color:var(--text)}
-.be-btn.active{background:rgba(135,185,212,.1);border-color:var(--gold);color:var(--gold)}
+.be-btn:hover{border-color:rgba(201,177,147,.3);color:var(--text)}
+.be-btn.active{background:rgba(201,177,147,.1);border-color:var(--gold);color:var(--gold)}
 .clr-btn{width:100%;margin-top:9px;background:rgba(255,60,60,.06);color:#ff9090;border:1px solid rgba(255,80,80,.17);padding:7px;border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:.5px;transition:all .2s}
 .clr-btn:hover{background:rgba(255,60,60,.16);border-color:rgba(255,80,80,.45)}
 .mode-tabs{display:flex;gap:4px;margin-bottom:12px;background:var(--s3);padding:4px;border-radius:10px}
 .mode-tab{flex:1;padding:7px 10px;border:none;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:.4px;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
-.mode-tab.active{background:var(--s2);color:var(--gold);border:1px solid rgba(135,185,212,.28)}
+.mode-tab.active{background:var(--s2);color:var(--gold);border:1px solid rgba(201,177,147,.28)}
 .viewer-wrap{display:flex;flex-direction:column;align-items:center;gap:11px}
 .canvas-wrap{width:100%;aspect-ratio:1;border-radius:20px;overflow:hidden;
   background:transparent;
-  border:1px solid rgba(135,185,212,.22);
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(135,185,212,.15) inset, 0 24px 60px rgba(0,0,0,.5);
+  border:1px solid rgba(201,177,147,.22);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(201,177,147,.15) inset, 0 24px 60px rgba(0,0,0,.5);
   cursor:grab;position:relative;}
 .canvas-wrap:active{cursor:grabbing}
 #three-canvas{width:100%!important;height:100%!important;display:block}
 #design-canvas{width:100%;height:100%;display:block;cursor:default}
-.design-hint-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,8,.7);padding:6px 12px;font-size:10px;color:rgba(135,185,212,.7);letter-spacing:1px;text-align:center;pointer-events:none}
+.design-hint-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(42,16,25,.7);padding:6px 12px;font-size:10px;color:rgba(201,177,147,.7);letter-spacing:1px;text-align:center;pointer-events:none}
 .viewer-hint{font-size:11px;color:var(--muted);letter-spacing:1px;text-align:center}
 .viewer-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .vbtn{background:var(--s2);border:1px solid rgba(255,255,255,.07);color:var(--muted);padding:7px 13px;border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:.8px;transition:all .2s}
-.vbtn:hover{border-color:rgba(135,185,212,.4);color:var(--gold)}
+.vbtn:hover{border-color:rgba(201,177,147,.4);color:var(--gold)}
 .price{font-size:34px;font-weight:700;margin-bottom:4px}
 .price .cur{font-size:16px;color:var(--muted)}
 .price-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
 .size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:16px}
 .sz-btn{background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--muted);padding:6px 4px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s;text-align:center}
-.sz-btn:hover{border-color:rgba(135,185,212,.4);color:var(--text)}
-.sz-btn.active{border-color:var(--gold);background:rgba(135,185,212,.1);color:var(--gold)}
+.sz-btn:hover{border-color:rgba(201,177,147,.4);color:var(--text)}
+.sz-btn.active{border-color:var(--gold);background:rgba(201,177,147,.1);color:var(--gold)}
 .qty-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .qbtn{width:28px;height:28px;background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--text);border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .qbtn:hover{border-color:var(--gold);color:var(--gold)}
 .qnum{font-size:18px;font-weight:600;min-width:22px;text-align:center}
-.atc-btn{width:100%;background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:var(--dark);border:none;padding:14px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-bottom:9px}
-.atc-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(135,185,212,.4)}
+.atc-btn{width:100%;background:linear-gradient(135deg,#C9B193,#EFE4D2);color:var(--dark);border:none;padding:14px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-bottom:9px}
+.atc-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,177,147,.4)}
 .wl-btn{width:100%;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.07);padding:10px;border-radius:50px;font-size:12px;cursor:pointer;transition:all .2s}
-.wl-btn:hover{border-color:rgba(135,185,212,.4);color:var(--gold)}
+.wl-btn:hover{border-color:rgba(201,177,147,.4);color:var(--gold)}
 .dsummary{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)}
 .dtag{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:var(--muted)}
 .dtag span:last-child{color:var(--text)}
 .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .feat-card{background:var(--s1);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:28px 22px;transition:all .3s}
-.feat-card:hover{border-color:rgba(135,185,212,.2);transform:translateY(-4px)}
+.feat-card:hover{border-color:rgba(201,177,147,.2);transform:translateY(-4px)}
 .feat-icon{font-size:30px;margin-bottom:14px}
 .feat-title{font-size:15px;font-weight:600;margin-bottom:7px}
 .feat-desc{font-size:12px;color:var(--muted);line-height:1.6}
@@ -180,11 +181,11 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:none;cursor:po
 .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .cart-total-row span{font-size:13px;color:var(--muted)}
 .cart-total-price{font-size:22px;font-weight:700;color:var(--gold)}
-.chk-btn{width:100%;background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:var(--dark);border:none;padding:15px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s}
-.chk-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(135,185,212,.4)}
+.chk-btn{width:100%;background:linear-gradient(135deg,#C9B193,#EFE4D2);color:var(--dark);border:none;padding:15px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.chk-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,177,147,.4)}
 footer{background:var(--s1);border-top:1px solid rgba(255,255,255,.05);padding:56px 48px 28px}
 .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;max-width:1200px;margin:0 auto 44px}
-.foot-logo{font-size:22px;font-weight:800;letter-spacing:7px;background:linear-gradient(135deg,#87B9D4,#ACD1E5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px}
+.foot-logo{font-size:22px;font-weight:800;letter-spacing:7px;background:linear-gradient(135deg,#C9B193,#EFE4D2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px}
 .foot-desc{font-size:12px;color:var(--muted);line-height:1.7;max-width:260px}
 .foot-col h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
 .foot-col ul{list-style:none}
@@ -193,17 +194,17 @@ footer{background:var(--s1);border-top:1px solid rgba(255,255,255,.05);padding:5
 .foot-col ul li a:hover{color:var(--text)}
 .foot-bottom{max-width:1200px;margin:0 auto;padding-top:22px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center}
 .foot-bottom p{font-size:11px;color:var(--muted)}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s2);border:1px solid rgba(135,185,212,.3);color:var(--text);padding:11px 22px;border-radius:50px;font-size:13px;z-index:400;transition:transform .3s;white-space:nowrap}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s2);border:1px solid rgba(201,177,147,.3);color:var(--text);padding:11px 22px;border-radius:50px;font-size:13px;z-index:400;transition:transform .3s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--dark)}
-::-webkit-scrollbar-thumb{background:rgba(135,185,212,.25);border-radius:2px}
+::-webkit-scrollbar-thumb{background:rgba(201,177,147,.25);border-radius:2px}
 input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:var(--s3);height:3px;border-radius:2px;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--gold);cursor:pointer}
 @keyframes spin360{to{transform:rotate(360deg)}}
-.hnd{position:absolute;width:28px;height:28px;border-radius:7px;display:none;align-items:center;justify-content:center;font-size:13px;font-weight:800;cursor:pointer;pointer-events:all;transform:translate(-50%,-50%);background:#87B9D4;color:#0B1622;border:2px solid #040406;box-shadow:0 2px 10px rgba(0,0,0,.6);user-select:none;transition:transform .1s,box-shadow .1s}
-.hnd:hover{transform:translate(-50%,-50%) scale(1.2);box-shadow:0 4px 16px rgba(135,185,212,.5)}
-.hnd-rot{background:#ffffff;color:#87B9D4;font-size:16px}
+.hnd{position:absolute;width:28px;height:28px;border-radius:7px;display:none;align-items:center;justify-content:center;font-size:13px;font-weight:800;cursor:pointer;pointer-events:all;transform:translate(-50%,-50%);background:#C9B193;color:#2A1019;border:2px solid #040406;box-shadow:0 2px 10px rgba(0,0,0,.6);user-select:none;transition:transform .1s,box-shadow .1s}
+.hnd:hover{transform:translate(-50%,-50%) scale(1.2);box-shadow:0 4px 16px rgba(201,177,147,.5)}
+.hnd-rot{background:#ffffff;color:#C9B193;font-size:16px}
 .hnd-del{background:#e03030;color:#fff;border-color:#900}
 /* ── Product Picker ── */
 #pp-backdrop{display:none;position:fixed;inset:0;z-index:299;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
@@ -253,16 +254,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .pp-cta{background:#fff;color:#111;border:none;padding:13px 26px;border-radius:50px;font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:8px;font-family:inherit;box-shadow:0 8px 28px rgba(0,0,0,.22)}
 .pp-cta:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,0,0,.32)}
 /* ── Marquee ── */
-.marquee-strip{overflow:hidden;border-top:1px solid rgba(135,185,212,.1);border-bottom:1px solid rgba(135,185,212,.1);padding:13px 0;background:linear-gradient(90deg,#09080700,#0e0c0a,#09080700)}
+.marquee-strip{overflow:hidden;border-top:1px solid rgba(201,177,147,.1);border-bottom:1px solid rgba(201,177,147,.1);padding:13px 0;background:linear-gradient(90deg,#2A101900,#4A1E2E,#2A101900)}
 .marquee-track{display:inline-flex;animation:marqueeScroll 26s linear infinite;white-space:nowrap}
-.marquee-item{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(135,185,212,.4);padding:0 44px;display:inline-flex;align-items:center;gap:44px}
-.marquee-item::after{content:'✦';color:rgba(135,185,212,.28);font-size:8px}
+.marquee-item{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,177,147,.4);padding:0 44px;display:inline-flex;align-items:center;gap:44px}
+.marquee-item::after{content:'✦';color:rgba(201,177,147,.28);font-size:8px}
 @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 /* ── Manifesto ── */
 .manifesto{position:relative;height:600vh}
 .manifesto-sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
 .manifesto-left{background:transparent;display:flex;flex-direction:column;justify-content:center;padding:80px 64px;position:relative;border-right:1px solid rgba(255,255,255,.04)}
-.manifesto-left::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.15),transparent)}
+.manifesto-left::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,177,147,.15),transparent)}
 .manifesto-right{
   position:relative;
   display:flex;
@@ -280,24 +281,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   max-height:640px;
   position:relative;
   overflow:hidden;
-  background:rgba(6,13,22,.35);
+  background:rgba(35,13,22,.35);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-radius:24px;
-  border:1px solid rgba(135,185,212,.25);
+  border:1px solid rgba(201,177,147,.25);
   box-shadow:
     0 0 0 1px rgba(255,255,255,.05) inset,
-    0 1px 0 rgba(135,185,212,.15) inset,
+    0 1px 0 rgba(201,177,147,.15) inset,
     0 24px 60px rgba(0,0,0,.5),
     0 48px 120px rgba(0,0,0,.3),
-    0 0 80px rgba(135,185,212,.06);
+    0 0 80px rgba(201,177,147,.06);
 }
 .mvis-frame-bar{
   position:absolute;top:0;left:0;right:0;z-index:10;
   display:flex;align-items:center;gap:10px;padding:11px 16px;
-  background:rgba(6,13,22,.85);border-bottom:1px solid rgba(135,185,212,.12);
+  background:rgba(35,13,22,.85);border-bottom:1px solid rgba(201,177,147,.12);
   backdrop-filter:blur(8px)}
 .mvis-frame-label{flex:1;font-size:10px;font-weight:600;letter-spacing:1.5px;
-  text-transform:uppercase;color:rgba(135,185,212,.45);text-align:center}
+  text-transform:uppercase;color:rgba(201,177,147,.45);text-align:center}
 .mvis-frame-live{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;
   letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
 .mvis-live-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;
@@ -310,17 +311,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 /* Info overlay at bottom */
 .mvis-info-wrap{position:absolute;bottom:0;left:0;right:0;z-index:8;
   padding:70px 32px 32px;
-  background:linear-gradient(transparent,rgba(6,13,22,.92))}
+  background:linear-gradient(transparent,rgba(35,13,22,.92))}
 .mvis-info-panel{display:none;animation:mvis-fi .4s ease}
 .mvis-info-panel.sp-active{display:block}
 @keyframes mvis-fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .mvis-info-kicker{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
   color:var(--gold);display:block;margin-bottom:7px}
-.mvis-info-title{font-size:19px;font-weight:700;margin-bottom:11px;color:#EDF2F8}
+.mvis-info-title{font-size:19px;font-weight:700;margin-bottom:11px;color:#F6EEE2}
 .mvis-info-tags{display:flex;gap:7px;flex-wrap:wrap}
 .mvis-info-tags span{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
   color:var(--gold);padding:4px 12px;
-  background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);border-radius:50px}
+  background:rgba(201,177,147,.08);border:1px solid rgba(201,177,147,.2);border-radius:50px}
 
 /* Progress bar */
 .mvis-prog-wrap{display:none}
@@ -329,7 +330,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 /* Scroll hint */
 .mvis-hint{position:absolute;bottom:36px;right:28px;z-index:9;
   display:flex;align-items:center;gap:7px;
-  font-size:9px;color:rgba(135,185,212,.4);letter-spacing:2px;text-transform:uppercase;
+  font-size:9px;color:rgba(201,177,147,.4);letter-spacing:2px;text-transform:uppercase;
   transition:opacity .4s}
 
 /* macOS dots (reusable) */
@@ -341,19 +342,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .manifesto-tag{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:26px;display:flex;align-items:center;gap:14px}
 .manifesto-tag::before{content:'';width:32px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
 .manifesto-h{font-size:clamp(34px,3.2vw,50px);font-weight:800;line-height:1.18;letter-spacing:-1px;margin-bottom:22px}
-.manifesto-h em{font-style:normal;background:linear-gradient(135deg,#87B9D4,#ACD1E5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.manifesto-h em{font-style:normal;background:linear-gradient(135deg,#C9B193,#EFE4D2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .manifesto-p{font-size:14px;color:rgba(200,200,200,.6);line-height:1.9;margin-bottom:38px;max-width:400px}
 .manifesto-stats{display:flex;gap:44px;padding-top:30px;border-top:1px solid rgba(255,255,255,.07)}
 .m-stat-n{font-size:28px;font-weight:800;color:var(--gold)}
 .m-stat-l{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
-.manifesto-line{position:absolute;bottom:28px;left:28px;right:28px;height:1px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.2),transparent)}
+.manifesto-line{position:absolute;bottom:28px;left:28px;right:28px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,177,147,.2),transparent)}
 /* ── Editorial Collection ── */
 .editorial{background:transparent;border-top:1px solid rgba(255,255,255,.04)}
 .editorial-hdr{padding:80px 48px 0;max-width:1400px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .editorial-browse{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:color .2s;display:flex;align-items:center;gap:8px;background:none;border:none}
 .editorial-browse:hover{color:var(--gold)}
 .ed-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.04);margin-top:48px}
-.ed-item{background:#0B1622;position:relative;overflow:hidden;cursor:pointer}
+.ed-item{background:#2A1019;position:relative;overflow:hidden;cursor:pointer}
 .ed-item-main{aspect-ratio:.72}
 .ed-item-side{aspect-ratio:.82}
 .ed-visual{width:100%;height:100%;position:relative;overflow:hidden;transition:transform .65s cubic-bezier(.25,.46,.45,.94)}
@@ -362,62 +363,62 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .ed-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.5}
 .ed-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:80px}
 .ed-emoji{font-size:clamp(70px,9vw,140px);filter:drop-shadow(0 24px 70px rgba(0,0,0,.85));animation:ppFloat 4.5s ease-in-out infinite;pointer-events:none}
-.ed-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,22,34,.97) 0%,rgba(11,22,34,.4) 35%,transparent 65%)}
+.ed-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(42,16,25,.97) 0%,rgba(42,16,25,.4) 35%,transparent 65%)}
 .ed-info{position:absolute;bottom:0;left:0;right:0;padding:28px 32px;transform:translateY(6px);transition:transform .35s cubic-bezier(.25,.46,.45,.94)}
 .ed-item:hover .ed-info{transform:translateY(0)}
-.ed-cat{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(135,185,212,.6);margin-bottom:8px}
+.ed-cat{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,177,147,.6);margin-bottom:8px}
 .ed-name{font-size:clamp(18px,2vw,26px);font-weight:700;margin-bottom:5px;line-height:1.1}
 .ed-price-row{display:flex;align-items:center;gap:14px}
 .ed-price{font-size:12px;color:var(--muted);letter-spacing:.5px}
-.ed-cta{display:inline-flex;align-items:center;gap:7px;margin-top:16px;background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:#0B1622;border:none;padding:10px 22px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;opacity:0;transform:translateY(10px)}
+.ed-cta{display:inline-flex;align-items:center;gap:7px;margin-top:16px;background:linear-gradient(135deg,#C9B193,#EFE4D2);color:#2A1019;border:none;padding:10px 22px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;opacity:0;transform:translateY(10px)}
 .ed-item:hover .ed-cta{opacity:1;transform:translateY(0);transition-delay:.06s}
-.ed-cta:hover{box-shadow:0 8px 28px rgba(135,185,212,.4)}
+.ed-cta:hover{box-shadow:0 8px 28px rgba(201,177,147,.4)}
 /* ── Process ── */
 .process-section{padding:100px 48px;background:transparent;border-top:1px solid rgba(255,255,255,.04)}
 .process-inner{max-width:1100px;margin:0 auto}
 .process-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:20px;overflow:hidden;margin-top:56px}
-.process-step{background:#0D1825;padding:48px 40px;position:relative;transition:background .3s}
-.process-step:hover{background:#0D1825}
-.ps-num{font-size:72px;font-weight:800;color:rgba(135,185,212,.07);line-height:1;margin-bottom:18px;font-family:'Bebas Neue',sans-serif}
+.process-step{background:#230D16;padding:48px 40px;position:relative;transition:background .3s}
+.process-step:hover{background:#230D16}
+.ps-num{font-size:72px;font-weight:800;color:rgba(201,177,147,.07);line-height:1;margin-bottom:18px;font-family:'Bebas Neue',sans-serif}
 .ps-icon{font-size:30px;margin-bottom:18px}
 .ps-title{font-size:19px;font-weight:700;margin-bottom:12px}
 .ps-desc{font-size:13px;color:var(--muted);line-height:1.75}
 /* ── Enhanced Features ── */
-.feat-new-section{padding:100px 48px;background:#0B1622;border-top:1px solid rgba(255,255,255,.04)}
+.feat-new-section{padding:100px 48px;background:#2A1019;border-top:1px solid rgba(255,255,255,.04)}
 .feat-new-inner{max-width:1200px;margin:0 auto}
 .feat-grid-new{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.04);border-radius:20px;overflow:hidden;margin-top:52px}
-.feat-card-new{background:#0B1622;padding:44px 40px;display:flex;gap:22px;align-items:flex-start;transition:background .3s}
-.feat-card-new:hover{background:#0d0d0d}
-.feat-icon-new{font-size:22px;flex-shrink:0;width:50px;height:50px;background:rgba(135,185,212,.06);border:1px solid rgba(135,185,212,.14);border-radius:14px;display:flex;align-items:center;justify-content:center}
+.feat-card-new{background:#2A1019;padding:44px 40px;display:flex;gap:22px;align-items:flex-start;transition:background .3s}
+.feat-card-new:hover{background:#3A1724}
+.feat-icon-new{font-size:22px;flex-shrink:0;width:50px;height:50px;background:rgba(201,177,147,.06);border:1px solid rgba(201,177,147,.14);border-radius:14px;display:flex;align-items:center;justify-content:center}
 .feat-title-new{font-size:16px;font-weight:700;margin-bottom:9px}
 .feat-desc-new{font-size:13px;color:var(--muted);line-height:1.72}
 /* ── Testimonials ── */
-.testi-section{padding:100px 48px;background:#0D1825;border-top:1px solid rgba(255,255,255,.04)}
+.testi-section{padding:100px 48px;background:#230D16;border-top:1px solid rgba(255,255,255,.04)}
 .testi-inner{max-width:1200px;margin:0 auto}
 .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
-.testi-card{background:#111E2C;border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
-.testi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.3),transparent);opacity:0;transition:opacity .3s}
+.testi-card{background:#3A1724;border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
+.testi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,177,147,.3),transparent);opacity:0;transition:opacity .3s}
 .testi-card:hover::after{opacity:1}
-.testi-card:hover{border-color:rgba(135,185,212,.14);transform:translateY(-3px)}
-.testi-quote-mark{font-size:40px;color:rgba(135,185,212,.18);line-height:1;margin-bottom:14px;font-family:Georgia,serif}
+.testi-card:hover{border-color:rgba(201,177,147,.14);transform:translateY(-3px)}
+.testi-quote-mark{font-size:40px;color:rgba(201,177,147,.18);line-height:1;margin-bottom:14px;font-family:Georgia,serif}
 .testi-stars{color:var(--gold);font-size:11px;letter-spacing:3px;margin-bottom:14px}
 .testi-text{font-size:13px;color:rgba(240,240,240,.68);line-height:1.82;margin-bottom:22px;font-style:italic}
 .testi-author{display:flex;align-items:center;gap:12px}
-.testi-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;border:1px solid rgba(135,185,212,.2)}
+.testi-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;border:1px solid rgba(201,177,147,.2)}
 .testi-name{font-size:13px;font-weight:600;margin-bottom:2px}
 .testi-meta{font-size:10px;color:var(--muted);letter-spacing:1px}
 /* ── CTA Strip ── */
-.cta-strip{padding:110px 48px;text-align:center;position:relative;overflow:hidden;background:#0B1622;border-top:1px solid rgba(135,185,212,.07)}
-.cta-strip-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 100% at 50% 50%,rgba(135,185,212,.04) 0%,transparent 65%)}
+.cta-strip{padding:110px 48px;text-align:center;position:relative;overflow:hidden;background:#2A1019;border-top:1px solid rgba(201,177,147,.07)}
+.cta-strip-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 100% at 50% 50%,rgba(201,177,147,.04) 0%,transparent 65%)}
 .cta-strip h2{font-size:clamp(38px,6vw,76px);font-weight:800;line-height:1.08;letter-spacing:-2px;margin-bottom:18px;position:relative;z-index:1}
 .cta-strip p{font-size:16px;color:var(--muted);line-height:1.72;margin-bottom:44px;max-width:480px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
 .studio-overlay{display:none;position:fixed;inset:0;z-index:250;flex-direction:column;
-  background:linear-gradient(rgba(11,22,34,.45),rgba(11,22,34,.45)),url('/background 4.jpg') center/cover;
+  background:linear-gradient(160deg,rgba(110,48,69,.62) 0%,rgba(58,23,36,.74) 45%,rgba(35,13,22,.88) 100%),url('/background 4.jpg') center/cover;
   overflow:hidden}
-.studio-topbar{padding:13px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(135,185,212,.1);flex-shrink:0;background:rgba(8,8,8,.96);backdrop-filter:blur(16px)}
+.studio-topbar{padding:13px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,177,147,.1);flex-shrink:0;background:rgba(42,16,25,.96);backdrop-filter:blur(16px)}
 .studio-back{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:7px 16px;border-radius:50px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-.studio-back:hover{border-color:rgba(135,185,212,.4);color:var(--gold)}
+.studio-back:hover{border-color:rgba(201,177,147,.4);color:var(--gold)}
 .studio-title-wrap{text-align:center}
 .studio-lbl{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
 .studio-pname{font-size:16px;font-weight:700;color:var(--text)}
@@ -426,30 +427,30 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .studio-body{flex:1;overflow-y:auto;padding:20px 32px 28px}
 /* ── MOBILE STUDIO FLOATING UI ─────────────────────── */
 #mob-toolbar{display:none;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:9999;will-change:transform}
-.mob-icon{width:46px;height:46px;border-radius:14px;background:rgba(8,14,24,.86);backdrop-filter:blur(14px);border:1px solid rgba(135,185,212,.18);color:#87B9D4;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.mob-icon svg{width:20px;height:20px;stroke:#87B9D4;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.mob-icon:active,.mob-icon.active{background:rgba(135,185,212,.22);border-color:rgba(135,185,212,.55)}
-#mob-btm-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.1);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:9999;will-change:transform}
-.mob-btm-btn{flex:1;height:40px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.15);color:#87B9D4;border-radius:12px;font-size:11px;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;transition:background .15s}
-.mob-btm-btn:active{background:rgba(135,185,212,.18)}
-.mob-btm-btn svg{width:15px;height:15px;stroke:#87B9D4;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.mob-icon{width:46px;height:46px;border-radius:14px;background:rgba(38,14,24,.86);backdrop-filter:blur(14px);border:1px solid rgba(201,177,147,.18);color:#C9B193;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.mob-icon svg{width:20px;height:20px;stroke:#C9B193;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mob-icon:active,.mob-icon.active{background:rgba(201,177,147,.22);border-color:rgba(201,177,147,.55)}
+#mob-btm-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(35,13,22,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(201,177,147,.1);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:9999;will-change:transform}
+.mob-btm-btn{flex:1;height:40px;background:rgba(201,177,147,.07);border:1px solid rgba(201,177,147,.15);color:#C9B193;border-radius:12px;font-size:11px;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.mob-btm-btn:active{background:rgba(201,177,147,.18)}
+.mob-btm-btn svg{width:15px;height:15px;stroke:#C9B193;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 #mob-overlay-bg{display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:20;-webkit-tap-highlight-color:transparent}
 #mob-overlay-bg.open{display:block}
-.mob-sheet{position:absolute;bottom:0;left:0;right:0;background:#0b1520;border:1px solid rgba(135,185,212,.12);border-radius:22px 22px 0 0;z-index:30;transform:translateY(101%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:72vh;display:flex;flex-direction:column;overflow:hidden}
+.mob-sheet{position:absolute;bottom:0;left:0;right:0;background:#230D16;border:1px solid rgba(201,177,147,.12);border-radius:22px 22px 0 0;z-index:30;transform:translateY(101%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:72vh;display:flex;flex-direction:column;overflow:hidden}
 .mob-sheet.open{transform:translateY(0)}
-.mob-sh-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(135,185,212,.08);background:#0b1520;flex-shrink:0}
+.mob-sh-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(201,177,147,.08);background:#230D16;flex-shrink:0}
 .mob-sh-hdr>span{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text)}
 .mob-sh-hdr>button{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .mob-sh-body{padding:16px 18px 20px;overflow-y:auto;flex:1}
 /* ── NAV SEARCH & USER ── */
 .nav-search-wrap{position:relative;display:flex;align-items:center}
 .nav-search-inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text);padding:7px 14px 7px 36px;border-radius:50px;font-size:12px;outline:none;width:190px;transition:all .25s}
-.nav-search-inp:focus{border-color:rgba(135,185,212,.5);background:rgba(255,255,255,.07);width:220px}
+.nav-search-inp:focus{border-color:rgba(201,177,147,.5);background:rgba(255,255,255,.07);width:220px}
 .nav-search-inp::placeholder{color:var(--muted)}
 .nav-search-icon{position:absolute;left:12px;font-size:13px;pointer-events:none;color:var(--muted)}
 .user-btn{display:flex;align-items:center;gap:7px;background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:7px 14px;border-radius:50px;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .2s;text-decoration:none}
-.user-btn:hover{border-color:rgba(135,185,212,.4);color:var(--gold)}
-.user-btn.logged{border-color:rgba(135,185,212,.3);color:var(--gold)}
+.user-btn:hover{border-color:rgba(201,177,147,.4);color:var(--gold)}
+.user-btn.logged{border-color:rgba(201,177,147,.3);color:var(--gold)}
 /* ── SHOP SECTION ── */
 .shop-section{padding:80px 48px;background:transparent}
 .shop-inner{max-width:1200px;margin:0 auto}
@@ -457,17 +458,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .shop-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .shop-search-wrap{position:relative;display:flex;align-items:center}
 .shop-search-inp{background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:9px 14px 9px 38px;border-radius:50px;font-size:12px;outline:none;width:220px;transition:border-color .2s}
-.shop-search-inp:focus{border-color:rgba(135,185,212,.45)}
+.shop-search-inp:focus{border-color:rgba(201,177,147,.45)}
 .shop-search-inp::placeholder{color:var(--muted)}
 .shop-search-icon{position:absolute;left:13px;font-size:13px;pointer-events:none;color:var(--muted)}
 .shop-sort{background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:9px 14px;border-radius:50px;font-size:12px;outline:none;cursor:pointer}
 .shop-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
 .cat-chip{background:var(--s2);border:1px solid rgba(255,255,255,.08);color:var(--muted);padding:6px 16px;border-radius:50px;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .2s}
-.cat-chip:hover{border-color:rgba(135,185,212,.3);color:var(--text)}
-.cat-chip.active{background:rgba(135,185,212,.1);border-color:var(--gold);color:var(--gold)}
+.cat-chip:hover{border-color:rgba(201,177,147,.3);color:var(--text)}
+.cat-chip.active{background:rgba(201,177,147,.1);border-color:var(--gold);color:var(--gold)}
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
 .prod-card{background:var(--s1);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer}
-.prod-card:hover{border-color:rgba(135,185,212,.25);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.prod-card:hover{border-color:rgba(201,177,147,.25);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
 .prod-img-wrap{position:relative;aspect-ratio:1;overflow:hidden;background:var(--s2)}
 .prod-no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:72px;background:radial-gradient(ellipse at 50% 40%,var(--s3),var(--s2))}
 .sale-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:var(--dark);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:50px}
@@ -479,18 +480,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .prod-orig-price{font-size:12px;color:var(--muted);text-decoration:line-through}
 .prod-sizes-row{display:flex;gap:5px;margin-bottom:12px}
 .sz-chip{background:var(--s3);border:1px solid rgba(255,255,255,.07);color:var(--muted);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
-.sz-chip:hover{border-color:rgba(135,185,212,.4);color:var(--text)}
-.sz-chip.active{border-color:var(--gold);background:rgba(135,185,212,.1);color:var(--gold)}
-.prod-atc{width:100%;background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:var(--dark);border:none;padding:10px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s}
-.prod-atc:hover{box-shadow:0 6px 24px rgba(135,185,212,.35);transform:translateY(-1px)}
+.sz-chip:hover{border-color:rgba(201,177,147,.4);color:var(--text)}
+.sz-chip.active{border-color:var(--gold);background:rgba(201,177,147,.1);color:var(--gold)}
+.prod-atc{width:100%;background:linear-gradient(135deg,#C9B193,#EFE4D2);color:var(--dark);border:none;padding:10px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s}
+.prod-atc:hover{box-shadow:0 6px 24px rgba(201,177,147,.35);transform:translateY(-1px)}
 .shop-loading{grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:13px}
 .shop-empty{grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:13px}
 .shop-more-wrap{display:flex;justify-content:center;margin-top:32px}
-.shop-more-btn{background:none;border:1px solid rgba(135,185,212,.3);color:var(--gold);padding:12px 36px;border-radius:50px;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all .2s}
-.shop-more-btn:hover{background:rgba(135,185,212,.08);border-color:var(--gold)}
+.shop-more-btn{background:none;border:1px solid rgba(201,177,147,.3);color:var(--gold);padding:12px 36px;border-radius:50px;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.shop-more-btn:hover{background:rgba(201,177,147,.08);border-color:var(--gold)}
 
 /* ── STUDIO INTRO VIDEO ── */
-.svintro-wrap{position:relative;height:100vh;background:#0B1622}
+.svintro-wrap{position:relative;height:100vh;background:#2A1019}
 .svintro-sticky{position:relative;top:0;left:0;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
 /* Blurred bg video */
 .svintro-bg-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(28px) brightness(0.25);transform:scale(1.08);z-index:0;will-change:contents}
@@ -499,19 +500,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   position:relative;z-index:3;
   width:92%;height:70vh;
   border-radius:20px;overflow:hidden;
-  background:rgba(135,185,212,.06);
-  border:1.5px solid rgba(135,185,212,.35);
+  background:rgba(201,177,147,.06);
+  border:1.5px solid rgba(201,177,147,.35);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   box-shadow:
     0 0 0 1px rgba(255,255,255,.08) inset,
-    0 2px 0 rgba(135,185,212,.2) inset,
+    0 2px 0 rgba(201,177,147,.2) inset,
     0 40px 100px rgba(0,0,0,.8),
-    0 0 50px rgba(135,185,212,.06)}
-.svintro-glass::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.6),transparent);z-index:4;pointer-events:none}
+    0 0 50px rgba(201,177,147,.06)}
+.svintro-glass::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(201,177,147,.6),transparent);z-index:4;pointer-events:none}
 /* Main video inside glass */
 .svintro-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .svintro-overlay{position:absolute;inset:0;z-index:4;
-  background:linear-gradient(to bottom,rgba(11,22,34,.3) 0%,transparent 16%,transparent 66%,rgba(11,22,34,.97) 100%);
+  background:linear-gradient(to bottom,rgba(42,16,25,.3) 0%,transparent 16%,transparent 66%,rgba(42,16,25,.97) 100%);
   pointer-events:none}
 /* Glass side frames */
 .svintro-side{position:absolute;top:7vh;bottom:18vh;width:23%;z-index:3;pointer-events:none}
@@ -519,46 +520,49 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .svintro-side-r{right:1.8%}
 .svintro-frame{
   width:100%;height:100%;border-radius:20px;overflow:hidden;position:relative;
-  background:rgba(12,26,40,.22);
+  background:rgba(48,18,30,.22);
   border:1px solid rgba(255,255,255,.1);
-  box-shadow:0 0 0 1px rgba(135,185,212,.08),0 32px 80px rgba(0,0,0,.55);
+  box-shadow:0 0 0 1px rgba(201,177,147,.08),0 32px 80px rgba(0,0,0,.55);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:28px 16px;
 }
 /* Gold shimmer top edge */
 .svintro-frame::after{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(135,185,212,.45),transparent)}
+  background:linear-gradient(90deg,transparent,rgba(201,177,147,.45),transparent)}
 /* Inner glass sheen */
 .svintro-frame::before{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 55%)}
 /* Stats inside frames */
 .svintro-stats{display:flex;flex-direction:column;gap:12px;width:100%;position:relative;z-index:1}
-.svintro-stat{padding:12px 14px;border:1px solid rgba(135,185,212,.1);border-radius:12px;
-  background:rgba(135,185,212,.04);text-align:center}
+.svintro-stat{padding:12px 14px;border:1px solid rgba(201,177,147,.1);border-radius:12px;
+  background:rgba(201,177,147,.04);text-align:center}
 .svintro-stat-n{font-size:22px;font-weight:900;line-height:1;
-  background:linear-gradient(135deg,var(--gold),#ACD1E5);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.svintro-stat-l{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(242,242,244,.38);margin-top:4px}
-.svintro-divline{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(135,185,212,.3),transparent);position:relative;z-index:1}
-.svintro-vert{writing-mode:vertical-lr;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(135,185,212,.5);position:relative;z-index:1}
+  background:linear-gradient(135deg,var(--gold),#EFE4D2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.svintro-stat-l{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(246,238,226,.38);margin-top:4px}
+.svintro-divline{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(201,177,147,.3),transparent);position:relative;z-index:1}
+.svintro-vert{writing-mode:vertical-lr;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(201,177,147,.5);position:relative;z-index:1}
 .svintro-side-l .svintro-vert{transform:rotate(180deg)}
 /* Info text inside left panel */
 .svintro-panel-info{width:100%;text-align:left;position:relative;z-index:1}
 .svintro-eyebrow{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:.85;font-weight:700;display:block}
-.svintro-title{font-size:clamp(15px,1.6vw,22px);font-weight:900;letter-spacing:-.5px;line-height:1.15;margin-bottom:10px;color:#EDF2F8;display:block}
-.svintro-title em{font-style:italic;background:linear-gradient(135deg,var(--gold),#ACD1E5);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.svintro-sub{font-size:10px;color:rgba(242,242,244,.4);letter-spacing:.3px;line-height:1.7;margin:0}
+.svintro-title{font-size:clamp(15px,1.6vw,22px);font-weight:900;letter-spacing:-.5px;line-height:1.15;margin-bottom:10px;color:#F6EEE2;display:block}
+.svintro-title em{font-style:italic;background:linear-gradient(135deg,var(--gold),#EFE4D2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.svintro-sub{font-size:10px;color:rgba(246,238,226,.4);letter-spacing:.3px;line-height:1.7;margin:0}
 
 /* ── MOBILE RESPONSIVE ─────────────────────────────── */
 @media(max-width:900px){
   /* Root overflow fix — prevents vw miscalculation */
   html,body{overflow-x:hidden;max-width:100%}
+  footer{padding:40px 20px 24px}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .foot-grid>:first-child{grid-column:1/-1}
 
   /* Intro video — mobile: natural size video on glass panel */
   /* nav is position:fixed ~56px tall, push content below it */
   .svintro-wrap{height:auto !important;padding:16px 12px 0;margin-top:72px}
   .svintro-sticky{position:relative !important;height:auto !important;overflow:visible}
   .svintro-glass{width:100%;height:auto !important;border-radius:20px;overflow:hidden;position:relative;
-    border:1.5px solid rgba(135,185,212,.38);
-    box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06) inset,0 0 30px rgba(135,185,212,.08)}
+    border:1.5px solid rgba(201,177,147,.38);
+    box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06) inset,0 0 30px rgba(201,177,147,.08)}
   .svintro-video{position:relative !important;width:100% !important;height:auto !important;object-fit:unset !important;display:block}
   .svintro-bg-video{display:none !important}
   .svintro-side{display:none}
@@ -571,7 +575,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   .nav-back-label{display:none}
   .nav-links{display:flex;gap:0}
   .nav-links li:not(:first-child){display:none}
-  .nav-links a{font-size:9px;letter-spacing:1px;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.25);padding:5px 10px;border-radius:50px;color:var(--gold)}
+  .nav-links a{font-size:9px;letter-spacing:1px;background:rgba(201,177,147,.1);border:1px solid rgba(201,177,147,.25);padding:5px 10px;border-radius:50px;color:var(--gold)}
   .user-btn{display:none !important}
   .cart-btn{padding:5px 8px;font-size:9px;gap:4px}
   .cart-btn svg{flex-shrink:0}
@@ -611,9 +615,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
   .vbtn{font-size:10px;padding:5px 9px}
 
-  /* 3D Studio overlay */
-  .studio-overlay .cust-grid{grid-template-columns:1fr !important}
-
   /* Product Picker — mobile */
   #product-picker{
     left:3vw !important;right:3vw !important;
@@ -643,6 +644,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   .pp-cta{padding:10px 16px;font-size:11px;white-space:nowrap}
   .studio-topbar{padding:10px 14px}
   .studio-pname{font-size:13px}
+  /* 3D Studio overlay */
+  .studio-overlay .cust-grid{grid-template-columns:1fr !important}
   /* Studio mobile: fullscreen canvas + floating tools */
   .studio-overlay .studio-body{padding:0 !important;overflow:hidden !important;position:relative}
   .studio-overlay .cust-inner{height:100%;max-width:100%;padding:0 !important}
@@ -690,19 +693,61 @@ body.is-mob .studio-overlay .viewer-hint,body.is-mob .studio-overlay .viewer-btn
 .studio-overlay.mob-mode .viewer-hint,.studio-overlay.mob-mode .viewer-btns{display:none !important}
 /* mob-toolbar JS-only */
 /* ── LOCKED PRODUCT OVERLAY ───────────────────────── */
-.pp-lock-overlay{position:absolute;inset:0;border-radius:inherit;background:rgba(6,10,18,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;text-align:center;padding:20px}
+.pp-lock-overlay{position:absolute;inset:0;border-radius:inherit;background:rgba(35,13,22,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;text-align:center;padding:20px}
 .pp-lock-icon{font-size:2.2rem;line-height:1}
 .pp-lock-title{font-size:13px;font-weight:800;color:#fff;letter-spacing:.5px}
 .pp-lock-sub{font-size:11px;color:rgba(255,255,255,.55);max-width:200px;line-height:1.5}
-.pp-lock-badge{background:rgba(135,185,212,.12);border:1px solid rgba(135,185,212,.3);color:#87B9D4;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;font-weight:700;margin-top:4px}
+.pp-lock-badge{background:rgba(201,177,147,.12);border:1px solid rgba(201,177,147,.3);color:#C9B193;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;font-weight:700;margin-top:4px}
 .pp-cta-locked{background:rgba(255,255,255,.07)!important;color:rgba(255,255,255,.4)!important;cursor:not-allowed!important;pointer-events:none!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:none!important}
+
+/* ═══ SECTION COLOUR MOODS — plum · taupe · cream, a new blend per section ═══ */
+nav{background:linear-gradient(180deg,rgba(58,23,36,.94),rgba(42,16,25,.92))}
+/* Taupe gloss ribbon */
+.marquee-strip{background:linear-gradient(90deg,#8C7258 0%,#C9B193 28%,#EFE4D2 50%,#C9B193 72%,#8C7258 100%);border-color:rgba(239,228,210,.4)}
+.marquee-item{color:rgba(42,16,25,.78)}
+.marquee-item::after{color:rgba(110,48,69,.7)}
+/* Taupe Stone — taupe ground, plum glass steps, cream type */
+.process-section{--gold:#F3E7D3;--muted:#E3D5C3;color:var(--text);
+  background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(255,255,255,.14) 0%,transparent 60%),
+    linear-gradient(165deg,#7A6553 0%,#5C4A3D 52%,#3E3129 100%)}
+.process-steps{background:rgba(239,228,210,.14);border-color:rgba(239,228,210,.16)}
+.process-step,.process-step:hover{background:rgba(42,16,25,.48)}
+.process-step:hover{background:rgba(58,23,36,.62)}
+.ps-num{color:rgba(239,228,210,.16)}
+/* Cream Plaster — light cream ground, plum type */
+.feat-new-section{--text:#2A1019;--muted:#6B5848;--gold:#6E3045;color:var(--text);
+  background:radial-gradient(ellipse 60% 50% at 85% 0%,rgba(255,255,255,.95) 0%,transparent 60%),
+    linear-gradient(175deg,#F6EEE2 0%,#E9DCC9 100%);border-color:rgba(74,30,46,.08)}
+.feat-new-section .hl{background:linear-gradient(135deg,#6E3045,#A65A72);-webkit-background-clip:text;background-clip:text}
+.feat-grid-new{background:rgba(74,30,46,.10);border-color:rgba(74,30,46,.10);box-shadow:0 20px 50px rgba(74,30,46,.10)}
+.feat-card-new{background:#FFFBF5}
+.feat-card-new:hover{background:#F3E9DA}
+.feat-icon-new{background:rgba(110,48,69,.08);border-color:rgba(110,48,69,.18)}
+/* Mulberry Gloss — lighter plum, plum-noir cards, taupe accents */
+.testi-section{--muted:#D9BFB5;color:var(--text);
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(255,255,255,.10) 0%,transparent 55%),
+    linear-gradient(160deg,#8C4058 0%,#5B2638 48%,#3A1724 100%);border-color:rgba(201,177,147,.18)}
+.testi-card{background:rgba(31,11,19,.42);border-color:rgba(201,177,147,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.testi-text{color:rgba(246,238,226,.78)}
+/* Plum Noir with a taupe glow */
+.cta-strip{background:linear-gradient(160deg,#3A1724 0%,#2A1019 55%,#1F0B13 100%)}
+.cta-strip-bg{background:radial-gradient(ellipse 60% 90% at 50% 50%,rgba(201,177,147,.16) 0%,rgba(110,48,69,.18) 40%,transparent 70%)}
+/* Espresso Taupe footer */
+footer{--muted:#B5A595;background:linear-gradient(180deg,#3E3129 0%,#2F2520 100%);border-top-color:rgba(201,177,147,.22)}
 </style>
 </head>
 <body>
 <!-- BUILD: v26Jul-D -->
 <script>
 // Detect mobile — Capacitor native app always counts as mobile
-var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|mobile/i.test(navigator.userAgent));
+// Width IS part of this on purpose — the CSS at @media(max-width:900px) switches to the
+// single-column layout (desktop sidebar panel included) at the same 900px breakpoint, and
+// only the mobile icon-toolbar + bottom-sheet UI is built to work in that narrow layout.
+// Dropping width here (desktop-only detection) left a dead zone: CSS hides the sidebar below
+// 900px regardless of device, but JS wouldn't show the mobile toolbar to replace it, so a
+// resized/narrow desktop window — or DevTools eating horizontal space — showed no design
+// controls at all. Keep this in sync with that @media query if either one ever changes.
+var _IS_MOB=!!(typeof window.Capacitor!=='undefined'||window.innerWidth<900||screen.width<900||/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent));
 if(_IS_MOB)document.body.classList.add('is-mob');
 // Global crash guard — ONLY fires when studio overlay is actively open (display:flex set by launchCustomize)
 window._studioOpen=false;
@@ -710,8 +755,8 @@ window.addEventListener('error',function(e){
   if(!window._studioOpen) return; // home page errors don't trigger this
   if(document.getElementById('_aruva-crash')) return;
   const d=document.createElement('div');d.id='_aruva-crash';
-  d.style.cssText='position:fixed;inset:0;background:rgba(6,10,18,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999999;color:#fff;font-family:inherit;text-align:center;padding:24px';
-  d.innerHTML='<div style="font-size:2.5rem">⚠️</div><div style="font-size:15px;font-weight:700;letter-spacing:.5px">Something went wrong</div><div style="font-size:12px;color:rgba(255,255,255,.6);max-width:260px">App ran out of memory. Use fewer images or tap restart.</div><button onclick="location.reload()" style="background:#87B9D4;color:#0b1622;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px">Restart App</button>';
+  d.style.cssText='position:fixed;inset:0;background:rgba(35,13,22,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999999;color:#fff;font-family:inherit;text-align:center;padding:24px';
+  d.innerHTML='<div style="font-size:2.5rem">⚠️</div><div style="font-size:15px;font-weight:700;letter-spacing:.5px">Something went wrong</div><div style="font-size:12px;color:rgba(255,255,255,.6);max-width:260px">App ran out of memory. Use fewer images or tap restart.</div><button onclick="location.reload()" style="background:#C9B193;color:#2A1019;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px">Restart App</button>';
   document.body.appendChild(d);
 });
 </script>
@@ -723,7 +768,7 @@ window.addEventListener('error',function(e){
     <li><a href="about.html">About</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:10px">
-    <a class="nav-back" href="home.html" style="display:inline-flex;align-items:center;gap:7px;background:none;border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:7px 16px;border-radius:50px;font-size:12px;letter-spacing:.5px;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='rgba(135,185,212,.5)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='var(--muted)'">
+    <a class="nav-back" href="home.html" style="display:inline-flex;align-items:center;gap:7px;background:none;border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:7px 16px;border-radius:50px;font-size:12px;letter-spacing:.5px;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='rgba(201,177,147,.5)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='var(--muted)'">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
       <span class="nav-back-label">Back to Home</span>
     </a>
@@ -782,21 +827,21 @@ window.addEventListener('error',function(e){
         <!-- Glass panel -->
         <div style="
           width:420px;height:460px;border-radius:28px;overflow:hidden;
-          background:rgba(11,22,34,.35);
-          border:1px solid rgba(135,185,212,.22);
+          background:rgba(42,16,25,.35);
+          border:1px solid rgba(201,177,147,.22);
           backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-          box-shadow:0 0 0 1px rgba(255,255,255,.05) inset, 0 1px 0 rgba(135,185,212,.15) inset, 0 40px 80px rgba(0,0,0,.6);
+          box-shadow:0 0 0 1px rgba(255,255,255,.05) inset, 0 1px 0 rgba(201,177,147,.15) inset, 0 40px 80px rgba(0,0,0,.6);
           position:relative;
         ">
           <!-- top shimmer -->
-          <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(135,185,212,.4),transparent);z-index:2"></div>
+          <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,177,147,.4),transparent);z-index:2"></div>
           <!-- image -->
           <img src="/track baggy image.jpg" alt="Track Baggy" style="width:100%;height:100%;object-fit:cover;object-position:center 80%;display:block">
           <!-- bottom fade -->
-          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to top,rgba(11,22,34,.85),transparent);z-index:1"></div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to top,rgba(42,16,25,.85),transparent);z-index:1"></div>
         </div>
         <!-- floating glow -->
-        <div style="position:absolute;inset:-50px;border-radius:50%;background:radial-gradient(circle,rgba(135,185,212,.08) 0%,transparent 70%);pointer-events:none;z-index:-1"></div>
+        <div style="position:absolute;inset:-50px;border-radius:50%;background:radial-gradient(circle,rgba(201,177,147,.08) 0%,transparent 70%);pointer-events:none;z-index:-1"></div>
       </div>
     </div>
   </div>
@@ -876,8 +921,8 @@ window.addEventListener('error',function(e){
         <!-- Scroll hint -->
         <div class="mvis-hint" id="mvis-hint">
           <svg width="12" height="20" viewBox="0 0 14 22" fill="none">
-            <rect x="1" y="1" width="12" height="20" rx="6" stroke="rgba(135,185,212,.4)" stroke-width="1.5"/>
-            <circle cx="7" cy="6" r="2" fill="rgba(135,185,212,.6)">
+            <rect x="1" y="1" width="12" height="20" rx="6" stroke="rgba(201,177,147,.4)" stroke-width="1.5"/>
+            <circle cx="7" cy="6" r="2" fill="rgba(201,177,147,.6)">
               <animate attributeName="cy" values="6;14;6" dur="1.5s" repeatCount="indefinite"/>
             </circle>
           </svg>
@@ -895,8 +940,8 @@ window.addEventListener('error',function(e){
   <div class="studio-topbar">
     <button class="studio-back" onclick="closeStudio()">← Products</button>
     <div style="display:flex;gap:8px">
-      <button onclick="showSavedDesigns()" style="background:none;border:1px solid rgba(135,185,212,.25);color:rgba(135,185,212,.8);padding:6px 14px;border-radius:50px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s" title="My Designs">My Designs</button>
-      <button onclick="saveDesign()" style="background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:#0B1622;border:none;padding:6px 14px;border-radius:50px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all .2s" title="Save Design">Save ↓</button>
+      <button onclick="showSavedDesigns()" style="background:none;border:1px solid rgba(201,177,147,.25);color:rgba(201,177,147,.8);padding:6px 14px;border-radius:50px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s" title="My Designs">My Designs</button>
+      <button onclick="saveDesign()" style="background:linear-gradient(135deg,#C9B193,#EFE4D2);color:#2A1019;border:none;padding:6px 14px;border-radius:50px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all .2s" title="Save Design">Save ↓</button>
     </div>
     <div class="studio-title-wrap">
       <div class="studio-lbl">Live Studio</div>
@@ -916,22 +961,20 @@ window.addEventListener('error',function(e){
         <div class="ctrl">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
             <span class="ctrl-label" style="margin-bottom:0">Fabric Colour</span>
-            <button id="eyedropper-btn" onclick="openEyeDropper()" title="Pick colour from screen" style="display:flex;align-items:center;gap:6px;background:rgba(135,185,212,.1);border:1px solid rgba(135,185,212,.3);color:#87B9D4;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:10px;letter-spacing:.5px;transition:all .2s">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
+            <button id="eyedropper-btn" onclick="openEyeDropper()" title="Pick colour from screen" style="display:flex;align-items:center;gap:6px;background:rgba(201,177,147,.1);border:1px solid rgba(201,177,147,.3);color:#C9B193;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:10px;letter-spacing:.5px;transition:all .2s">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C9B193" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
               Pick
             </button>
           </div>
           <div id="eyedropper-preview" style="display:none"></div>
           <div class="color-grid" id="color-swatches"></div>
-        </div>
-            <span class="color-hint">Pick colour from screen</span>
-          </div>
+          <span class="color-hint">Pick colour from screen</span>
         </div>
 
         <div class="ctrl">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
             <span class="ctrl-label" style="margin-bottom:0">Add Text</span>
-            <button onclick="addTextLayer()" title="Start a new text layer" style="background:rgba(135,185,212,.12);border:1px solid rgba(135,185,212,.3);color:var(--gold);font-size:10px;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:.5px;transition:all .2s">+ New Text</button>
+            <button onclick="addTextLayer()" title="Start a new text layer" style="background:rgba(201,177,147,.12);border:1px solid rgba(201,177,147,.3);color:var(--gold);font-size:10px;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:.5px;transition:all .2s">+ New Text</button>
           </div>
           <input type="text" class="ti" id="custom-text" placeholder="Type text, then click hoodie to place…" oninput="updateDesign()">
           <select class="si" id="font-style" onchange="updateDesign()">
@@ -970,7 +1013,7 @@ window.addEventListener('error',function(e){
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Upload Image (+)
           </label>
-          <div style="font-size:10px;color:rgba(135,185,212,.5);margin-top:6px;letter-spacing:.5px">Each upload adds a new layer</div>
+          <div style="font-size:10px;color:rgba(201,177,147,.5);margin-top:6px;letter-spacing:.5px">Each upload adds a new layer</div>
         </div>
 
         <div class="ctrl">
@@ -982,7 +1025,7 @@ window.addEventListener('error',function(e){
               <button class="be-btn" id="mode-eraser" onclick="setBrushMode('eraser')">◻ Eraser</button>
             </div>
             <div class="color-row" style="margin-bottom:9px;margin-top:8px">
-              <input type="color" id="brush-color" value="#87B9D4" oninput="S.brushColor=this.value">
+              <input type="color" id="brush-color" value="#C9B193" oninput="S.brushColor=this.value">
               <span class="color-hint">Brush Colour</span>
             </div>
             <span class="ctrl-label">Brush Size</span>
@@ -1006,14 +1049,14 @@ window.addEventListener('error',function(e){
       <div class="viewer-wrap">
         <div class="canvas-wrap" id="viewer-wrap">
           <canvas id="three-canvas"></canvas>
-          <div id="glb-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,16,.9);z-index:10;gap:14px">
-            <div style="width:38px;height:38px;border:3px solid rgba(135,185,212,.2);border-top-color:#87B9D4;border-radius:50%;animation:spin360 .8s linear infinite"></div>
-            <div style="font-size:12px;color:#87B9D4;letter-spacing:2px;text-transform:uppercase">Loading Hoodie…</div>
+          <div id="glb-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(42,16,25,.9);z-index:10;gap:14px">
+            <div style="width:38px;height:38px;border:3px solid rgba(201,177,147,.2);border-top-color:#C9B193;border-radius:50%;animation:spin360 .8s linear infinite"></div>
+            <div style="font-size:12px;color:#C9B193;letter-spacing:2px;text-transform:uppercase">Loading Hoodie…</div>
           </div>
           <!-- Tool badge -->
-          <div id="tool-badge" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(8,8,16,.82);border:1px solid rgba(135,185,212,.3);color:#87B9D4;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;pointer-events:none;z-index:6;white-space:nowrap">↖ Select</div>
+          <div id="tool-badge" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(42,16,25,.82);border:1px solid rgba(201,177,147,.3);color:#C9B193;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;pointer-events:none;z-index:6;white-space:nowrap">↖ Select</div>
           <!-- Pending place hint -->
-          <div id="place-hint" style="display:none;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(135,185,212,.15);border:1px solid rgba(135,185,212,.4);color:#ACD1E5;font-size:11px;letter-spacing:1px;padding:7px 16px;border-radius:20px;pointer-events:none;z-index:7;white-space:nowrap">📍 Click on hoodie to place</div>
+          <div id="place-hint" style="display:none;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(201,177,147,.15);border:1px solid rgba(201,177,147,.4);color:#EFE4D2;font-size:11px;letter-spacing:1px;padding:7px 16px;border-radius:20px;pointer-events:none;z-index:7;white-space:nowrap">📍 Click on hoodie to place</div>
           <!-- Element handles overlay -->
           <div id="handles-wrap" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5">
             <svg id="h-svg" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none">
@@ -1075,10 +1118,10 @@ window.addEventListener('error',function(e){
 <!-- Left icon toolbar -->
 <div id="mob-toolbar">
   <button class="mob-icon" id="mi-color" onclick="mobOpenPanel('color')" title="Fabric Colour">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="2" fill="#87B9D4" stroke="none"/><circle cx="16" cy="10" r="2" fill="#e87" stroke="none"/><circle cx="8" cy="16" r="2" fill="#8e7" stroke="none"/><circle cx="16" cy="16" r="2" fill="#fb0" stroke="none"/><circle cx="12" cy="8" r="2" fill="#c8f" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="2" fill="#C9B193" stroke="none"/><circle cx="16" cy="10" r="2" fill="#e87" stroke="none"/><circle cx="8" cy="16" r="2" fill="#8e7" stroke="none"/><circle cx="16" cy="16" r="2" fill="#fb0" stroke="none"/><circle cx="12" cy="8" r="2" fill="#c8f" stroke="none"/></svg>
   </button>
   <button class="mob-icon" id="mi-text" onclick="mobOpenPanel('text')" title="Add Text">
-    <span style="font-size:18px;font-weight:900;font-family:Georgia,serif;color:#87B9D4;line-height:1">T</span>
+    <span style="font-size:18px;font-weight:900;font-family:Georgia,serif;color:#C9B193;line-height:1">T</span>
   </button>
   <button class="mob-icon" id="mi-image" onclick="mobOpenPanel('image')" title="Add Image">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -1090,7 +1133,7 @@ window.addEventListener('error',function(e){
     <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 12 15 2 8.5"/><polyline points="2 15 12 21.5 22 15"/><polyline points="2 11.5 12 18 22 11.5"/></svg>
   </button>
   <button class="mob-icon" id="mi-picker" onclick="mobOpenPanel('picker')" title="Match Colour">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3.5-2.5 4.5L18 15l-3 3-3.5-3.5C10.5 15.5 9 16.5 7 16.5a5 5 0 0 1 0-10"/><circle cx="9" cy="11" r="1" fill="#87B9D4" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#C9B193" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3.5-2.5 4.5L18 15l-3 3-3.5-3.5C10.5 15.5 9 16.5 7 16.5a5 5 0 0 1 0-10"/><circle cx="9" cy="11" r="1" fill="#C9B193" stroke="none"/></svg>
   </button>
 </div>
 <!-- Bottom action bar -->
@@ -1104,7 +1147,7 @@ window.addEventListener('error',function(e){
   <button class="mob-btm-btn" onclick="flipShirt()">
     <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Flip
   </button>
-  <button class="mob-btm-btn" onclick="mobOpenPanel('order')" style="flex:1.4;background:rgba(135,185,212,.16);border-color:rgba(135,185,212,.4);color:#fff;font-weight:700;letter-spacing:.5px">
+  <button class="mob-btm-btn" onclick="mobOpenPanel('order')" style="flex:1.4;background:rgba(201,177,147,.16);border-color:rgba(201,177,147,.4);color:#fff;font-weight:700;letter-spacing:.5px">
     <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Order
   </button>
 </div>
@@ -1134,10 +1177,10 @@ window.addEventListener('error',function(e){
       <option value="black-ops">Black Ops One</option>
     </select>
     <div style="display:flex;align-items:center;gap:10px">
-      <input type="color" id="mob-text-clr" value="#ffffff" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(135,185,212,.25);background:none;cursor:pointer;padding:2px">
+      <input type="color" id="mob-text-clr" value="#ffffff" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(201,177,147,.25);background:none;cursor:pointer;padding:2px">
       <span style="font-size:12px;color:var(--muted);letter-spacing:.5px">Text Colour</span>
     </div>
-    <button onclick="mobAddText()" style="background:linear-gradient(135deg,rgba(135,185,212,.25),rgba(135,185,212,.12));border:1px solid rgba(135,185,212,.4);color:#fff;padding:12px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;width:100%">+ Place on Garment</button>
+    <button onclick="mobAddText()" style="background:linear-gradient(135deg,rgba(201,177,147,.25),rgba(201,177,147,.12));border:1px solid rgba(201,177,147,.4);color:#fff;padding:12px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;width:100%">+ Place on Garment</button>
   </div>
 </div>
 <!-- ── Sheet: Image ── -->
@@ -1149,7 +1192,7 @@ window.addEventListener('error',function(e){
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       Upload Image
     </label>
-    <div style="font-size:10px;color:rgba(135,185,212,.5);text-align:center;letter-spacing:.5px">Each upload adds a new layer</div>
+    <div style="font-size:10px;color:rgba(201,177,147,.5);text-align:center;letter-spacing:.5px">Each upload adds a new layer</div>
   </div>
 </div>
 <!-- ── Sheet: Brush ── -->
@@ -1162,7 +1205,7 @@ window.addEventListener('error',function(e){
       <button class="be-btn" id="mob-mode-eraser" onclick="setBrushMode('eraser')">◻ Eraser</button>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <input type="color" id="mob-brush-clr" value="#87B9D4" oninput="S.brushColor=this.value" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(135,185,212,.25);background:none;cursor:pointer;padding:2px">
+      <input type="color" id="mob-brush-clr" value="#C9B193" oninput="S.brushColor=this.value" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(201,177,147,.25);background:none;cursor:pointer;padding:2px">
       <span style="font-size:12px;color:var(--muted);letter-spacing:.5px">Brush Colour</span>
     </div>
     <div>
@@ -1183,10 +1226,10 @@ window.addEventListener('error',function(e){
 <div class="mob-sheet" id="mob-sh-picker">
   <div class="mob-sh-hdr"><span>Match Colour</span><button onclick="mobClosePanel()">✕</button></div>
   <div class="mob-sh-body" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding-top:28px;padding-bottom:36px">
-    <button onclick="openEyeDropper();mobClosePanel()" style="width:80px;height:80px;border-radius:24px;background:rgba(135,185,212,.1);border:2px solid rgba(135,185,212,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent">
-      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#87B9D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
+    <button onclick="openEyeDropper();mobClosePanel()" style="width:80px;height:80px;border-radius:24px;background:rgba(201,177,147,.1);border:2px solid rgba(201,177,147,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#C9B193" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-1.9a2 2 0 0 1 2.8 0l.7.7a2 2 0 0 0 2.8 0L20 11l-7-7-8.9 8.9a2 2 0 0 0 0 2.8l.7.7a2 2 0 0 1 0 2.8L3 21z"/><line x1="7" y1="17" x2="14" y2="10"/></svg>
     </button>
-    <div id="mob-eyedropper-preview" style="width:48px;height:48px;border-radius:50%;background:#ffffff;border:2px solid rgba(135,185,212,.3)"></div>
+    <div id="mob-eyedropper-preview" style="width:48px;height:48px;border-radius:50%;background:#ffffff;border:2px solid rgba(201,177,147,.3)"></div>
     <div style="text-align:center">
       <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Pick from Screen</div>
       <div style="font-size:11px;color:var(--muted);letter-spacing:.3px;line-height:1.7">Tap the eyedropper, then tap<br>any colour on your screen</div>
@@ -1347,10 +1390,10 @@ window.addEventListener('error',function(e){
 
 <!-- Designs Modal -->
 <div id="designs-modal" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:#111E2C;border:1px solid rgba(135,185,212,.15);border-radius:20px;width:100%;max-width:460px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden">
+  <div style="background:#3A1724;border:1px solid rgba(201,177,147,.15);border-radius:20px;width:100%;max-width:460px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden">
     <div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
-      <div><div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#87B9D4;margin-bottom:3px">Studio</div><div style="font-size:17px;font-weight:700">Saved Designs</div></div>
-      <button onclick="document.getElementById('designs-modal').style.display='none'" style="background:none;border:1px solid rgba(255,255,255,.1);color:#4A6B82;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">×</button>
+      <div><div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#C9B193;margin-bottom:3px">Studio</div><div style="font-size:17px;font-weight:700">Saved Designs</div></div>
+      <button onclick="document.getElementById('designs-modal').style.display='none'" style="background:none;border:1px solid rgba(255,255,255,.1);color:#A99589;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">×</button>
     </div>
     <div id="designs-list" style="padding:16px;overflow-y:auto;flex:1"></div>
   </div>
@@ -1412,11 +1455,15 @@ const S = {
   color:'#FFFFFF', colorName:'White',
   text:'', textColor:'#ffffff', fontFamily:'bold-sans', textSize:220,
   cat:'hoodie', size:'S', qty:1, spin:true, showBack:false,
-  brushColor:'#87B9D4', brushSize:40, brushSmooth:false, brushMode:'select'
+  brushColor:'#C9B193', brushSize:40, brushSmooth:false, brushMode:'select'
 };
 const PRICES = {tshirt:1499,hoodie:1999,jacket:3999,croptop:999};
 const cart = [];
-const _TEX_SIZE=window.innerWidth<768?256:2048;
+const _TEX_MOB=window.innerWidth<768;
+// Mobile was 256px, then 1024px — uploaded images still came out blurry on the model. With only
+// one WebGL context alive on mobile, a single 2048 canvas texture fits fine on phone GPUs.
+const _TEX_SIZE=2048;
+const _BRUSH_SCALE=_TEX_MOB?8:1; // keeps the mobile brush the same visual size it had at 256px
 
 // ── BRUSH CANVAS ──────────────────────────────────────
 const brushCanvas = document.createElement('canvas');
@@ -1429,14 +1476,14 @@ let layers = []; // [{id,type,x,y,w,h,rotation,scaleX,img,text,textColor,fontFam
 let selectedEl = null; // layer id (number) or null
 let activeTextLayerId = null; // text layer currently bound to the input
 let layerIdCounter = 0;
-function mkLayer(type,defs){return Object.assign({id:++layerIdCounter,type,x:256,y:type==='image'?760:1000,w:480,h:480,rotation:0,scaleX:1,scaleY:1,img:null,text:'',textColor:'#ffffff',fontFamily:'bold-sans',textSize:220},defs||{});}
+function mkLayer(type,defs){return Object.assign({id:++layerIdCounter,type,x:256,y:type==='image'?760:1000,w:480,h:480,rotation:0,scaleX:1,scaleY:1,img:null,text:'',textColor:'#ffffff',fontFamily:'bold-sans',textSize:Math.round(220*_TEX_SIZE/2048)},defs||{});}
 function getLayerById(id){return layers.find(l=>l.id===id)||null;}
 
 // ── COLORS (63) ───────────────────────────────────────
 const COLORS = [
   {h:'#FFFFFF',n:'White'},{h:'#F5F5F0',n:'Ivory'},{h:'#E8E8E8',n:'Light Grey'},
   {h:'#C0C0C0',n:'Silver'},{h:'#909090',n:'Grey'},{h:'#606060',n:'Slate'},
-  {h:'#383838',n:'Charcoal'},{h:'#172638',n:'Near Black'},{h:'#000000',n:'Black'},
+  {h:'#383838',n:'Charcoal'},{h:'#4A1E2E',n:'Near Black'},{h:'#000000',n:'Black'},
   {h:'#FFB3C6',n:'Baby Pink'},{h:'#FF69B4',n:'Hot Pink'},{h:'#FF1493',n:'Deep Pink'},
   {h:'#E91E63',n:'Rose'},{h:'#F44336',n:'Red'},{h:'#D32F2F',n:'Dark Red'},
   {h:'#B71C1C',n:'Crimson'},{h:'#880E4F',n:'Maroon'},{h:'#C62828',n:'Ruby'},
@@ -1444,7 +1491,7 @@ const COLORS = [
   {h:'#FF5722',n:'Deep Orange'},{h:'#FF9800',n:'Orange'},{h:'#F57C00',n:'Dark Orange'},
   {h:'#E65100',n:'Burnt Orange'},{h:'#BF360C',n:'Rust'},{h:'#FF6D00',n:'Tangerine'},
   {h:'#FFFDE7',n:'Cream'},{h:'#FFF176',n:'Lemon'},{h:'#FFEE58',n:'Yellow'},
-  {h:'#FDD835',n:'Golden Yellow'},{h:'#87B9D4',n:'Gold'},{h:'#ACD1E5',n:'Light Gold'},
+  {h:'#FDD835',n:'Golden Yellow'},{h:'#C9B193',n:'Gold'},{h:'#EFE4D2',n:'Light Gold'},
   {h:'#F9A825',n:'Amber'},{h:'#FF8F00',n:'Dark Amber'},{h:'#827717',n:'Olive'},
   {h:'#C8E6C9',n:'Mint'},{h:'#81C784',n:'Light Green'},{h:'#4CAF50',n:'Green'},
   {h:'#388E3C',n:'Med Green'},{h:'#1B5E20',n:'Forest'},{h:'#26A69A',n:'Light Teal'},
@@ -1551,11 +1598,28 @@ function mobOpenPanel(name){
   document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
   const bg=document.getElementById('mob-overlay-bg');if(bg)bg.classList.add('open');
   const sh=document.getElementById('mob-sh-'+name);if(sh)sh.classList.add('open');
+  if(name==='text'){
+    const inp=document.getElementById('mob-text-inp'),clr=document.getElementById('mob-text-clr');
+    const sel=getLayerById(selectedEl);
+    // Editing a selected text layer → prefill it; otherwise start a fresh layer
+    if(sel&&sel.type==='text'){activeTextLayerId=sel.id;if(inp)inp.value=sel.text;if(clr)clr.value=sel.textColor;}
+    else{activeTextLayerId=null;if(inp)inp.value='';}
+    if(inp)inp.dataset.added=inp.value;
+    // Default white text was invisible on light garments — pick a contrasting colour until the user chooses one
+    if(clr&&!clr.dataset.touched&&!(sel&&sel.type==='text')){
+      clr.oninput=()=>{clr.dataset.touched='1';};
+      clr.value=hexLum(S.color)>150?'#111111':'#ffffff';
+    }
+  }
   document.querySelectorAll('.mob-icon').forEach(b=>b.classList.remove('active'));
   const ic=document.getElementById('mi-'+name);if(ic)ic.classList.add('active');
   if(name==='layers')renderLayersList();
 }
+function hexLum(hex){const h=(hex||'#000000').replace(/[^0-9a-fA-F]/g,'').padEnd(6,'0');return(parseInt(h.slice(0,2),16)*299+parseInt(h.slice(2,4),16)*587+parseInt(h.slice(4,6),16)*114)/1000||0;}
 function mobClosePanel(){
+  // Closing the text sheet with typed-but-unplaced text places it, same as "+ Place on Garment"
+  const tsh=document.getElementById('mob-sh-text'),tinp=document.getElementById('mob-text-inp');
+  if(tsh&&tsh.classList.contains('open')&&tinp&&tinp.value.trim()&&tinp.value!==tinp.dataset.added)return mobAddText();
   document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
   const bg=document.getElementById('mob-overlay-bg');if(bg)bg.classList.remove('open');
   document.querySelectorAll('.mob-icon').forEach(b=>b.classList.remove('active'));
@@ -1563,9 +1627,14 @@ function mobClosePanel(){
 function mobAddText(){
   const inp=document.getElementById('mob-text-inp');
   if(!inp||!inp.value.trim())return;
-  document.getElementById('custom-text').value=inp.value;
-  const clr=document.getElementById('mob-text-clr');if(clr)document.getElementById('text-color').value=clr.value;
-  const fnt=document.getElementById('mob-font-sel');if(fnt)document.getElementById('font-style').value=fnt.value;
+  // Desktop-only fields (custom-text/text-color/font-style) don't exist in mobile DOM —
+  // updateDesign() reads the mob-* inputs directly as a fallback, no sync needed here.
+  const ct=document.getElementById('custom-text');if(ct)ct.value=inp.value;
+  const clr=document.getElementById('mob-text-clr');
+  const tc=document.getElementById('text-color');if(clr&&tc)tc.value=clr.value;
+  const fnt=document.getElementById('mob-font-sel');
+  const fs=document.getElementById('font-style');if(fnt&&fs)fs.value=fnt.value;
+  inp.dataset.added=inp.value;
   updateDesign();
   mobClosePanel();
 }
@@ -1585,7 +1654,7 @@ function initSwatches(){
         document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
         el.classList.add('active');
         S.color=c.h;S.colorName=c.n;
-        document.getElementById('s-color').textContent=c.n;
+        const sc=document.getElementById('s-color');if(sc)sc.textContent=c.n;
         const ep=document.getElementById('eyedropper-preview');if(ep)ep.style.background=c.h;
         const mep=document.getElementById('mob-eyedropper-preview');if(mep)mep.style.background=c.h;
         refreshTex();
@@ -1596,7 +1665,7 @@ function initSwatches(){
 }
 
 // ── UI CONTROLS ───────────────────────────────────────
-function setSz(btn,s){document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');S.size=s;document.getElementById('s-size').textContent=s;}
+function setSz(btn,s){document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');S.size=s;const ss=document.getElementById('s-size');if(ss)ss.textContent=s;}
 function chgQty(d){S.qty=Math.max(1,Math.min(10,S.qty+d));document.getElementById('qty-val').textContent=S.qty;const mq=document.getElementById('mob-qty-val');if(mq)mq.textContent=S.qty;}
 function selectCat(card,type){
   document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
@@ -1623,7 +1692,7 @@ function updateDesign(){
   layers.push(layer);
   activeTextLayerId=layer.id;selectedEl=layer.id;pendingPlace=layer.id;
   const ph=document.getElementById('place-hint');
-  if(ph){ph.textContent='📍 Click on hoodie to place text';ph.style.display='block';}
+  if(ph){ph.textContent=_TEX_MOB?'📍 Tap on the garment to place text':'📍 Click on hoodie to place text';ph.style.display='block';}
   setBrushMode('select');
   renderLayersList();refreshTex();
 }
@@ -1637,11 +1706,12 @@ function deleteText(){
 
 function loadUserImage(input){
   if(!input.files||!input.files[0])return;
+  const fileType=input.files[0].type||'';
   const reader=new FileReader();
   reader.onload=e=>{
     const img=new Image();
     img.onload=()=>{
-      const MAX=window.innerWidth<768?256:1024;
+      const MAX=_TEX_SIZE;
       const doAdd=(finalImg,aspW,aspH)=>{
         const asp=aspW/aspH||1;
         const layer=mkLayer('image',{img:finalImg,w:_TEX_SIZE*0.8,h:Math.round(_TEX_SIZE*0.8/asp)});
@@ -1657,10 +1727,12 @@ function loadUserImage(input){
         const oc=document.createElement('canvas');
         oc.width=Math.round(img.naturalWidth*sc);
         oc.height=Math.round(img.naturalHeight*sc);
-        oc.getContext('2d').drawImage(img,0,0,oc.width,oc.height);
+        const octx=oc.getContext('2d');octx.imageSmoothingQuality='high';
+        octx.drawImage(img,0,0,oc.width,oc.height);
         const ri=new Image();
         ri.onload=()=>doAdd(ri,oc.width,oc.height);
-        ri.src=oc.toDataURL('image/jpeg',0.9);
+        // PNG keeps logos' transparency (JPEG turned it black); photos stay JPEG to keep the order upload small
+        ri.src=/png|webp|gif/i.test(fileType)?oc.toDataURL('image/png'):oc.toDataURL('image/jpeg',0.95);
       } else {
         doAdd(img,img.naturalWidth,img.naturalHeight);
       }
@@ -1690,7 +1762,7 @@ function setBrushMode(m){
 
 function clearBrush(){
   brushCtx.clearRect(0,0,_TEX_SIZE,_TEX_SIZE);hasBrushStrokes=false;
-  document.getElementById('s-brush').textContent='None';
+  const sb=document.getElementById('s-brush');if(sb)sb.textContent='None';
   refreshTex();
 }
 
@@ -1718,7 +1790,7 @@ let _watermarkLogo=null;
 })();
 function getGrainCanvas(){
   if(_grainCanvas)return _grainCanvas;
-  if(_TEX_SIZE<=256){_grainCanvas=null;return null;} // skip grain on mobile — saves ~5ms per frame
+  if(_TEX_MOB){_grainCanvas=null;return null;} // skip grain on mobile — saves ~5ms per frame
   const c=document.createElement('canvas');c.width=_TEX_SIZE;c.height=_TEX_SIZE;
   const x=c.getContext('2d');
   x.globalAlpha=.045;
@@ -1741,17 +1813,19 @@ function genTex(){
   x.clearRect(0,0,_TEX_SIZE,_TEX_SIZE);
   x.fillStyle=S.color;x.fillRect(0,0,_TEX_SIZE,_TEX_SIZE);
   if(hasBrushStrokes){
-    if(S.brushSmooth){x.filter='blur(8px)';x.drawImage(brushCanvas,0,0);x.filter='none';}
+    if(S.brushSmooth){x.filter='blur('+(8*_BRUSH_SCALE)+'px)';x.drawImage(brushCanvas,0,0);x.filter='none';}
     else x.drawImage(brushCanvas,0,0);
   }
+  x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';
   layers.forEach(layer=>{
     if(pendingPlace===layer.id)return;
     if(layer.type==='image'&&layer.img&&layer.img.complete&&layer.img.naturalWidth>0){
-      try{x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
+      try{x.save();x.translate(layer.x,layer.y);x.rotate(layerRot(layer)*Math.PI/180);
+      if(layer.flipX)x.scale(-1,1);
       x.drawImage(layer.img,-layer.w/2,-layer.h/2,layer.w,layer.h);x.restore();}catch(e){x.restore();}
     }else if(layer.type==='text'&&layer.text){
-      try{x.save();x.translate(layer.x,layer.y);x.rotate(layer.rotation*Math.PI/180);
-      x.scale(layer.scaleX||1,layer.scaleY||1);
+      try{x.save();x.translate(layer.x,layer.y);x.rotate(layerRot(layer)*Math.PI/180);
+      x.scale((layer.scaleX||1)*(layer.flipX?-1:1),layer.scaleY||1);
       x.font=getLayerFont(layer);x.textAlign='center';x.textBaseline='middle';
       x.fillStyle=layer.textColor||'#fff';x.shadowColor='rgba(0,0,0,.4)';x.shadowBlur=16;
       x.fillText(layer.text,0,0);x.shadowBlur=0;x.restore();}catch(e){x.restore();}
@@ -1760,7 +1834,7 @@ function genTex(){
   // Grain + watermark: skip on mobile (saves ~8ms per frame, no visible diff at 256px)
   const _gc=getGrainCanvas();
   if(_gc) x.drawImage(_gc,0,0);
-  if(_TEX_SIZE>256)(function(){
+  if(!_TEX_MOB)(function(){
     try{
       const hex=(S.color||'#000000').replace(/[^0-9a-fA-F]/g,'').padEnd(6,'0');
       const r=parseInt(hex.slice(0,2),16)||0,g=parseInt(hex.slice(2,4),16)||0,b=parseInt(hex.slice(4,6),16)||0;
@@ -1825,7 +1899,7 @@ function refreshTex(){
 const PRODUCTS = [
   {id:'hoodie',   name:'Hoodie',         sub:'The Signature Piece',
    desc:'380GSM heavyweight fleece. Premium comfort with limitless custom design potential.',
-   price:'1,799', emoji:'🧥', accent:'rgba(135,185,212,.55)',  glb:'/hoodie_uv_fixed.glb'},
+   price:'1,799', emoji:'🧥', accent:'rgba(201,177,147,.55)',  glb:'/hoodie_uv_fixed.glb'},
   {id:'tshirt',  name:'Classic T-Shirt', sub:'The Essential',
    desc:'180GSM ring-spun cotton. Versatile everyday wear — your design, your way.',
    price:'999', emoji:'👕', accent:'rgba(79,195,247,.55)', glb:'/tshirt_uv_fixed.glb'},
@@ -1869,7 +1943,10 @@ function resizePPRenderer(){
 }
 function initPPThree(){
   if(ppThreeReady) return;
-  if(window._IS_MOB) return; // Mobile: no 3D product preview — saves GPU context for studio
+  // Mobile keeps exactly ONE WebGL context alive: launchCustomize() kills this one (and swaps
+  // in a fresh canvas) before the studio's is created, and closeStudio() kills the studio's
+  // before the picker comes back here. Android WebView can't hold both at once.
+  const _ppMob=!!window._IS_MOB;
   const wrap=document.getElementById('pp-preview-wrap');
   const cvs=document.getElementById('pp-canvas');
   if(!wrap||!cvs||!window.THREE) return;
@@ -1877,7 +1954,7 @@ function initPPThree(){
   ppScene=new THREE.Scene();
   ppCam=new THREE.PerspectiveCamera(44,W/H,.1,100);
   ppCam.position.set(0,0,7);
-  try{ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true,powerPreference:'low-power'});}
+  try{ppRenderer=new THREE.WebGLRenderer({canvas:cvs,antialias:!_ppMob,alpha:true,powerPreference:'low-power'});}
   catch(e){console.warn('[ARUVA] ppRenderer init failed',e);return;}
   ppRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   ppRenderer.setSize(W,H);
@@ -1894,23 +1971,51 @@ function initPPThree(){
   loop();
 }
 
+// GPU geometry/material/texture is NOT freed by scene.remove() — Three.js requires
+// explicit dispose() or it leaks until the WebGL context runs out of memory and crashes.
+// Never dispose _sharedTex — it's the one reused canvas texture repainted for every product.
+function disposeObject3D(obj){
+  if(!obj)return;
+  obj.traverse(child=>{
+    if(!child.isMesh)return;
+    if(child.geometry)child.geometry.dispose();
+    const mats=Array.isArray(child.material)?child.material:[child.material];
+    mats.forEach(m=>{
+      if(!m)return;
+      ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','bumpMap','alphaMap'].forEach(k=>{
+        if(m[k]&&m[k]!==_sharedTex)m[k].dispose();
+      });
+      m.dispose();
+    });
+  });
+}
+
 let _ppLoadId=0;
 function loadPPModel(glbUrl){
   const myId=++_ppLoadId;
   if(!ppThreeReady||!window.THREE||!THREE.GLTFLoader){
-    setTimeout(()=>loadPPModel(glbUrl),300);
+    // Stop polling once a newer request exists or the picker is closed (studio open)
+    setTimeout(()=>{if(myId===_ppLoadId&&!window._studioOpen)loadPPModel(glbUrl);},300);
     return;
   }
   const loader=new THREE.GLTFLoader();
   if(THREE.DRACOLoader){
     const draco=new THREE.DRACOLoader();
-    draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+    draco.setDecoderPath('/js/draco/');
     loader.setDRACOLoader(draco);
+  }
+  // Embedded textures are stripped right after load anyway — on mobile don't even decode them
+  // (same blank-texture trick as loadGLB; saves GPU memory).
+  if(window._IS_MOB){
+    const mgr=new THREE.LoadingManager();
+    const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    mgr.setURLModifier(u=>(u.startsWith('blob:')||/\.(png|jpg|jpeg|ktx2?|basis)/i.test(u))?BLANK:u);
+    loader.manager=mgr;
   }
   const ld=document.getElementById('pp-loading');
   if(ld) ld.style.display='flex';
   // Clear all non-light objects from scene (removes any lingering old models)
-  if(ppScene) ppScene.children.slice().forEach(c=>{if(!c.isLight)ppScene.remove(c);});
+  if(ppScene) ppScene.children.slice().forEach(c=>{if(!c.isLight){disposeObject3D(c);ppScene.remove(c);}});
   ppMesh=null;
   if(!glbUrl){if(ld)ld.style.display='none';return;}
   console.log('[PP] Fetching: '+glbUrl);
@@ -2040,7 +2145,7 @@ function updatePPCards(animate){
     if(!lo){
       lo=document.createElement('div');
       lo.id='pp-lock-overlay';
-      lo.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;backdrop-filter:blur(3px);background:rgba(8,12,22,.35);border-radius:16px';
+      lo.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;backdrop-filter:blur(3px);background:rgba(38,14,24,.35);border-radius:16px';
       lo.innerHTML='<div style="font-size:3rem">🔒</div><div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.75);text-align:center;padding:0 20px">This will unlock soon<br>in next update</div>';
       if(wrap) wrap.appendChild(lo);
     }
@@ -2206,7 +2311,7 @@ function launchCustomize(productId){
   if(!prod) return;
 
   S.cat=productId;
-  document.getElementById('s-type').textContent=prod.name;
+  const styp=document.getElementById('s-type');if(styp)styp.textContent=prod.name;
   document.getElementById('price-val').textContent=prod.price;const mpv=document.getElementById('mob-price-val');if(mpv)mpv.textContent=prod.price;
   const spn=document.getElementById('studio-product-name');
   if(spn) spn.textContent=prod.name;
@@ -2220,9 +2325,12 @@ function launchCustomize(productId){
     if(window._IS_MOB){
       overlay.classList.add('mob-mode');
       document.body.classList.add('is-mob');
-      // Remove desktop panels from DOM entirely — most reliable approach
-      document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.remove());
-      document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.remove());
+      // Hide (not remove) desktop panels — removing them from the DOM was breaking every
+      // function that reads/writes an element inside them (s-type, price-val, custom-text,
+      // text-color, font-style, etc. all throw "Cannot set properties of null" once gone,
+      // which silently aborts whatever code ran after that point — including color/text apply).
+      document.querySelectorAll('.studio-overlay .cust-grid>.panel').forEach(el=>el.style.setProperty('display','none','important'));
+      document.querySelectorAll('.viewer-btns,.viewer-hint').forEach(el=>el.style.setProperty('display','none','important'));
       // Move mob UI to body root — renders ABOVE WebGL canvas compositing layer (z-index:99999)
       const tb=document.getElementById('mob-toolbar');
       const bb=document.getElementById('mob-btm-bar');
@@ -2230,10 +2338,17 @@ function launchCustomize(productId){
       document.querySelectorAll('.mob-sheet').forEach(s=>{document.body.appendChild(s);s.style.position='fixed';s.style.zIndex='1000';});
       if(mobBg){document.body.appendChild(mobBg);mobBg.style.position='fixed';mobBg.style.inset='0';mobBg.style.zIndex='900';}
       if(tb){document.body.appendChild(tb);tb.style.cssText='display:flex;position:fixed;left:12px;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px;z-index:99999;will-change:transform';}
-      if(bb){document.body.appendChild(bb);bb.style.cssText='display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(6,10,18,.97);backdrop-filter:blur(18px);border-top:1px solid rgba(135,185,212,.15);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:99999;will-change:transform';}
+      if(bb){document.body.appendChild(bb);bb.style.cssText='display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(35,13,22,.97);backdrop-filter:blur(18px);border-top:1px solid rgba(201,177,147,.15);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);gap:8px;align-items:center;z-index:99999;will-change:transform';}
       // Dispose product picker renderer to free GPU memory before studio loads
       if(typeof ppAnimId!=='undefined'&&ppAnimId){cancelAnimationFrame(ppAnimId);ppAnimId=null;}
-      if(typeof ppRenderer!=='undefined'&&ppRenderer){try{ppRenderer.dispose();}catch(e){}ppRenderer=null;}
+      if(typeof ppRenderer!=='undefined'&&ppRenderer){
+        try{ppRenderer.forceContextLoss();}catch(e){}
+        try{ppRenderer.dispose();}catch(e){}
+        ppRenderer=null;ppThreeReady=false;ppMesh=null;
+        // Lost context sticks to its canvas forever — give the picker a fresh one for next time
+        const oldPP=document.getElementById('pp-canvas');
+        if(oldPP){const np=document.createElement('canvas');np.id='pp-canvas';np.style.cssText=oldPP.style.cssText;oldPP.replaceWith(np);}
+      }
       // Explicitly size canvas-wrap chain — CSS height:100% resolves to 0 because viewer-wrap
       // is auto-height inside studio-body (overflow:auto), causing overflow:hidden to clip canvas.
       // Must use setProperty('height','…','important') to beat the !important CSS rules.
@@ -2252,9 +2367,8 @@ function launchCustomize(productId){
 
   if(!_threeReady){
     _threeReady=true;
-    requestAnimationFrame(()=>{
-      initThree(prod.glb||null, prod.name);
-    });
+    const _mobDelay=window._IS_MOB?1500:0;
+    setTimeout(()=>requestAnimationFrame(()=>initThree(prod.glb||null, prod.name)),_mobDelay);
   }else{
     // Studio already init'd — just switch model
     const _useGLB=!!prod.glb;
@@ -2290,6 +2404,16 @@ function closeStudio(){
   if(overlay) overlay.style.display='none';
   document.body.style.overflow='';
   _hideMobUI();
+  if(window._IS_MOB&&typeof renderer!=='undefined'&&renderer){
+    renderer.domElement._aruvaClosing=true; // deliberate loss — don't show the GPU-full screen
+    try{renderer.forceContextLoss();}catch(e){}
+    try{renderer.dispose();}catch(e){}
+    renderer=null;_threeReady=false;
+    // A canvas keeps its (now lost) context forever — getContext() on it returns that same dead
+    // context, so the next initThree() would render nothing. Swap in a fresh canvas element.
+    const oldCv=document.getElementById('three-canvas');
+    if(oldCv){const nc=document.createElement('canvas');nc.id='three-canvas';oldCv.replaceWith(nc);}
+  }
   showProductPicker();
 }
 
@@ -2302,7 +2426,20 @@ function closeStudioToHome(){
 
 // ── THREE.JS ──────────────────────────────────────────
 let scene,cam,renderer,mesh,dragging=false,prevMx=0,prevMy=0,zoom=1,_pinchDist=0,panning=false,panX=0,panY=0,_pinchMidX=0,_pinchMidY=0;
-const _CAM_Z=5.5;
+let _studioLoopStarted=false;
+let _CAM_Z=5.5;
+// Camera distance that keeps the whole model in frame at the current aspect ratio.
+// On a portrait phone the width is the limit (sleeves were cut off at the fixed 5.5).
+// Never closer than 5.5, so the desktop framing is unchanged.
+function fitCamToModel(){
+  if(!cam||!mesh)return;
+  const sz=new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3());
+  const tv=Math.tan((cam.fov*Math.PI/360));
+  const rxz=Math.hypot(sz.x,sz.z)/2;
+  const need=Math.max((sz.y/2)/tv,rxz/(tv*cam.aspect))*1.08+sz.z/2;
+  _CAM_Z=Math.max(5.5,need);
+  cam.position.z=_CAM_Z/zoom;
+}
 let isGLTFModel=false;
 
 function makeTshirtShape(){
@@ -2329,8 +2466,8 @@ function makeTshirtShape(){
 
 function buildShirt(){
   if(mesh){
+    disposeObject3D(mesh);
     scene.remove(mesh);
-    if(!isGLTFModel)mesh.geometry.dispose();
     mesh=null;
   }
   isGLTFModel=false;
@@ -2338,32 +2475,32 @@ function buildShirt(){
   geo.center();
   mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({map:genTex(),roughness:.84,metalness:0,side:THREE.DoubleSide}));
   mesh.rotation.x=.1;scene.add(mesh);
+  fitCamToModel();
 }
 
 function hideOverlay(){const ov=document.getElementById('glb-overlay');if(ov)ov.style.display='none';}
 
 function loadGLB(url, productName){
-  if(!window.THREE||!THREE.GLTFLoader){hideOverlay();showToast('GLTFLoader not ready');return;}
+  if(!window.THREE||!THREE.GLTFLoader){hideOverlay();return;}
   const loader=new THREE.GLTFLoader();
-  if(window._IS_MOB){
-    // Mobile: intercept embedded texture blob-URLs so GLB geometry loads but
-    // textures (often 2048×2048 = 16MB GPU each) are replaced with a 1×1 blank.
-    // We apply our own genTex() material anyway, so GLB textures are unused.
+  if(THREE.DRACOLoader){
+    const draco=new THREE.DRACOLoader();
+    draco.setDecoderPath('/js/draco/');
+    loader.setDRACOLoader(draco);
+  }
+  // Every GLB's embedded texture is immediately thrown away and replaced by the shared
+  // canvas texture (genTex()) below, on every platform — so never spend time/bandwidth
+  // decoding it. Was mobile-only before; made unconditional because the lighter GLBs now
+  // shipped for desktop too have had their embedded textures stripped/optimized for mobile,
+  // and letting the desktop path try to decode that data was hanging the loading overlay.
+  {
     const mgr=new THREE.LoadingManager();
     const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     mgr.setURLModifier(u=>(u.startsWith('blob:')||/\.(png|jpg|jpeg|ktx2?|basis)/i.test(u))?BLANK:u);
     loader.manager=mgr;
-  }else{
-    // Desktop: full Draco support
-    if(THREE.DRACOLoader){
-      const draco=new THREE.DRACOLoader();
-      draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
-      loader.setDRACOLoader(draco);
-    }
   }
   loader.load(url,gltf=>{
-    showToast('GLB parsed OK'); // DBG
-    if(mesh){scene.remove(mesh);if(!isGLTFModel)mesh.geometry.dispose();}
+    if(mesh){disposeObject3D(mesh);scene.remove(mesh);}
     const model=gltf.scene;isGLTFModel=true;
     model.updateMatrixWorld(true);
     const box=new THREE.Box3();
@@ -2377,30 +2514,38 @@ function loadGLB(url, productName){
     const tex=genTex();
     model.traverse(child=>{
       if(child.isMesh){
+        // Dispose the GLB's own baked-in material/textures — they're about to be
+        // replaced by the shared canvas texture and would otherwise leak every load.
+        const oldMat=child.material;
+        if(oldMat){
+          const oldMats=Array.isArray(oldMat)?oldMat:[oldMat];
+          oldMats.forEach(m=>{
+            if(!m)return;
+            ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','bumpMap','alphaMap'].forEach(k=>{if(m[k])m[k].dispose();});
+            m.dispose();
+          });
+        }
         child.material=new THREE.MeshStandardMaterial({map:tex,roughness:.88,metalness:0,envMapIntensity:.4,side:THREE.DoubleSide});
         child.castShadow=true;child.receiveShadow=true;
       }
     });
-    // Wrap in pivot group so rotation always happens around visual centre (world 0,0,0)
     const pivot=new THREE.Group();
     pivot.add(model);
-    // Some models face backwards by default — correct their initial orientation
     if(url&&url.includes('shorts'))pivot.rotation.y=Math.PI;
     mesh=pivot;
     scene.add(mesh);
-    showToast('mesh in scene'); // DBG
     S.spin=true;
     hideOverlay();
-    // Re-sync renderer size after load (mobile viewer-wrap may have had 0 height at init)
     if(renderer&&cam){
       const isMobResize=window._IS_MOB||window.innerWidth<768;
       const rw=document.getElementById('viewer-wrap');
       const rW=isMobResize?window.innerWidth:(rw?(rw.clientWidth||rw.offsetWidth):0);
       const rH=isMobResize?Math.max(window.innerHeight-130,300):(rw?(rw.clientHeight||rw.offsetHeight):0);
       if(rW>1&&rH>1){cam.aspect=rW/rH;cam.updateProjectionMatrix();renderer.setSize(rW,rH);}
+      zoom=1;panX=0;panY=0;cam.position.x=0;cam.position.y=0;
+      fitCamToModel();
     }
     buildUVLookup();
-    showToast((productName||'Model')+' loaded!');
   },xhr=>{
     if(xhr.total){
       const pct=Math.round(xhr.loaded/xhr.total*100);
@@ -2409,14 +2554,12 @@ function loadGLB(url, productName){
     }
   },err=>{
     console.error('GLB error:',err);
-    showToast('GLB ERR:'+(err&&(err.message||err.type||err)||'unknown')); // DBG
     hideOverlay();
     if(window._IS_MOB){buildShirt();refreshTex();}
-    else{showToast('Model failed to load');}
   });
 }
 
-function initThree(glbUrl, productName){
+function initThree(glbUrl, productName, _retry){
   const wrap=document.getElementById('viewer-wrap');
   const _isMob=window.innerWidth<768;
   let W,H;
@@ -2431,17 +2574,26 @@ function initThree(glbUrl, productName){
   cam=new THREE.PerspectiveCamera(44,W/H,.1,100);cam.position.set(0,0,_CAM_Z);
   try{
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('three-canvas'),antialias:!_isMob,alpha:true,preserveDrawingBuffer:!_isMob,powerPreference:_isMob?'low-power':'high-performance'});
-  }catch(webglErr){showToast('WebGL fail:'+webglErr.message);console.error(webglErr);return;}
+  }catch(webglErr){
+    console.error(webglErr);
+    // Freshly disposed contexts can take a moment for the GPU to actually reclaim —
+    // give it one more chance before giving up, instead of hard-failing the studio open.
+    if(!_retry){setTimeout(()=>initThree(glbUrl,productName,true),1200);return;}
+    toast('Could not start 3D viewer — please try again');
+    _threeReady=false;
+    return;
+  }
   renderer.domElement.addEventListener('webglcontextlost',e=>{
     e.preventDefault();
+    if(e.target._aruvaClosing)return;
     const rec=document.createElement('div');
-    rec.style.cssText='position:fixed;inset:0;background:rgba(6,10,18,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:99999;color:#fff;font-family:inherit';
-    rec.innerHTML='<div style="font-size:2rem">⚠️</div><div style="font-size:14px;letter-spacing:1px">GPU memory full — tap to restart</div><button onclick="location.reload()" style="background:#87B9D4;color:#0b1622;border:none;padding:10px 28px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer">Restart App</button>';
+    rec.style.cssText='position:fixed;inset:0;background:rgba(35,13,22,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:99999;color:#fff;font-family:inherit';
+    rec.innerHTML='<div style="font-size:2rem">⚠️</div><div style="font-size:14px;letter-spacing:1px">GPU memory full — tap to restart</div><button onclick="location.reload()" style="background:#C9B193;color:#2A1019;border:none;padding:10px 28px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer">Restart App</button>';
     document.body.appendChild(rec);
   },false);
   renderer.domElement.addEventListener('webglcontextrestored',()=>{_sharedTex=null;_texCanvas=null;_texCtx=null;refreshTex();},false);
   renderer.setClearColor(0x000000,0);
-  renderer.setSize(W,H);renderer.setPixelRatio(1);
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); // was 1 → blurry on high-DPI phone screens
   renderer.outputEncoding=THREE.sRGBEncoding;
   renderer.toneMapping=THREE.LinearToneMapping;
   renderer.toneMappingExposure=1.0;
@@ -2507,7 +2659,7 @@ function initThree(glbUrl, productName){
       // Pending place: user added image/text → click to drop it here
       if(pendingPlace){
         const layer=getLayerById(pendingPlace);
-        if(layer){layer.x=tx;layer.y=ty;selectedEl=pendingPlace;}
+        if(layer){layer.x=tx;layer.y=ty;{const o=uvOrientAt(hit);layer.baseRot=o.rot;layer.flipX=o.flip;}selectedEl=pendingPlace;}
         pendingPlace=null;
         const ph=document.getElementById('place-hint');if(ph)ph.style.display='none';
         refreshTex();renderLayersList();
@@ -2555,7 +2707,7 @@ function initThree(glbUrl, productName){
       if(hit){
         const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;
         const el=getLayerById(elementDragging);
-        if(el){el.x=tx;el.y=ty;refreshTex();}
+        if(el){el.x=tx;el.y=ty;{const o=uvOrientAt(hit);el.baseRot=o.rot;el.flipX=o.flip;}refreshTex();}
       }
       return;
     }
@@ -2620,7 +2772,7 @@ function initThree(glbUrl, productName){
       const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;
       if(pendingPlace){
         const layer=getLayerById(pendingPlace);
-        if(layer){layer.x=tx;layer.y=ty;selectedEl=pendingPlace;}
+        if(layer){layer.x=tx;layer.y=ty;{const o=uvOrientAt(hit);layer.baseRot=o.rot;layer.flipX=o.flip;}selectedEl=pendingPlace;}
         pendingPlace=null;const ph=document.getElementById('place-hint');if(ph)ph.style.display='none';
         refreshTex();renderLayersList();return;
       }
@@ -2647,9 +2799,10 @@ function initThree(glbUrl, productName){
       const midY=(e.touches[0].clientY+e.touches[1].clientY)/2;
       if(_pinchMidX){
         const rect=cv.getBoundingClientRect();
-        panX+=(midX-_pinchMidX)*(cam.position.z/(rect.width||600))*1.8;
-        panY-=(midY-_pinchMidY)*(cam.position.z/(rect.height||600))*1.8;
-        panX=Math.max(-3,Math.min(3,panX));panY=Math.max(-3,Math.min(3,panY));
+        const wpp=2*cam.position.z*Math.tan((cam.fov*Math.PI/360))/(rect.height||600);
+        panX-=(midX-_pinchMidX)*wpp;
+        panY+=(midY-_pinchMidY)*wpp;
+        panX=Math.max(-1.5,Math.min(1.5,panX));panY=Math.max(-1.5,Math.min(1.5,panY));
         cam.position.x=panX;cam.position.y=panY;
       }
       _pinchMidX=midX;_pinchMidY=midY;
@@ -2674,24 +2827,34 @@ function initThree(glbUrl, productName){
     if(elementDragging){
       e.preventDefault();
       const hit=getHit(t.clientX,t.clientY);
-      if(hit){const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;const el=getLayerById(elementDragging);if(el){el.x=tx;el.y=ty;refreshTex();}}
+      if(hit){const tx=hit.uv.x*_TEX_SIZE,ty=(1-hit.uv.y)*_TEX_SIZE;const el=getLayerById(elementDragging);if(el){el.x=tx;el.y=ty;{const o=uvOrientAt(hit);el.baseRot=o.rot;el.flipX=o.flip;}refreshTex();}}
       return;
     }
     if(!dragging||!mesh)return;
     e.preventDefault();
-    const cw2=cv.getBoundingClientRect().width||600;
-    mesh.rotation.y+=(t.clientX-prevMx)*(Math.PI/cw2);
-    mesh.rotation.x=Math.max(-.8,Math.min(.8,mesh.rotation.x+(t.clientY-prevMy)*(Math.PI*0.5/cw2)));
+    const cw2=Math.max(cv.getBoundingClientRect().width||600,360);
+    const mdx=t.clientX-prevMx,mdy=t.clientY-prevMy;
+    mesh.rotation.y+=mdx*(Math.PI*0.6/cw2);
+    if(Math.abs(mdy)>Math.abs(mdx))mesh.rotation.x=Math.max(-.4,Math.min(.4,mesh.rotation.x+mdy*(Math.PI*0.2/cw2)));
     prevMx=t.clientX;prevMy=t.clientY;
   },{passive:false});
   document.addEventListener('touchend',()=>{dragging=false;isPainting=false;lastPaintTex=null;elementDragging=null;_pinchDist=0;_pinchMidX=0;_pinchMidY=0;});
-  window.addEventListener('resize',()=>{const W2=wrap.clientWidth,H2=wrap.clientHeight;cam.aspect=W2/H2;cam.updateProjectionMatrix();renderer.setSize(W2,H2);});
-  (function loop(){
-    requestAnimationFrame(loop);
-    if(S.spin&&mesh)mesh.rotation.y+=.003;
-    renderer.render(scene,cam);
-    updateHandleOverlay();
-  })();
+  window.addEventListener('resize',()=>{if(!renderer||!cam)return;const W2=wrap.clientWidth,H2=wrap.clientHeight;if(W2<2||H2<2)return;cam.aspect=W2/H2;cam.updateProjectionMatrix();renderer.setSize(W2,H2);fitCamToModel();});
+  // Studio closes/reopens call initThree() again (mobile disposes+recreates the renderer
+  // each time to free GPU memory) — starting a fresh requestAnimationFrame loop here every
+  // time left the OLD loop still running forever in the background (rAF reschedules itself
+  // before the render call, so a thrown error never stopped the chain). N opens meant N
+  // zombie loops all rendering the same scene every frame — compounding GPU load until the
+  // context ran out of memory. The loop now starts exactly once and tolerates renderer being
+  // torn down in between.
+  if(!_studioLoopStarted){_studioLoopStarted=true;studioRenderLoop();}
+}
+function studioRenderLoop(){
+  requestAnimationFrame(studioRenderLoop);
+  if(!renderer||!scene||!cam)return;
+  if(S.spin&&mesh)mesh.rotation.y+=.003;
+  renderer.render(scene,cam);
+  updateHandleOverlay();
 }
 
 function initHero(){}
@@ -2727,13 +2890,34 @@ let handle3DDrag=null;
 function getImgBounds(){const l=getLayerById(selectedEl);return l&&l.type==='image'?{w:l.w,h:l.h}:{w:0,h:0};}
 function getTextBounds(){const l=getLayerById(selectedEl);return l&&l.type==='text'?getLayerBounds(l):{w:0,h:0};}
 function getCorners(el,w,h){
-  const rad=el.rotation*Math.PI/180,cos=Math.cos(rad),sin=Math.sin(rad);
+  const rad=layerRot(el)*Math.PI/180,cos=Math.cos(rad),sin=Math.sin(rad);
   return[[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]].map(([lx,ly])=>({
     x:el.x+lx*cos-ly*sin,y:el.y+lx*sin+ly*cos
   }));
 }
+// UV islands can be rotated or mirrored in texture space (the t-shirt front is upside down),
+// which drew text/images upside down or backwards. Map screen right/down back into texture
+// space through the tapped triangle, so the layer can be drawn upright as seen on screen.
+function uvOrientAt(hit){
+  const none={rot:0,flip:false};
+  if(!hit||!hit.face||!hit.object||!cam)return none;
+  const g=hit.object.geometry,uv=g.attributes.uv,pos=g.attributes.position;
+  if(!uv||!pos)return none;
+  const ids=[hit.face.a,hit.face.b,hit.face.c];
+  const p=ids.map(i=>{const v=new THREE.Vector3().fromBufferAttribute(pos,i).applyMatrix4(hit.object.matrixWorld).project(cam);return[v.x,-v.y];});
+  const t=ids.map(i=>[uv.getX(i),1-uv.getY(i)]);
+  const px1=p[1][0]-p[0][0],py1=p[1][1]-p[0][1],px2=p[2][0]-p[0][0],py2=p[2][1]-p[0][1];
+  const tx1=t[1][0]-t[0][0],ty1=t[1][1]-t[0][1],tx2=t[2][0]-t[0][0],ty2=t[2][1]-t[0][1];
+  const det=px1*py2-px2*py1;if(!det)return none;
+  const tex=(u,v)=>[tx1*u+tx2*v,ty1*u+ty2*v];
+  const right=tex(py2/det,-py1/det),down=tex(-px2/det,px1/det);
+  const th=Math.atan2(-down[0],down[1]);
+  // snapped to 90° — per-triangle UV stretch would otherwise tilt the design a few degrees
+  return{rot:Math.round(th*2/Math.PI)*90,flip:Math.cos(th)*right[0]+Math.sin(th)*right[1]<0};
+}
+function layerRot(el){return el.rotation+(el.baseRot||0);}
 function hitInRect(mx,my,el,w,h){
-  const rad=-el.rotation*Math.PI/180,dx=mx-el.x,dy=my-el.y;
+  const rad=-layerRot(el)*Math.PI/180,dx=mx-el.x,dy=my-el.y;
   const lx=dx*Math.cos(rad)-dy*Math.sin(rad),ly=dx*Math.sin(rad)+dy*Math.cos(rad);
   return Math.abs(lx)<=w/2&&Math.abs(ly)<=h/2;
 }
@@ -2859,7 +3043,7 @@ function initHandleDrags(){
 
 // ── BRUSH PAINTING FUNCTIONS ──────────────────────────
 function doBrushDot(x,y){
-  const r=S.brushSize;
+  const r=S.brushSize*_BRUSH_SCALE;
   if(S.brushMode==='eraser'){
     brushCtx.globalCompositeOperation='destination-out';
     brushCtx.fillStyle='rgba(0,0,0,1)';brushCtx.beginPath();brushCtx.arc(x,y,r,0,Math.PI*2);brushCtx.fill();
@@ -2873,11 +3057,11 @@ function doBrushDot(x,y){
     brushCtx.fillStyle=S.brushColor;brushCtx.beginPath();brushCtx.arc(x,y,r,0,Math.PI*2);brushCtx.fill();
     hasBrushStrokes=true;
   }
-  document.getElementById('s-brush').textContent=hasBrushStrokes?'Applied':'None';
+  const sb1=document.getElementById('s-brush');if(sb1)sb1.textContent=hasBrushStrokes?'Applied':'None';
 }
 
 function doBrushLine(from,to){
-  const r=S.brushSize;
+  const r=S.brushSize*_BRUSH_SCALE;
   if(S.brushMode==='eraser'){
     brushCtx.globalCompositeOperation='destination-out';
     brushCtx.strokeStyle='rgba(0,0,0,1)';brushCtx.lineWidth=r*2;brushCtx.lineCap='round';brushCtx.lineJoin='round';
@@ -2898,7 +3082,7 @@ function doBrushLine(from,to){
     brushCtx.beginPath();brushCtx.moveTo(from.x,from.y);brushCtx.lineTo(to.x,to.y);brushCtx.stroke();
     hasBrushStrokes=true;
   }
-  document.getElementById('s-brush').textContent=hasBrushStrokes?'Applied':'None';
+  const sb2=document.getElementById('s-brush');if(sb2)sb2.textContent=hasBrushStrokes?'Applied':'None';
 }
 
 // ── CART ──────────────────────────────────────────────
@@ -2939,9 +3123,9 @@ async function placeOrder(){
 
   toast('Preparing order…');
 
-  let designImage='';
-  const threeCanvas=document.getElementById('three-canvas');
-  if(threeCanvas){try{designImage=threeCanvas.toDataURL('image/jpeg',0.92);}catch(e){}}
+  const designImage=snapStudio('image/jpeg',0.92);
+  let printTexture='';
+  try{genTex();printTexture=_texCanvas?_texCanvas.toDataURL('image/jpeg',.9):'';}catch(e){}
 
   const imgLayer=layers.find(l=>l.type==='image'&&l.img&&l.img.src);
   const uploadedImage=imgLayer?imgLayer.img.src:'';
@@ -2952,7 +3136,7 @@ async function placeOrder(){
   )].filter(Boolean);
 
   const customDesign=JSON.stringify({
-    designImage,color:S.color,colorName:S.colorName||'',
+    designImage,printTexture,color:S.color,colorName:S.colorName||'',
     text:layers.filter(l=>l.type==='text'&&l.text).map(l=>l.text).join(', ')||'',
     textColor:'#ffffff',font:S.fontFamily||'bold-sans',
     productType:S.cat,size:S.size,qty:S.qty,uploadedImage,brushColors:brushColorsUsed
@@ -2968,7 +3152,14 @@ async function placeOrder(){
     notes:'3D Custom Order',payment_method:'upi',total
   };
 
-  openStudioUpiModal(total);
+  // Razorpay (UPI / card / netbanking / wallet / EMI); falls back to manual UPI if the server has no keys
+  AruvaPay.start({
+    apiBase:API_BASE,token,payload:_pendingOrderPayload,
+    description:`Custom ${prod.name||S.cat} × ${S.qty}`,
+    onSuccess:order=>{_pendingOrderPayload=null;toast(`Order confirmed! #${order.order_number} ✓`);},
+    onUnavailable:()=>openStudioUpiModal(total),
+    onError:msg=>toast(msg)
+  });
 }
 
 function openStudioUpiModal(amount){
@@ -3012,11 +3203,29 @@ async function saveDesign(){
   if(!token){toast('Sign in to save designs');return;}
   const name=prompt('Name this design:','My Design');
   if(!name)return;
-  const thumb=document.getElementById('three-canvas')?.toDataURL('image/jpeg',.5)||'';
+  const thumb=snapStudio('image/jpeg',.6);
+  let texture='';
+  try{genTex();texture=_texCanvas?_texCanvas.toDataURL('image/jpeg',.9):'';}catch(e){}
+  const textLayers=layers.filter(l=>l.type==='text'&&l.text);
+  const design_data={
+    color:S.color,colorName:S.colorName,productType:S.cat,size:S.size,
+    text:textLayers.map(l=>l.text).join(', '),textColor:textLayers[0]?.textColor||'#ffffff',font:S.fontFamily,
+    texts:textLayers.map(l=>({text:l.text,color:l.textColor,font:l.fontFamily})),
+    imageCount:layers.filter(l=>l.type==='image'&&l.img).length,hasBrush:!!hasBrushStrokes,
+    texture
+  };
   try{
-    await fetch(API_BASE+'/api/designs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name,product_type:S.cat,design_data:{color:S.color,colorName:S.colorName,text:layers.filter(l=>l.type==='text'&&l.text).map(l=>l.text).join(', '),textColor:'#ffffff',font:S.fontFamily},thumbnail:thumb})});
+    const res=await fetch(API_BASE+'/api/designs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name,product_type:S.cat,design_data,thumbnail:thumb})});
+    if(res.status===401){toast('Session expired — sign in again');return;}
+    if(!res.ok)throw new Error((await res.json().catch(()=>({}))).error||res.status);
     toast('Design saved ✓');
-  }catch{toast('Save failed');}
+  }catch(e){toast('Save failed — '+(e.message||'check connection'));}
+}
+// The studio renderer doesn't keep its buffer on mobile, so draw a fresh frame right before reading it
+function snapStudio(type,q){
+  const cv=document.getElementById('three-canvas');
+  if(!cv)return '';
+  try{if(renderer&&scene&&cam)renderer.render(scene,cam);return cv.toDataURL(type,q);}catch(e){return '';}
 }
 async function showSavedDesigns(){
   const token=localStorage.getItem('aruva_token');
@@ -3024,7 +3233,7 @@ async function showSavedDesigns(){
   try{
     const designs=await(await fetch(API_BASE+'/api/designs',{headers:{'Authorization':'Bearer '+token}})).json();
     const list=document.getElementById('designs-list');
-    list.innerHTML=designs.length?designs.map(d=>`<div class="dcard" onclick="loadDesign(${d.id})" style="background:#172638;border:1px solid rgba(135,185,212,.15);border-radius:12px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:8px">${d.thumbnail?`<img src="${d.thumbnail}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:'<div style="width:48px;height:48px;border-radius:8px;background:#1D2F44;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">🎨</div>'}<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div><div style="font-size:10px;color:#4A6B82;text-transform:capitalize">${d.product_type} · ${new Date(d.updated_at).toLocaleDateString('en-IN')}</div></div><button onclick="event.stopPropagation();deleteDesign(${d.id},this)" style="background:none;border:none;color:#4A6B82;cursor:pointer;font-size:18px;padding:4px 6px">×</button></div>`).join(''):'<div style="text-align:center;padding:40px;color:#555;font-size:13px">No saved designs yet.<br>Design something and save it!</div>';
+    list.innerHTML=designs.length?designs.map(d=>`<div class="dcard" onclick="loadDesign(${d.id})" style="background:#4A1E2E;border:1px solid rgba(201,177,147,.15);border-radius:12px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:8px">${d.thumbnail?`<img src="${d.thumbnail}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:'<div style="width:48px;height:48px;border-radius:8px;background:#5B2638;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">🎨</div>'}<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div><div style="font-size:10px;color:#A99589;text-transform:capitalize">${d.product_type} · ${new Date(d.updated_at).toLocaleDateString('en-IN')}</div></div><button onclick="event.stopPropagation();deleteDesign(${d.id},this)" style="background:none;border:none;color:#A99589;cursor:pointer;font-size:18px;padding:4px 6px">×</button></div>`).join(''):'<div style="text-align:center;padding:40px;color:#555;font-size:13px">No saved designs yet.<br>Design something and save it!</div>';
     document.getElementById('designs-modal').style.display='flex';
   }catch{toast('Failed to load designs');}
 }
@@ -3033,7 +3242,7 @@ async function loadDesign(id){
   try{
     const d=await(await fetch(API_BASE+'/api/designs/'+id,{headers:{'Authorization':'Bearer '+token}})).json();
     const dd=typeof d.design_data==='string'?JSON.parse(d.design_data):d.design_data;
-    if(dd.color){S.color=dd.color;S.colorName=dd.colorName||'Custom';document.getElementById('s-color').textContent=S.colorName;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));}
+    if(dd.color){S.color=dd.color;S.colorName=dd.colorName||'Custom';const sc2=document.getElementById('s-color');if(sc2)sc2.textContent=S.colorName;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));}
     if(dd.text){
       const layer=mkLayer('text',{text:dd.text,textColor:dd.textColor||'#ffffff'});
       layers.push(layer);activeTextLayerId=layer.id;
@@ -3293,12 +3502,13 @@ window.addEventListener('load',async()=>{
   initSwatches();initHero();
   initProductPicker();
   initNavUser();
-  initShopCats();
-  loadShop();
+  // initShopCats()/loadShop() target #shop-cats/#shop-grid, which don't exist on this
+  // page (leftover from shared boilerplate with shop.html) — calling them threw on every
+  // load, so they're left as dead-but-harmless function definitions, just not invoked here.
   // Sync cart count from API if logged in
   const _tok=localStorage.getItem('aruva_token');
   if(_tok){fetch(API_BASE+'/api/cart',{headers:{'Authorization':'Bearer '+_tok}}).then(r=>r.json()).then(d=>{document.getElementById('cart-count').textContent=d.reduce((a,i)=>a+i.quantity,0);}).catch(()=>{});}
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const href=a.getAttribute('href');if(href.length<2)return;e.preventDefault();const t=document.querySelector(href);if(t)t.scrollIntoView({behavior:'smooth'});});});
 });
 
 // ── BACK BUTTON (Capacitor Android) ──────────────────
@@ -3323,25 +3533,25 @@ document.addEventListener('backbutton',function(e){
 <script src="js/animations.js" defer></script>
 <style>
 #studio-upi-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.9);align-items:center;justify-content:center;padding:16px}
-.supi-box{background:#0B1622;border:1px solid rgba(135,185,212,.2);border-radius:24px;width:min(440px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.9)}
+.supi-box{background:#2A1019;border:1px solid rgba(201,177,147,.2);border-radius:24px;width:min(440px,100%);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.9)}
 .supi-head{padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
-.supi-head span{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#87B9D4;font-weight:700}
+.supi-head span{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#C9B193;font-weight:700}
 .supi-head button{background:none;border:none;color:rgba(255,255,255,.35);font-size:20px;cursor:pointer}
 .supi-body{padding:24px;text-align:center}
 .supi-amt{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:2px}
 .supi-ref-lbl{font-size:.72rem;color:rgba(255,255,255,.28);margin-bottom:20px}
 .supi-qr-box{background:#fff;border-radius:14px;padding:12px;display:inline-block;margin-bottom:16px}
 .supi-qr-box img{display:block;width:190px;height:190px}
-.supi-id-row{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(135,185,212,.07);border:1px solid rgba(135,185,212,.18);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+.supi-id-row{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(201,177,147,.07);border:1px solid rgba(201,177,147,.18);border-radius:10px;padding:10px 14px;margin-bottom:16px}
 .supi-id-row span{font-size:.9rem;font-weight:600;color:#fff}
-.supi-copy{background:rgba(135,185,212,.15);border:1px solid rgba(135,185,212,.3);color:#87B9D4;font-size:.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:5px;cursor:pointer;text-transform:uppercase}
-.supi-app-btn{display:block;width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border:1px solid rgba(135,185,212,.25);color:#fff;font-size:.9rem;font-weight:700;border-radius:11px;cursor:pointer;margin-bottom:20px;text-decoration:none;letter-spacing:.4px}
+.supi-copy{background:rgba(201,177,147,.15);border:1px solid rgba(201,177,147,.3);color:#C9B193;font-size:.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:5px;cursor:pointer;text-transform:uppercase}
+.supi-app-btn{display:block;width:100%;padding:12px;background:linear-gradient(135deg,#6E3045,#8C4058);border:1px solid rgba(201,177,147,.25);color:#fff;font-size:.9rem;font-weight:700;border-radius:11px;cursor:pointer;margin-bottom:20px;text-decoration:none;letter-spacing:.4px}
 .supi-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:0 0 16px}
 .supi-utr-lbl{font-size:.68rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px}
 .supi-utr{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:9px;padding:11px 14px;font-size:.9rem;outline:none;text-align:center;letter-spacing:1px}
-.supi-utr:focus{border-color:#87B9D4}
+.supi-utr:focus{border-color:#C9B193}
 .supi-utr::placeholder{color:rgba(255,255,255,.18)}
-.supi-confirm{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,#5A97BC,#87B9D4);color:#0B1622;font-size:.95rem;font-weight:800;border:none;border-radius:11px;cursor:pointer;letter-spacing:.4px}
+.supi-confirm{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,#8C7258,#C9B193);color:#2A1019;font-size:.95rem;font-weight:800;border:none;border-radius:11px;cursor:pointer;letter-spacing:.4px}
 .supi-confirm:disabled{opacity:.5;cursor:not-allowed}
 .supi-note{font-size:.68rem;color:rgba(255,255,255,.2);margin-top:10px;line-height:1.5}
 </style>

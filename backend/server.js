@@ -13,42 +13,41 @@ const fs = require('fs');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
 
+// ── .env (KEY=VALUE per line) — real env vars (e.g. Railway) win ──
+try {
+  fs.readFileSync(path.join(__dirname, '.env'), 'utf8').split(/\r?\n/).forEach(line => {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+  });
+} catch {}
+
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'aruva_jwt_secret_2026_fashion';
 const DB_PATH = path.join(__dirname, 'aruva.db');
 
 // ── RAZORPAY CONFIG ─────────────────────────────────────────────
-// Replace these with your real keys from https://dashboard.razorpay.com
-const RAZORPAY_KEY_ID     = process.env.RAZORPAY_KEY_ID     || 'rzp_test_YOUR_KEY_ID';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'YOUR_KEY_SECRET';
+// Keys come from backend/.env locally, or from the host's env vars (Railway → Variables)
+const RAZORPAY_KEY_ID     = process.env.RAZORPAY_KEY_ID     || '';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
+const RAZORPAY_READY = /^rzp_(test|live)_/.test(RAZORPAY_KEY_ID) && RAZORPAY_KEY_SECRET.length > 10;
 
-const razorpay = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET });
+const razorpay = RAZORPAY_READY ? new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET }) : null;
+if (!RAZORPAY_READY) console.warn('⚠  Razorpay keys missing — add RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET to backend/.env');
+
+// 3D studio prices (₹, all-inclusive) — must match PRODUCTS in aruva.html
+const STUDIO_PRICES = { hoodie:1799, tshirt:999, croptop:799, oversized:1199, sweatshirt:1499, shorts:799, trackpant:999, baggyjeans:1399, baggytrack:1299 };
 
 const ROOT_DIR = path.join(__dirname, '..');
 const WWW_DIR  = path.join(__dirname, '..', 'www');
-
-function isMobile(req) {
-  return /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(req.headers['user-agent'] || '');
-}
 
 // ── MIDDLEWARE ──────────────────────────────────────────────────
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Mobile routing — redirect top-level HTML to /www/ for mobile devices
-app.use((req, res, next) => {
-  if (!isMobile(req)) return next();
-  if (req.path.startsWith('/www/')) return next();
-  const isTopHtml = req.path === '/' || /^\/[^\/]+\.html$/.test(req.path);
-  if (!isTopHtml) return next();
-  const file = req.path === '/' ? 'login.html' : path.basename(req.path);
-  const wwwFile = path.join(WWW_DIR, file);
-  if (fs.existsSync(wwwFile)) return res.redirect('/www/' + file);
-  next();
-});
-
+// www/ takes priority (responsive merged pages); ROOT_DIR is fallback for shared assets
+app.use(express.static(WWW_DIR));
 app.use(express.static(ROOT_DIR));
 
 // ── DATABASE ────────────────────────────────────────────────────
@@ -452,45 +451,73 @@ app.get('/api/orders/:id', auth, (req, res) => {
 });
 
 app.post('/api/orders', auth, (req, res) => {
-  const { items, shipping_address, payment_method = 'card', coupon_code, notes = '' } = req.body;
-  if (!items?.length) return res.status(400).json({ error: 'No items' });
+  const { payment_method = 'card', notes = '' } = req.body;
+  const built = buildOrder(req.body, req.user.id);
+  if (built.error) return res.status(400).json({ error: built.error });
+  res.json(saveOrder(req.user.id, built, payment_method, notes));
+});
 
-  let subtotal = 0;
+// Prices are always computed here from the DB / STUDIO_PRICES — never trusted from the client.
+// Studio (3D custom) items are all-inclusive; tax + shipping apply only to catalog items.
+function buildOrder({ items, shipping_address, address_id, coupon_code }, userId) {
+  if (!items?.length) return { error: 'No items' };
+
+  let subtotal = 0, catalogSubtotal = 0;
   const enriched = [];
   for (const item of items) {
+    const quantity = Math.max(1, parseInt(item.quantity) || 1);
     const p = db.prepare('SELECT * FROM products WHERE id=?').get(item.product_id);
-    if (!p) return res.status(400).json({ error: `Product ${item.product_id} not found` });
-    const price = p.is_on_sale && p.sale_price ? p.sale_price : p.price;
-    subtotal += price * item.quantity;
-    enriched.push({ ...item, product_name: p.name, price });
+    if (!p) return { error: `Product ${item.product_id} not found` };
+    let studioType = null;
+    if (item.custom_design) { try { studioType = JSON.parse(item.custom_design).productType; } catch {} }
+    const studioPrice = STUDIO_PRICES[studioType];
+    const price = studioPrice || (p.is_on_sale && p.sale_price ? p.sale_price : p.price);
+    subtotal += price * quantity;
+    if (!studioPrice) catalogSubtotal += price * quantity;
+    enriched.push({ ...item, quantity, product_name: studioPrice ? `Custom 3D ${studioType}` : p.name, price });
   }
 
-  let discount = 0;
+  let discount = 0, couponId = null;
   if (coupon_code) {
-    const cp = db.prepare("SELECT * FROM coupons WHERE code=? AND (max_uses IS NULL OR used<max_uses)").get(coupon_code.toUpperCase());
+    const cp = db.prepare("SELECT * FROM coupons WHERE code=? AND (max_uses IS NULL OR used<max_uses)").get(String(coupon_code).toUpperCase());
     if (cp && subtotal >= cp.min_order) {
       discount = cp.type === 'percent' ? subtotal * cp.value / 100 : cp.value;
       discount = Math.min(discount, subtotal);
-      db.prepare('UPDATE coupons SET used=used+1 WHERE id=?').run(cp.id);
+      couponId = cp.id;
     }
   }
 
-  const shipping = subtotal - discount >= 1000 ? 0 : 99;
-  const tax = Math.round((subtotal - discount) * 0.18 * 100) / 100;
-  const total = subtotal - discount + shipping + tax;
+  const catalogAfter = Math.max(0, catalogSubtotal - discount);
+  const shipping = catalogSubtotal === 0 || subtotal - discount >= 1000 ? 0 : 99;
+  const tax = Math.round(catalogAfter * 0.18 * 100) / 100;
+  const total = Math.round((subtotal - discount + shipping + tax) * 100) / 100;
+
+  let address = shipping_address;
+  if (!address || !Object.keys(address).length) {
+    address = address_id
+      ? db.prepare('SELECT * FROM addresses WHERE id=? AND user_id=?').get(+address_id, userId)
+      : db.prepare('SELECT * FROM addresses WHERE user_id=? ORDER BY is_default DESC,id ASC LIMIT 1').get(userId);
+  }
+
+  return { enriched, subtotal, shipping, tax, discount, total, couponId, address: address || {} };
+}
+
+function saveOrder(userId, built, payment_method, notes) {
+  const { enriched, subtotal, shipping, tax, discount, total, couponId, address } = built;
+  if (couponId) db.prepare('UPDATE coupons SET used=used+1 WHERE id=?').run(couponId);
   const orderNumber = 'ARV' + Date.now().toString().slice(-9);
 
-  const r = db.prepare('INSERT INTO orders (user_id,order_number,subtotal,shipping,tax,discount,total,payment_method,shipping_address,notes) VALUES (?,?,?,?,?,?,?,?,?,?)').run(req.user.id, orderNumber, subtotal, shipping, tax, discount, total, payment_method, JSON.stringify(shipping_address || {}), notes);
+  const r = db.prepare('INSERT INTO orders (user_id,order_number,subtotal,shipping,tax,discount,total,payment_method,shipping_address,notes) VALUES (?,?,?,?,?,?,?,?,?,?)').run(userId, orderNumber, subtotal, shipping, tax, discount, total, payment_method, JSON.stringify(address || {}), notes);
 
   const insItem = db.prepare('INSERT INTO order_items (order_id,product_id,product_name,quantity,size,color,price,custom_design) VALUES (?,?,?,?,?,?,?,?)');
   enriched.forEach(i => insItem.run(r.lastInsertRowid, i.product_id, i.product_name, i.quantity, i.size || 'M', i.color || '', i.price, i.custom_design || null));
 
-  db.prepare('DELETE FROM cart WHERE user_id=?').run(req.user.id);
+  db.prepare('DELETE FROM cart WHERE user_id=?').run(userId);
 
   const order = db.prepare('SELECT * FROM orders WHERE id=?').get(r.lastInsertRowid);
   order.items = db.prepare('SELECT * FROM order_items WHERE order_id=?').all(order.id);
-  res.json(order);
-});
+  return order;
+}
 
 // ── REVIEWS ─────────────────────────────────────────────────────
 app.get('/api/products/:id/reviews', (req, res) => {
@@ -665,6 +692,20 @@ app.get('/api/admin/users', adminAuth, (req, res) => {
     FROM users u LEFT JOIN orders o ON o.user_id=u.id GROUP BY u.id ORDER BY u.created_at DESC LIMIT 200`).all());
 });
 
+app.get('/api/admin/designs', adminAuth, (req, res) => {
+  res.json(db.prepare(`SELECT d.id,d.name,d.product_type,d.thumbnail,d.created_at,d.updated_at,
+    u.email,u.first_name,u.last_name,u.phone
+    FROM designs d JOIN users u ON d.user_id=u.id ORDER BY d.updated_at DESC LIMIT 300`).all());
+});
+
+app.get('/api/admin/designs/:id', adminAuth, (req, res) => {
+  const d = db.prepare(`SELECT d.*,u.email,u.first_name,u.last_name,u.phone
+    FROM designs d JOIN users u ON d.user_id=u.id WHERE d.id=?`).get(+req.params.id);
+  if (!d) return res.status(404).json({ error: 'Not found' });
+  try { d.design_data = JSON.parse(d.design_data || '{}'); } catch { d.design_data = {}; }
+  res.json(d);
+});
+
 app.get('/api/admin/products', adminAuth, (req, res) => {
   res.json(db.prepare('SELECT p.*,c.name cat_name FROM products p LEFT JOIN categories c ON p.category_id=c.id ORDER BY p.id DESC').all());
 });
@@ -694,53 +735,69 @@ app.delete('/api/admin/products/:id', adminAuth, (req, res) => {
 
 // ── RAZORPAY PAYMENT ────────────────────────────────────────────
 
-// Step 1: Frontend calls this to create a Razorpay order
+db.exec(`CREATE TABLE IF NOT EXISTS payment_intents (
+  rzp_order_id TEXT PRIMARY KEY,
+  user_id      INTEGER NOT NULL,
+  payload      TEXT NOT NULL,
+  amount       INTEGER NOT NULL,
+  order_id     INTEGER,
+  created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
+
+// Step 1: frontend sends the same body as POST /api/orders (items, address_id / shipping_address, coupon_code).
+// The amount is computed server-side and the payload is parked until the payment is verified.
 app.post('/api/payment/create-order', auth, async (req, res) => {
+  if (!RAZORPAY_READY) return res.status(503).json({ error: 'Online payment is not configured yet' });
   try {
-    const { amount } = req.body; // amount in rupees
-    if (!amount || amount < 1) return res.status(400).json({ error: 'Invalid amount' });
-    const options = {
-      amount: Math.round(amount * 100), // paise
-      currency: 'INR',
-      receipt: 'aruva_' + Date.now(),
-    };
-    const order = await razorpay.orders.create(options);
-    res.json({ razorpay_order_id: order.id, amount: order.amount, currency: order.currency, key_id: RAZORPAY_KEY_ID });
+    const built = buildOrder(req.body, req.user.id);
+    if (built.error) return res.status(400).json({ error: built.error });
+    const amount = Math.round(built.total * 100); // paise
+    if (amount < 100) return res.status(400).json({ error: 'Invalid amount' });
+    const order = await razorpay.orders.create({ amount, currency: 'INR', receipt: 'aruva_' + Date.now(), notes: { user_id: String(req.user.id) } });
+    db.prepare('INSERT INTO payment_intents (rzp_order_id,user_id,payload,amount) VALUES (?,?,?,?)').run(order.id, req.user.id, JSON.stringify(req.body), amount);
+    const u = db.prepare('SELECT email,first_name,last_name,phone FROM users WHERE id=?').get(req.user.id) || {};
+    res.json({
+      razorpay_order_id: order.id, amount: order.amount, currency: order.currency, key_id: RAZORPAY_KEY_ID,
+      total: built.total, prefill: { name: [u.first_name, u.last_name].filter(Boolean).join(' '), email: u.email || '', contact: u.phone || '' },
+    });
   } catch (e) {
     console.error('Razorpay create-order error:', e);
     res.status(500).json({ error: 'Payment initiation failed' });
   }
 });
 
-// Step 2: Frontend calls this after payment to verify signature & save order
+// Step 2: after Razorpay checkout succeeds — verify the signature, then save the parked order once.
 app.post('/api/payment/verify', auth, async (req, res) => {
+  if (!RAZORPAY_READY) return res.status(503).json({ error: 'Online payment is not configured yet' });
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, order_data } = req.body;
-    const body = razorpay_order_id + '|' + razorpay_payment_id;
-    const expectedSig = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET).update(body).digest('hex');
-    if (expectedSig !== razorpay_signature) return res.status(400).json({ error: 'Payment verification failed' });
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) return res.status(400).json({ error: 'Missing payment details' });
+    const expected = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET).update(razorpay_order_id + '|' + razorpay_payment_id).digest('hex');
+    const ok = expected.length === razorpay_signature.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(razorpay_signature));
+    if (!ok) return res.status(400).json({ error: 'Payment verification failed' });
 
-    // Save order to DB
-    const { items, address_id, payment_method, coupon_code, subtotal, discount, shipping, tax, total } = order_data;
-    const addr = db.prepare('SELECT * FROM addresses WHERE id=? AND user_id=?').get(address_id, req.user.id);
-    const orderNumber = 'ARV' + Date.now().toString().slice(-9);
-    const r = db.prepare('INSERT INTO orders (user_id,order_number,subtotal,shipping,tax,discount,total,payment_method,shipping_address,notes) VALUES (?,?,?,?,?,?,?,?,?,?)')
-      .run(req.user.id, orderNumber, subtotal, shipping, tax, discount, total, payment_method, JSON.stringify(addr || {}), 'razorpay:' + razorpay_payment_id);
-
-    if (items?.length) {
-      const insItem = db.prepare('INSERT INTO order_items (order_id,product_id,product_name,quantity,size,color,price,custom_design) VALUES (?,?,?,?,?,?,?,?)');
-      items.forEach(i => insItem.run(r.lastInsertRowid, i.product_id, i.product_name, i.quantity, i.size||'M', i.color||'', i.price, i.custom_design||null));
+    const intent = db.prepare('SELECT * FROM payment_intents WHERE rzp_order_id=? AND user_id=?').get(razorpay_order_id, req.user.id);
+    if (!intent) return res.status(404).json({ error: 'Payment session not found' });
+    if (intent.order_id) {   // already saved (double callback / retry)
+      const order = db.prepare('SELECT * FROM orders WHERE id=?').get(intent.order_id);
+      order.items = db.prepare('SELECT * FROM order_items WHERE order_id=?').all(order.id);
+      return res.json({ ok: true, order });
     }
-    db.prepare('DELETE FROM cart WHERE user_id=?').run(req.user.id);
 
-    const order = db.prepare('SELECT * FROM orders WHERE id=?').get(r.lastInsertRowid);
-    order.items = db.prepare('SELECT * FROM order_items WHERE order_id=?').all(order.id);
+    const payload = JSON.parse(intent.payload);
+    const built = buildOrder(payload, req.user.id);
+    if (built.error) return res.status(400).json({ error: built.error });
+    const order = saveOrder(req.user.id, built, 'razorpay', [payload.notes, 'razorpay:' + razorpay_payment_id].filter(Boolean).join(' | '));
+    db.prepare('UPDATE payment_intents SET order_id=? WHERE rzp_order_id=?').run(order.id, razorpay_order_id);
     res.json({ ok: true, order });
   } catch (e) {
     console.error('Razorpay verify error:', e);
     res.status(500).json({ error: 'Could not save order' });
   }
 });
+
+// Frontend asks this to decide whether to show the online-payment option
+app.get('/api/payment/config', (req, res) => res.json({ enabled: RAZORPAY_READY }));
 
 // ── DEBUG ─────────────────────────────────────────────────────────
 app.get('/debug-ua', (req, res) => {

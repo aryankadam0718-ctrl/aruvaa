@@ -40,14 +40,41 @@ http.createServer((req, res) => {
   }
 
   const filePath = path.join(ROOT, decodeURIComponent(url));
-  fs.readFile(filePath, (err, data) => {
+  fs.stat(filePath, (err, stat) => {
     if (err) { res.writeHead(404); res.end('Not found: ' + url); return; }
     const ext = path.extname(filePath).toLowerCase();
+    const contentType = MIME[ext] || 'application/octet-stream';
+    const range = req.headers.range;
+
+    // Video/audio scrubbing needs real byte-range support — without it
+    // <video>.seekable stays stuck at [0,0] no matter how the file is encoded.
+    if (range) {
+      const match = /bytes=(\d*)-(\d*)/.exec(range);
+      const start = match[1] ? parseInt(match[1], 10) : 0;
+      const end   = match[2] ? parseInt(match[2], 10) : stat.size - 1;
+      if (start >= stat.size || end >= stat.size || start > end) {
+        res.writeHead(416, { 'Content-Range': `bytes */${stat.size}` });
+        res.end();
+        return;
+      }
+      res.writeHead(206, {
+        'Content-Type': contentType,
+        'Content-Length': end - start + 1,
+        'Content-Range': `bytes ${start}-${end}/${stat.size}`,
+        'Accept-Ranges': 'bytes',
+        'Access-Control-Allow-Origin': '*',
+      });
+      fs.createReadStream(filePath, { start, end }).pipe(res);
+      return;
+    }
+
     res.writeHead(200, {
-      'Content-Type': MIME[ext] || 'application/octet-stream',
+      'Content-Type': contentType,
+      'Content-Length': stat.size,
+      'Accept-Ranges': 'bytes',
       'Access-Control-Allow-Origin': '*',
     });
-    res.end(data);
+    fs.createReadStream(filePath).pipe(res);
   });
 }).listen(PORT, () => {
   console.log('\n  ARUVA Dev Server');

@@ -10,9 +10,9 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --gold:#87B9D4;--gold-l:#ACD1E5;--gold-d:#5A97BC;
-  --dark:#0B1622;--d1:#111E2C;--d2:#172638;--d3:#1D2F44;
-  --text:#EDF2F8;--muted:#4A6B82;--muted-l:#7295AF;
+  --gold:#C9B193;--gold-l:#EFE4D2;--gold-d:#8C7258;
+  --dark:#2A1019;--d1:#3A1724;--d2:#4A1E2E;--d3:#5B2638;
+  --text:#F6EEE2;--muted:#A99589;--muted-l:#D0BFB0;
   --r:14px;--r-lg:20px;--nav-h:68px
 }
 html{scroll-behavior:smooth}
@@ -21,13 +21,13 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--dark)}
-::-webkit-scrollbar-thumb{background:rgba(135,185,212,.2);border-radius:2px}
+::-webkit-scrollbar-thumb{background:rgba(201,177,147,.2);border-radius:2px}
 
 /* ─── NAV ─────────────────────────────────────────── */
 .nav{position:fixed;top:0;left:0;right:0;z-index:500;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 56px;height:var(--nav-h);
-  background:rgba(11,22,34,.9);backdrop-filter:blur(24px);
+  background:rgba(42,16,25,.9);backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(255,255,255,.06)}
 .nav-logo{font-size:22px;font-weight:900;letter-spacing:8px;
   background:linear-gradient(135deg,var(--gold),var(--gold-l),var(--gold));
@@ -45,11 +45,11 @@ button{font-family:inherit;cursor:pointer}
 .nav-signin{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted-l);
   padding:8px 20px;border-radius:50px;font-size:12px;font-weight:500;
   transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.nav-signin:hover{border-color:rgba(135,185,212,.5);color:var(--gold)}
+.nav-signin:hover{border-color:rgba(201,177,147,.5);color:var(--gold)}
 .nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;border:none;
   padding:9px 22px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:.5px;
   cursor:pointer;transition:all .2s;display:inline-flex;font-family:inherit}
-.nav-cta:hover{box-shadow:0 6px 24px rgba(135,185,212,.4);transform:translateY(-1px)}
+.nav-cta:hover{box-shadow:0 6px 24px rgba(201,177,147,.4);transform:translateY(-1px)}
 @media(max-width:768px){.nav{padding:0 20px}.nav-links{display:none}}
 
 /* ─── PAGE ───────────────────────────────────────── */
@@ -64,15 +64,15 @@ button{font-family:inherit;cursor:pointer}
   text-align:center;position:relative;overflow:hidden;
   padding:80px 40px}
 .about-hero::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(135,185,212,.07) 0%,transparent 65%)}
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(201,177,147,.07) 0%,transparent 65%)}
 .about-hero-grid{position:absolute;inset:0;
-  background-image:linear-gradient(rgba(135,185,212,.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(135,185,212,.03) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(201,177,147,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(201,177,147,.03) 1px,transparent 1px);
   background-size:80px 80px;
   mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black,transparent)}
 .about-hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}
 .hero-pill{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);
+  background:rgba(201,177,147,.08);border:1px solid rgba(201,177,147,.2);
   color:var(--gold);font-size:11px;font-weight:600;letter-spacing:3px;
   text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:32px}
 .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);
@@ -91,7 +91,7 @@ button{font-family:inherit;cursor:pointer}
   background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;
   padding:15px 34px;border-radius:50px;font-size:14px;font-weight:700;
   letter-spacing:.5px;transition:all .3s;border:none;cursor:pointer;font-family:inherit}
-.btn-gold:hover{box-shadow:0 12px 40px rgba(135,185,212,.45);transform:translateY(-2px)}
+.btn-gold:hover{box-shadow:0 12px 40px rgba(201,177,147,.45);transform:translateY(-2px)}
 .btn-ghost{display:inline-flex;align-items:center;gap:8px;
   color:var(--muted-l);font-size:14px;font-weight:500;
   transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit}
@@ -149,17 +149,17 @@ button{font-family:inherit;cursor:pointer}
 .av-right{position:relative;height:calc(100vh - var(--nav-h) - 48px)}
 .av-glass-frame{
   width:100%;height:100%;border-radius:22px;
-  border:1px solid rgba(135,185,212,.22);
-  background:rgba(11,22,34,.25);
+  border:1px solid rgba(201,177,147,.22);
+  background:rgba(42,16,25,.25);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   overflow:hidden;position:relative;
   box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,
-    0 1px 0 rgba(135,185,212,.12) inset,
+    0 1px 0 rgba(201,177,147,.12) inset,
     0 48px 100px rgba(0,0,0,.55)}
 .av-frame-bar{
   position:absolute;top:0;left:0;right:0;z-index:10;
   display:flex;align-items:center;gap:10px;padding:11px 14px;
-  background:rgba(11,22,34,.75);border-bottom:1px solid rgba(135,185,212,.1);
+  background:rgba(42,16,25,.75);border-bottom:1px solid rgba(201,177,147,.1);
   backdrop-filter:blur(8px)}
 .av-frame-label{flex:1;font-size:10px;font-weight:600;letter-spacing:1.5px;
   text-transform:uppercase;color:var(--muted-l);text-align:center}
@@ -178,7 +178,7 @@ button{font-family:inherit;cursor:pointer}
 .av-info-wrap{
   position:absolute;bottom:0;left:0;right:0;z-index:8;
   padding:40px 20px 20px;
-  background:linear-gradient(transparent,rgba(11,22,34,.92))}
+  background:linear-gradient(transparent,rgba(42,16,25,.92))}
 .av-info-panel{display:none;animation:av-fi .4s ease}
 .av-info-panel.sp-active{display:block}
 @keyframes av-fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -190,7 +190,7 @@ button{font-family:inherit;cursor:pointer}
 .av-info-tags span{
   font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
   color:var(--gold);padding:4px 12px;
-  background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);border-radius:50px}
+  background:rgba(201,177,147,.08);border:1px solid rgba(201,177,147,.2);border-radius:50px}
 
 /* Progress + hint */
 .av-prog-wrap{
@@ -227,12 +227,12 @@ button{font-family:inherit;cursor:pointer}
 .val-card{background:var(--d2);border:1px solid rgba(255,255,255,.06);
   border-radius:20px;padding:36px 28px;transition:all .3s;position:relative;overflow:hidden}
 .val-card::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(135,185,212,.06) 0%,transparent 60%);
+  background:linear-gradient(135deg,rgba(201,177,147,.06) 0%,transparent 60%);
   opacity:0;transition:opacity .3s}
-.val-card:hover{border-color:rgba(135,185,212,.25);transform:translateY(-6px)}
+.val-card:hover{border-color:rgba(201,177,147,.25);transform:translateY(-6px)}
 .val-card:hover::before{opacity:1}
 .val-icon{font-size:36px;margin-bottom:20px;display:block;
-  filter:drop-shadow(0 4px 12px rgba(135,185,212,.2))}
+  filter:drop-shadow(0 4px 12px rgba(201,177,147,.2))}
 .val-num{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--gold);
   text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .val-num::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
@@ -249,12 +249,12 @@ button{font-family:inherit;cursor:pointer}
 @media(max-width:480px){.team-grid{grid-template-columns:1fr}}
 .team-card{background:var(--d1);border:1px solid rgba(255,255,255,.06);
   border-radius:20px;overflow:hidden;transition:all .3s}
-.team-card:hover{border-color:rgba(135,185,212,.2);transform:translateY(-4px)}
+.team-card:hover{border-color:rgba(201,177,147,.2);transform:translateY(-4px)}
 .team-avatar{aspect-ratio:1;background:var(--d2);
   display:flex;align-items:center;justify-content:center;
   font-size:52px;position:relative;overflow:hidden}
 .team-avatar::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 50%,rgba(11,22,34,.6))}
+  background:linear-gradient(180deg,transparent 50%,rgba(42,16,25,.6))}
 .team-info{padding:16px 18px 20px}
 .team-name{font-size:15px;font-weight:700;margin-bottom:4px}
 .team-role{font-size:11px;color:var(--gold);font-weight:600;
@@ -265,13 +265,13 @@ button{font-family:inherit;cursor:pointer}
 .stats-bar{padding:0 80px;margin-bottom:0}
 @media(max-width:768px){.stats-bar{padding:0 20px}}
 .stats-bar-inner{max-width:1200px;margin:0 auto;
-  background:linear-gradient(135deg,rgba(135,185,212,.1) 0%,rgba(135,185,212,.04) 50%,rgba(135,185,212,.08) 100%);
-  border:1px solid rgba(135,185,212,.2);border-radius:24px;
+  background:linear-gradient(135deg,rgba(201,177,147,.1) 0%,rgba(201,177,147,.04) 50%,rgba(201,177,147,.08) 100%);
+  border:1px solid rgba(201,177,147,.2);border-radius:24px;
   padding:52px;display:grid;grid-template-columns:repeat(4,1fr);
   gap:0;overflow:hidden;position:relative}
 .stats-bar-inner::before{content:'';position:absolute;top:-60px;left:-60px;
   width:240px;height:240px;border-radius:50%;
-  background:radial-gradient(circle,rgba(135,185,212,.12) 0%,transparent 70%)}
+  background:radial-gradient(circle,rgba(201,177,147,.12) 0%,transparent 70%)}
 .stat-col{text-align:center;border-right:1px solid rgba(255,255,255,.08);
   padding:0 24px;position:relative;z-index:1}
 .stat-col:last-child{border-right:none}
@@ -307,7 +307,7 @@ button{font-family:inherit;cursor:pointer}
 /* Left: Connect */
 .bfg-connect-tag{display:inline-flex;align-items:center;gap:7px;
   font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);background:rgba(135,185,212,.08);border:1px solid rgba(135,185,212,.2);
+  color:var(--gold);background:rgba(201,177,147,.08);border:1px solid rgba(201,177,147,.2);
   padding:6px 14px;border-radius:50px;margin-bottom:20px}
 .bfg-title{font-family:'Playfair Display',serif;
   font-size:clamp(22px,2.5vw,32px);font-weight:800;line-height:1.2;margin-bottom:8px}
@@ -322,16 +322,16 @@ button{font-family:inherit;cursor:pointer}
 .nl-input{width:100%;background:var(--d2);border:1px solid rgba(255,255,255,.1);
   color:var(--text);padding:13px 18px;border-radius:12px;
   font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
-.nl-input:focus{border-color:rgba(135,185,212,.4)}
+.nl-input:focus{border-color:rgba(201,177,147,.4)}
 .nl-input::placeholder{color:var(--muted)}
 .nl-checkbox{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
 .nl-checkbox input{margin-top:2px;accent-color:var(--gold);flex-shrink:0}
 .nl-checkbox span{font-size:12px;color:var(--muted);line-height:1.5}
-.nl-checkbox span a{color:var(--gold);border-bottom:1px solid rgba(135,185,212,.3)}
+.nl-checkbox span a{color:var(--gold);border-bottom:1px solid rgba(201,177,147,.3)}
 .nl-btn{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#000;
   border:none;padding:13px 28px;border-radius:12px;font-size:13px;font-weight:700;
   letter-spacing:.5px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
-.nl-btn:hover{box-shadow:0 8px 28px rgba(135,185,212,.4);transform:translateY(-1px)}
+.nl-btn:hover{box-shadow:0 8px 28px rgba(201,177,147,.4);transform:translateY(-1px)}
 
 /* Middle: Links */
 .bfg-links-title{font-size:10px;font-weight:700;letter-spacing:3px;
@@ -356,7 +356,7 @@ button{font-family:inherit;cursor:pointer}
   background:var(--d2);border:1px solid rgba(255,255,255,.08);
   display:flex;align-items:center;justify-content:center;
   color:var(--muted);transition:all .2s;font-size:14px}
-.bfg-soc-btn:hover{border-color:rgba(135,185,212,.4);color:var(--gold);background:rgba(135,185,212,.06)}
+.bfg-soc-btn:hover{border-color:rgba(201,177,147,.4);color:var(--gold);background:rgba(201,177,147,.06)}
 
 .bfg-contact{display:flex;flex-direction:column;gap:10px}
 .bfg-contact-item{display:flex;align-items:center;gap:10px;
@@ -385,7 +385,7 @@ button{font-family:inherit;cursor:pointer}
   overflow:hidden;
   position:relative}
 .big-brand::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(135,185,212,.06) 0%,transparent 60%);
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,177,147,.06) 0%,transparent 60%);
   pointer-events:none}
 .big-brand-text{
   display:block;
@@ -399,17 +399,17 @@ button{font-family:inherit;cursor:pointer}
   /* Gold texture clip */
   background:linear-gradient(
     135deg,
-    #3a2a00 0%,
-    #8a6520 10%,
+    #3A2A22 0%,
+    #7A6450 10%,
     var(--gold-d) 20%,
     var(--gold) 30%,
     var(--gold-l) 40%,
-    #fff8e7 48%,
+    #FBF5EC 48%,
     var(--gold-l) 55%,
     var(--gold) 62%,
     var(--gold-d) 72%,
-    #6a4a10 80%,
-    #3a2a00 88%,
+    #5E4A3C 80%,
+    #3A2A22 88%,
     var(--gold) 95%,
     var(--gold-l) 100%
   );
@@ -429,6 +429,29 @@ button{font-family:inherit;cursor:pointer}
   text-align:center;
   font-size:12px;font-weight:600;letter-spacing:8px;text-transform:uppercase;
   color:var(--muted);padding-bottom:32px;position:relative;z-index:1}
+
+/* ═══ SECTION COLOUR MOODS — plum · taupe · cream, a new blend per section ═══ */
+/* Plum Velvet */
+.about-hero{background:radial-gradient(ellipse 55% 70% at 15% 25%,rgba(140,64,88,.55) 0%,transparent 62%),
+  radial-gradient(ellipse 45% 55% at 88% 85%,rgba(201,177,147,.16) 0%,transparent 60%),
+  linear-gradient(160deg,#3A1724 0%,#2A1019 58%,#1F0B13 100%)}
+.marquee-strip{background:linear-gradient(90deg,#8C7258 0%,#C9B193 28%,#EFE4D2 50%,#C9B193 72%,#8C7258 100%)}
+/* Taupe Stone — taupe ground, plum glass cards, cream type */
+.values{--d2:rgba(42,16,25,.46);--gold:#F3E7D3;--muted-l:#EADFCF;color:var(--text);
+  background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(255,255,255,.14) 0%,transparent 60%),
+    linear-gradient(165deg,#7A6553 0%,#5C4A3D 52%,#3E3129 100%);border-color:rgba(239,228,210,.14)}
+.values .val-card{border-color:rgba(239,228,210,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(31,11,19,.25)}
+/* Champagne — cream card */
+.stats-bar-inner{--gold:#6E3045;--muted-l:#6B5848;
+  background:linear-gradient(135deg,#FBF6EE 0%,#EFE4D2 50%,#D9C9B4 100%);
+  border-color:rgba(201,177,147,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 24px 70px rgba(0,0,0,.4)}
+.stats-bar-inner .stat-col{border-color:rgba(74,30,46,.14)}
+/* Cream Plaster cards with mulberry portraits */
+.team-card{--text:#2A1019;--muted:#6B5848;--gold:#6E3045;--d1:#FFFBF5;color:var(--text);border-color:rgba(201,177,147,.4)}
+.team-avatar{background:linear-gradient(160deg,#8C4058 0%,#5B2638 55%,#3A1724 100%)}
+/* Espresso Taupe */
+.brand-info-grid{--muted:#B5A595;--muted-l:#D0BFB0;background:linear-gradient(180deg,#3E3129 0%,#2F2520 100%);border-color:rgba(201,177,147,.2)}
+.bfg-col{border-color:rgba(201,177,147,.14)}
 </style>
 </head>
 <body>
@@ -578,8 +601,8 @@ button{font-family:inherit;cursor:pointer}
         <!-- Scroll hint -->
         <div class="av-scroll-hint" id="av-hint">
           <svg width="14" height="22" viewBox="0 0 14 22" fill="none">
-            <rect x="1" y="1" width="12" height="20" rx="6" stroke="rgba(135,185,212,.5)" stroke-width="1.5"/>
-            <circle cx="7" cy="6" r="2" fill="rgba(135,185,212,.8)">
+            <rect x="1" y="1" width="12" height="20" rx="6" stroke="rgba(201,177,147,.5)" stroke-width="1.5"/>
+            <circle cx="7" cy="6" r="2" fill="rgba(201,177,147,.8)">
               <animate attributeName="cy" values="6;14;6" dur="1.5s" repeatCount="indefinite"/>
             </circle>
           </svg>
@@ -914,7 +937,7 @@ function showToast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'page-toast';
-    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--d1);border:1px solid rgba(135,185,212,.3);color:var(--text);padding:12px 26px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--d1);border:1px solid rgba(201,177,147,.3);color:var(--text);padding:12px 26px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)';
     document.body.appendChild(t);
   }
   t.textContent = msg;

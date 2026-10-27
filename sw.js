@@ -1,4 +1,4 @@
-const CACHE = 'aruva-v1';
+const CACHE = 'aruva-v4';
 const ASSETS = [
   '/home.html', '/aruva.html', '/shop.html', '/product.html',
   '/login.html', '/account.html', '/cart.html',

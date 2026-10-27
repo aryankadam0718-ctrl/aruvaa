@@ -3,7 +3,7 @@
 <head>
 <script>(function(){var p=location.pathname;if(p.startsWith('/www'))return;var t=('ontouchstart' in window)||navigator.maxTouchPoints>0;var n=screen.width<=900||window.innerWidth<=900;var u=/Mobile|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(t||n||u){location.replace('/www'+(p==='/'?'/login.html':p));}})()</script>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#87B9D4">
+  <meta name="theme-color" content="#C9B193">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ARUVA">
@@ -15,12 +15,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#87B9D4;--gold-l:#ACD1E5}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',system-ui,sans-serif}
+:root{--gold:#C9B193;--gold-l:#EFE4D2}
+html,body{width:100%;height:100%;overflow:hidden;background:#1F0B13;font-family:'Segoe UI',system-ui,sans-serif}
 
 /* ── INTRO SCREEN ── */
 #intro{
-  position:fixed;inset:0;z-index:100;background:#000;
+  position:fixed;inset:0;z-index:100;background:#1F0B13;
   display:flex;align-items:center;justify-content:center;flex-direction:column;
   transition:opacity .9s ease;
 }
@@ -28,7 +28,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
 #particles-canvas{position:absolute;inset:0;z-index:0}
 
 /* Cinema letterbox bars */
-.bar{position:absolute;left:0;right:0;height:72px;background:#000;z-index:2;transition:transform 1.1s cubic-bezier(.25,.46,.45,.94)}
+.bar{position:absolute;left:0;right:0;height:72px;background:#1F0B13;z-index:2;transition:transform 1.1s cubic-bezier(.25,.46,.45,.94)}
 .bar-top{top:0}
 .bar-bot{bottom:0}
 .bar-top.open{transform:translateY(-100%)}
@@ -38,7 +38,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
 .ring{
   position:absolute;top:50%;left:50%;border-radius:50%;
   transform:translate(-50%,-50%) scale(0);
-  opacity:0;border:1px solid rgba(135,185,212,.12);
+  opacity:0;border:1px solid rgba(201,177,147,.12);
 }
 .ring-1{width:260px;height:260px;animation:ringOut 2s ease 0.8s forwards}
 .ring-2{width:380px;height:380px;animation:ringOut 2s ease 1.1s forwards}
@@ -65,18 +65,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   0%  {opacity:0;transform:scale(.45) rotate(-8deg);filter:blur(18px) brightness(3)}
   30% {opacity:1;filter:blur(0) brightness(1.8);transform:scale(1.1) rotate(2deg)}
   65% {transform:scale(.97) rotate(0deg);filter:brightness(1.2)}
-  100%{opacity:1;transform:scale(1) rotate(0deg);filter:drop-shadow(0 0 16px rgba(135,185,212,.5)) brightness(1)}
+  100%{opacity:1;transform:scale(1) rotate(0deg);filter:drop-shadow(0 0 16px rgba(201,177,147,.5)) brightness(1)}
 }
 #logo-wrap.glow{animation:logoBloom 1.6s cubic-bezier(.16,1,.3,1) .6s forwards, glowPulse 3s ease-in-out 2.4s infinite}
 @keyframes glowPulse{
-  0%,100%{filter:drop-shadow(0 0 14px rgba(135,185,212,.4))}
-  50%{filter:drop-shadow(0 0 36px rgba(135,185,212,.8)) drop-shadow(0 0 70px rgba(135,185,212,.3))}
+  0%,100%{filter:drop-shadow(0 0 14px rgba(201,177,147,.4))}
+  50%{filter:drop-shadow(0 0 36px rgba(201,177,147,.8)) drop-shadow(0 0 70px rgba(201,177,147,.3))}
 }
 
 /* Horizontal scan flash */
 #scan{
   position:absolute;top:50%;left:-30%;width:160%;height:2px;opacity:0;pointer-events:none;
-  background:linear-gradient(90deg,transparent 0%,rgba(135,185,212,.6) 40%,rgba(255,255,255,1) 50%,rgba(135,185,212,.6) 60%,transparent 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(201,177,147,.6) 40%,rgba(255,255,255,1) 50%,rgba(201,177,147,.6) 60%,transparent 100%);
   animation:scanFlash .55s ease-out 2.0s forwards;
 }
 @keyframes scanFlash{
@@ -118,15 +118,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   position:fixed;inset:0;z-index:50;
   display:flex;align-items:center;justify-content:center;
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(135,185,212,.07) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(135,185,212,.04) 0%,transparent 50%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(201,177,147,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(201,177,147,.04) 0%,transparent 50%),
     #000;
   opacity:0;pointer-events:none;transition:opacity .8s ease;
 }
 #login-page.visible{opacity:1;pointer-events:all}
 #login-page::before{
   content:'';position:absolute;inset:0;z-index:0;
-  background-image:radial-gradient(rgba(135,185,212,.06) 1px,transparent 1px);
+  background-image:radial-gradient(rgba(201,177,147,.06) 1px,transparent 1px);
   background-size:42px 42px;
 }
 
@@ -135,10 +135,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   position:relative;z-index:1;width:100%;max-width:390px;margin:16px;
   padding:46px 40px 38px;
   background:rgba(255,255,255,.022);
-  border:1px solid rgba(135,185,212,.2);
+  border:1px solid rgba(201,177,147,.2);
   border-radius:22px;
   backdrop-filter:blur(24px);
-  box-shadow:0 0 100px rgba(0,0,0,.7),0 0 50px rgba(135,185,212,.08);
+  box-shadow:0 0 100px rgba(0,0,0,.7),0 0 50px rgba(201,177,147,.08);
   animation:cardSlideIn .7s cubic-bezier(.16,1,.3,1);
 }
 @keyframes cardSlideIn{
@@ -153,7 +153,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
 #lc-brand{
   font-family:'Bebas Neue',sans-serif;font-size:30px;
   letter-spacing:10px;text-indent:10px;text-align:center;
-  background:linear-gradient(135deg,#87B9D4,#ACD1E5,#87B9D4);
+  background:linear-gradient(135deg,#C9B193,#EFE4D2,#C9B193);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:4px;
 }
@@ -168,24 +168,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   padding:12px 15px;color:#fff;font-size:14px;outline:none;
   transition:border-color .2s,background .2s;
 }
-.fi:focus{border-color:rgba(135,185,212,.6);background:rgba(135,185,212,.04)}
+.fi:focus{border-color:rgba(201,177,147,.6);background:rgba(201,177,147,.04)}
 .fi::placeholder{color:rgba(255,255,255,.2)}
 
 /* Row */
 .fr{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
 .fck{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer}
 .fck input{accent-color:var(--gold);cursor:pointer}
-.fgt{font-size:11px;color:rgba(135,185,212,.55);text-decoration:none;transition:color .2s}
+.fgt{font-size:11px;color:rgba(201,177,147,.55);text-decoration:none;transition:color .2s}
 .fgt:hover{color:var(--gold)}
 
 /* Buttons */
 .btn-main{
-  width:100%;background:linear-gradient(135deg,#87B9D4,#ACD1E5);
+  width:100%;background:linear-gradient(135deg,#C9B193,#EFE4D2);
   color:#000;border:none;padding:14px;border-radius:50px;
   font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
   cursor:pointer;transition:all .3s;margin-bottom:14px;
 }
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(135,185,212,.42)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,177,147,.42)}
 .btn-main:active{transform:translateY(0)}
 .btn-ghost{
   width:100%;background:transparent;
@@ -194,7 +194,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   font-size:11px;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;transition:all .2s;margin-bottom:0;
 }
-.btn-ghost:hover{border-color:rgba(135,185,212,.4);color:var(--gold)}
+.btn-ghost:hover{border-color:rgba(201,177,147,.4);color:var(--gold)}
 
 /* Or divider */
 .for{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -225,7 +225,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   <div id="brand-center">
     <div id="logo-area">
       <div id="logo-wrap" class="glow">
-        <img src="image.png" style="width:100%;height:100%;object-fit:contain;filter:invert(1) sepia(1) saturate(2) hue-rotate(165deg) brightness(1.1);">
+        <img src="image.png" style="width:100%;height:100%;object-fit:contain;filter:invert(1) sepia(.6) saturate(1.15) hue-rotate(-5deg) brightness(1);">
       </div>
       <div id="scan"></div>
     </div>
@@ -245,7 +245,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
   <div id="lc">
 
     <!-- Mini logo -->
-    <img src="image.png" class="lc-logo-svg" style="object-fit:contain;filter:invert(1) sepia(1) saturate(2) hue-rotate(165deg) brightness(1.1);">
+    <img src="image.png" class="lc-logo-svg" style="object-fit:contain;filter:invert(1) sepia(.6) saturate(1.15) hue-rotate(-5deg) brightness(1);">
     <svg style="display:none">
     </svg>
 
@@ -254,7 +254,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
 
     <!-- Tab switcher -->
     <div id="auth-tabs" style="display:flex;gap:0;margin-bottom:24px;background:rgba(255,255,255,.05);border-radius:50px;padding:3px">
-      <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px 18px;border:none;border-radius:50px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:#0B1622;font-weight:700">Sign In</button>
+      <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px 18px;border:none;border-radius:50px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;background:linear-gradient(135deg,#C9B193,#EFE4D2);color:#2A1019;font-weight:700">Sign In</button>
       <button id="tab-register" onclick="switchTab('register')" style="flex:1;padding:8px 18px;border:none;border-radius:50px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;background:transparent;color:rgba(255,255,255,.4);font-weight:600">Register</button>
     </div>
 
@@ -292,7 +292,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
 
     <div id="lcf" style="font-size:11px;color:rgba(255,255,255,.25);margin-top:16px;text-align:center">© 2026 ARUVA Fashion</div>
   </div>
-</div>
+</div> 
 
 <script>
 // ── FLOATING PARTICLES ────────────────────────────────
@@ -327,7 +327,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Se
       const a = .08+.14*Math.sin(t+p.phase);
       ctx.beginPath();
       ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2); 
-      ctx.fillStyle=`rgba(135,185,212,${a})`;
+      ctx.fillStyle=`rgba(201,177,147,${a})`;
       ctx.fill();
     });
   }
@@ -347,7 +347,7 @@ function switchTab(tab) {
   document.getElementById('rf').style.display  = isLogin ? 'none' : '';
   document.getElementById('lc-sub').textContent = isLogin ? 'Welcome back' : 'Create your account';
   const tl = document.getElementById('tab-login'), tr = document.getElementById('tab-register');
-  const on = 'background:linear-gradient(135deg,#87B9D4,#ACD1E5);color:#0B1622;font-weight:700';
+  const on = 'background:linear-gradient(135deg,#C9B193,#EFE4D2);color:#2A1019;font-weight:700';
   const off = 'background:transparent;color:rgba(255,255,255,.4);font-weight:600';
   tl.style.cssText = tl.style.cssText.replace(/background[^;]+;color[^;]+;font-weight[^;]+/, isLogin ? on : off);
   tr.style.cssText = tr.style.cssText.replace(/background[^;]+;color[^;]+;font-weight[^;]+/, isLogin ? off : on);
@@ -409,7 +409,7 @@ function togglePass(id, btn) {
   const inp = document.getElementById(id);
   const show = inp.type === 'password';
   inp.type = show ? 'text' : 'password';
-  btn.style.color = show ? 'rgba(135,185,212,.8)' : 'rgba(255,255,255,.35)';
+  btn.style.color = show ? 'rgba(201,177,147,.8)' : 'rgba(255,255,255,.35)';
 }
 
 // Remove white background from logo PNG

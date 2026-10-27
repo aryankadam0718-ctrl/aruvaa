@@ -51,7 +51,7 @@ function qsa(sel, ctx = document) { return [...ctx.querySelectorAll(sel)]; }
 function starsHTML(rating, size = 13) {
   let h = '';
   for (let i = 1; i <= 5; i++)
-    h += `<span style="color:${i <= Math.round(rating) ? '#C9A84C' : '#333'};font-size:${size}px">★</span>`;
+    h += `<span style="color:${i <= Math.round(rating) ? '#C9B193' : '#333'};font-size:${size}px">★</span>`;
   return h;
 }
 
@@ -62,7 +62,7 @@ function effectivePrice(product) {
 // ── TOAST ─────────────────────────────────────────────────────
 function toast(msg, type = 'ok') {
   qsa('.aruva-toast').forEach(el => el.remove());
-  const colors = { ok: { bg:'#1a1a1a', border:'rgba(201,168,76,.28)', text:'#F0F0F0' }, error: { bg:'rgba(239,68,68,.12)', border:'rgba(239,68,68,.35)', text:'#f87171' }, success: { bg:'rgba(76,175,80,.12)', border:'rgba(76,175,80,.35)', text:'#4ade80' } };
+  const colors = { ok: { bg:'#1a1a1a', border:'rgba(201,177,147,.28)', text:'#F0F0F0' }, error: { bg:'rgba(239,68,68,.12)', border:'rgba(239,68,68,.35)', text:'#f87171' }, success: { bg:'rgba(76,175,80,.12)', border:'rgba(76,175,80,.35)', text:'#4ade80' } };
   const c = colors[type] || colors.ok;
   const t = document.createElement('div');
   t.className = 'aruva-toast';
@@ -78,7 +78,7 @@ function renderProductCanvas(canvas, product) {
   const ctx = canvas.getContext('2d');
 
   // Background
-  ctx.fillStyle = '#0d0d0d';
+  ctx.fillStyle = '#3A1724';
   ctx.fillRect(0, 0, W, H);
 
   // Shirt path scaled to canvas
